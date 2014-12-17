@@ -1,0 +1,6 @@
+# this is a comment
+implementation=MYOPIC
+action_select_method=0
+eval_function=1
+iterations=100
+eval_weights={12, 23, 1, 2, 2}
