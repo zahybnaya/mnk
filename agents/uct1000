@@ -3,4 +3,5 @@ implementation=UCT
 action_select_method=0
 eval_function=1
 iterations=1000
-eval_weights={12, 23, 1, 2, 2}
+eval_weights={0.8,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2}
+exploration_constant=0.5

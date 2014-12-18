@@ -51,7 +51,7 @@ Node* UCTAgent::select_next_node(Node* n){
  *  UCT constant 
  * */
 double UCTAgent::get_exploration_constant() {
-	return 0.5;
+	return get_double_property("exploration_constant");
 }
 
 

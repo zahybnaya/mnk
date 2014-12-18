@@ -13,7 +13,7 @@ Agent
   |--> TreeAgent
 	  |->UCTAgent
 	  |->BFSAgent
-	  |->ExsustiveAgent
+	  |->ExshustiveAgent
   |->MyopicAgent
 **/
 class Agent {
@@ -25,15 +25,16 @@ class Agent {
 		 * board b and for player 
 		 * */
 		virtual std::vector<zet> solve(board& b,bool player)=0;
+
+		/**
+		 * Returns the move of the player on this board
+		 * */
+		virtual zet play(board& b,bool player);
 		/**
 		 * A string describing this agent
 		 * */
 		const virtual std::string get_name()=0;
 		const std::string get_agent_file();
-		/**
-		 * Returns the move of the player on this board
-		 * */
-		zet play(board& b,bool player);
 		inline void set_properties(properties p){
 			this->m_properties=p;
 		}
@@ -43,7 +44,6 @@ class Agent {
 		 * Obtain a list of values
 		 * */
 		std::vector<double> get_array_property(std::string);
-
 		/**
 		 * Obtain the int value of a property
 		 * */

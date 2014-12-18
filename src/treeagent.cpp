@@ -36,6 +36,10 @@ int TreeAgent::build_tree(Node* n,int iterations){
 }
 
 
+/**
+ *
+ * A single iteraton of building the tree
+ * */
 void TreeAgent::iterate(Node* n){
 	std::vector<Node*> nodes = select_variation(n);	
 	double new_val = evaulate(nodes.back());
@@ -76,7 +80,6 @@ std::vector<zet> TreeAgent::move_estimates(Node* n){
 	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
 		uint64 move_id=i->first;
 		double move_value = (i->second->val)/(i->second->visits);
-		//std::cout<<"Estimating move:"<<(i->second->val)<<"/"<<(i->second->visits)<<"="<< move_value<< std::endl;
 		bool player = n->player;
 		zet z(move_id,move_value,player);
 		//std::cout<<"Board for move:"<<move_id<<":";
@@ -110,7 +113,7 @@ void TreeAgent::delete_tree(Node* root){
 }
 
 /**
- * Creates a new node to represent node and add it as a child to parent
+ * Creates a new node to represent node and adds it as a child to parent
  */
 Node* TreeAgent::expand(uint64 move,Node* parent){
 	zet z = zet(move,0.0,parent->player);
@@ -151,3 +154,4 @@ uint64 TreeAgent::select_random_unknown_move(Node* n){
 const int TreeAgent::get_iterations(){
 	return get_int_property("iterations");
 }
+
