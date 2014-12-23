@@ -1,6 +1,8 @@
 #include "heuristic.h"
 #include "board_list.h"
 #include "data_struct.h"
+#include "agent.h"
+#include "agent_builder.h"
 //#include "mex.h"
 
 #define WHITE_WINS_GAME -1
@@ -49,6 +51,24 @@ void round_robin(heuristic* participant,int Nparticipants,ofstream& output,int f
   }
 }
 
+/**
+ * The execution of a new loglik
+ * */
+void compute_loglik_task(Agent* agent,data_struct* dat,todolist* board_list){
+  int i=-1;
+  bool success=false;
+  zet m;
+  board_list_mutex.lock();
+  while(board_list->get_next(i,success)){
+    board_list_mutex.unlock();
+    //m=h.makemove_bfs(dat->allboards[i],dat->allmoves[i].player);
+    m=agent->play(dat->allboards[i],dat->allmoves[i].player);
+    success=(m.zet_id==dat->allmoves[i].zet_id);
+    board_list_mutex.lock();
+  }
+  board_list_mutex.unlock();
+}
+
 void worker_thread(heuristic h,data_struct* dat,todolist* board_list){
   int i=-1;
   bool success=false;
@@ -79,8 +99,12 @@ void worker_thread_super(superheuristic s,data_struct* dat,todolist* board_list)
 
 double compute_loglik_threads(heuristic& h,data_struct* dat,todolist* board_list){
   thread t[NTHREADS];
-  for(int i=0;i<NTHREADS;i++)
-    t[i]=thread(worker_thread,h,dat,board_list);
+  Agent_builder b;
+  Agent* a = b.build(read_agent_params("../agents/uct1000"));
+  for(int i=0;i<NTHREADS;i++){
+    //t[i]=thread(worker_thread,h,dat,board_list);
+    t[i]=thread(compute_loglik_task,a,dat,board_list);
+  }
   for(int i=0;i<NTHREADS;i++)
     t[i].join();
   return board_list->get_Ltot();
@@ -95,6 +119,9 @@ double compute_loglik_threads_super(superheuristic& s,data_struct* dat,todolist*
   return board_list->get_Ltot();
 }
 
+/**
+ * prepeares data and submits to threads 
+ * */
 double compute_loglik(heuristic& h, data_struct& dat, bool talk, int subject,
                       int data_type, char* times_file, char* output_file){
   todolist* board_list;

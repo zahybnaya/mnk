@@ -20,17 +20,6 @@ class AgentParamsException: public std::exception {
 		std::string unknown_field;
 };
 
-//TODO: For the demo:
-// Create a github repository for this  
-// Implement exshistive agent with a depth property 
-// Extract out the model fitting algorithm
-// Show how easy it is to implement a new agent (online) 
-// Extend the number of parameters for an agent 
-// Valgrind
-// Make agents register themselves
-// Add consts, inline, exceptions, errors 
-// Avoid segmentaion fault in wrong agents
-// Print tree to dot
 
 /**
  * Execute the best play
