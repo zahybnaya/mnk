@@ -23,7 +23,6 @@ class AgentParamsException: public std::exception {
 //TODO: For the demo:
 // Create a github repository for this  
 // Implement exshistive agent with a depth property 
-// Show that you can still build the old code  
 // Extract out the model fitting algorithm
 // Show how easy it is to implement a new agent (online) 
 // Extend the number of parameters for an agent 
@@ -38,12 +37,13 @@ class AgentParamsException: public std::exception {
  * */
 zet Agent::play(board& b,bool player){
 	std::vector<zet> s = solve(b,player);
-	FILE_LOG(logDEBUG)<<"Playing for player "<<player<< " board says "<<b.active_player()<<std::endl;
+	FILE_LOG(logDEBUG)<<"Playing for player "<<((player==BLACK)?"BLACK":"WHITE")<< std::endl;
+	assert(b.active_player()==player);
 	for (std::vector<zet>::const_iterator i = s.begin(); i != s.end(); ++i) {
 		FILE_LOG(logDEBUG)<<"    Move:"<<i->zet_id<< " val:"<<i->val<<std::endl;
 	}
 	zet r=*std::max_element(s.begin(),s.end(),zet_comparator_t(player));
-	FILE_LOG(logDEBUG)<<"Selected move "<<r.zet_id<<std::endl;
+	FILE_LOG(logDEBUG)<<((player==BLACK)?"BLACK":"WHITE")<<" playes move "<<r.zet_id<<std::endl;
 	return r;
 }
 

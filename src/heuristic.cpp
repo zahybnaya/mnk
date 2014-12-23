@@ -235,8 +235,8 @@ double heuristic::logprior(){
 }
 
 //TODO: Deal with this
- heuristic::heuristic(): weight {0.8,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2},
- Nfeatures(0), D0(6.0), K0(5.0), gamma(0.025), delta(0.2), lapse_rate(0.01) ,vert_scale(1.8), diag_scale(1.2), opp_scale(1.5){ update();};
+// heuristic::heuristic(): weight {0.8,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2},
+// Nfeatures(0), D0(6.0), K0(5.0), gamma(0.025), delta(0.2), lapse_rate(0.01) ,vert_scale(1.8), diag_scale(1.2), opp_scale(1.5){ update();};
 
 
 void heuristic::write_to_header(char* filename){
@@ -304,11 +304,13 @@ vector<zet> heuristic::get_moves(board& b, bool player, bool nosort=false){
         deltaL-=c_act*feature[i].diff_act_pass();
     }
   for(i=1,m=1;m!=boardend;m<<=1){
-    if(m & center)
-      candidate.push_back(zet(m,deltaL+c_pass*weight[0]+noise(engine),player));
-    else candidate.push_back(zet(m,deltaL+noise(engine),player));
-    lookup[m]=i;
-    i++;
+	  if(b.isempty(m)){
+		  if(m & center)
+			  candidate.push_back(zet(m,deltaL+c_pass*weight[0]+noise(engine),player));
+		  else candidate.push_back(zet(m,deltaL+noise(engine),player));
+		  lookup[m]=i;
+		  i++;
+	  }
   }
   for(i=0;i<Nfeatures;i++)
     if(feature[i].is_active(b)){

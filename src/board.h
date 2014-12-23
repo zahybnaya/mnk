@@ -409,9 +409,9 @@ inline std::ostream& operator<<(std::ostream& o, board& b){
         if (m & temp)
           o<<"#";
         else if(b.pieces[BLACK] & temp)
-          o<<"o";
+          o<<"B";
         else if(b.pieces[WHITE] & temp)
-          o<<"x";
+          o<<"W";
         else o<<" ";
         temp<<= 1;
       }

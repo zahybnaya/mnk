@@ -7,7 +7,7 @@
 #include <fstream>
 
 #ifndef _WIN64
-#define NTHREADS 20
+#define NTHREADS 8
 #else
 #define NTHREADS 8
 #endif

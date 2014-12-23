@@ -66,54 +66,54 @@ protected:
 	 * returns the moves which are not 
 	 * expanded for a specific node (no node exists)
 	 * */
-	std::vector<zet> unexpanded_moves(Node* n);
+	virtual std::vector<zet> unexpanded_moves(Node* n);
 	/**
 	 *  Generates a new node by applying move 
 	 *  and connecting it to parent
 	 * */
-	Node* expand(uint64 move,Node* parent);
+	virtual Node* expand(uint64 move,Node* parent);
 
 	/**
 	 * Returns a random move from the list of moves  
 	 * which does not have a node yet
 	 * */
-	uint64 select_random_unknown_move(Node* n);
+	virtual uint64 select_random_unknown_move(Node* n);
 
 	/**
 	 * Create an initial node from board
 	 * */
-	Node* create_initial_state(board b);
+	virtual Node* create_initial_state(board b);
 
 	/**
 	 * Assuming a built tree, return the move estimates 
 	 * */
-	std::vector<zet> move_estimates(Node* n);
+	virtual std::vector<zet> move_estimates(Node* n);
 
 	/**
 	 * free allocated memory
 	 * */
-	void delete_tree(Node* root);
+	virtual void delete_tree(Node* root);
 
 	/**
 	 * Constructs a tree starting from the root
 	 * */
-	int build_tree(Node* n,int iterations);
+	virtual int build_tree(Node* n,int iterations);
 
 	/**
 	 *  Perform a single iteration starting from n
 	 * */
-	void iterate(Node* n);
+	virtual void iterate(Node* n);
 
 	/**
 	 * Given an addition node lastNode, return an evaluation
 	 **/
-	double evaulate(Node* lastNode);
+	virtual double evaulate(Node* lastNode);
 
 	/**
 	 * Propagate the new_val through out the nodes variation
 	 *
 	 **/
-	void back_propagatate(double new_val, std::vector<Node*> nodes);
+	virtual void back_propagatate(double new_val, std::vector<Node*> nodes);
 
 
 private:

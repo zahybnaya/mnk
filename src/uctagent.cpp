@@ -1,13 +1,31 @@
 #include "uctagent.h"
 #include <math.h>
 #include <algorithm>
+#include "randomplayout.h"
 
+/**
+ * Constructor TODO: take this from a properties file
+ * */
+UCTAgent::UCTAgent(){
+	policy = RandomPlayout();
+}
+
+/**
+ * Naming 
+ * */
 const std::string UCTAgent::get_name(){
 	return std::string("UCT");
 }
 
+
 /**
- * The uct calculation as it performed by the agent
+ * UCT uses a given policy to evaluate new states.
+ * */
+double UCTAgent::evaulate(Node* lastNode){
+	return policy.eval(lastNode->m_board);
+}
+/**
+ * The uct calculation 
  * */
 double UCTAgent::uct(Node* n, int ttl_visits) { 
 	double exploration =  sqrt(log(ttl_visits)/n->visits);

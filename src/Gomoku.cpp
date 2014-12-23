@@ -287,6 +287,7 @@ int main(int argc, char* argv[]){
   //sprintf(filename,"loglik_boards%i.txt",subject);
   //output.open(filename,ios::out);
   global_generator.seed(seed);
+  h.seed_generator(global_generator);
   for(int i=0;i<dat.Nplayers;i++)
     cout<<dat.player_name[i]<<"\t"<<compute_loglik(h,dat,false,i,ALL,NULL,NULL)<<endl;
   //output.close();
