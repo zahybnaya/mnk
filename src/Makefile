@@ -9,7 +9,7 @@
 # model_fitting: performs fitting 
 #
 #####
-FLAGS=-std=c++11 -pthread -O3
+FLAGS=-std=c++11 -pthread -O3 
 # TODO:If HPC module load gcc
 
 load-modules:

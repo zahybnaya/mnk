@@ -11,7 +11,7 @@ UCTAgent::UCTAgent(){
 }
 
 /**
- * Naming 
+ * Naming of agent
  * */
 const std::string UCTAgent::get_name(){
 	return std::string("UCT");
@@ -45,6 +45,17 @@ struct uct_comparator_t {
 	UCTAgent* a;
 }; 
 
+
+/**
+ * Shuffles a vector from children map
+ * */
+std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
+	std::vector<pair<uint64,Node*>> v;
+	std::copy(c.begin(), c.end(), std::back_inserter(v));
+	std::random_shuffle(v.begin(),v.end());
+	return v;
+}
+
 /**
  * Returns either a new child node 
  * or an existing child node 
@@ -59,8 +70,9 @@ Node* UCTAgent::select_next_node(Node* n){
 	if (!moves.empty()){
 		return expand(select_random_move(moves),n);
 	}
+	std::vector<pair<uint64,Node*>> v= get_shuffled_vector(n->children);
 	std::pair<uint64,Node*> argmax =
-	       	*std::max_element(n->children.begin(),n->children.end(),uct_comparator_t(this,n->visits));
+	       	*std::max_element(v.begin(),v.end(),uct_comparator_t(this,n->visits));
 	return argmax.second;
 }
 

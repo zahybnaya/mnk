@@ -31,6 +31,7 @@ zet Agent::play(board& b,bool player){
 	for (std::vector<zet>::const_iterator i = s.begin(); i != s.end(); ++i) {
 		FILE_LOG(logDEBUG)<<"    Move:"<<i->zet_id<< " val:"<<i->val<<std::endl;
 	}
+	std::random_shuffle(s.begin(),s.end());
 	zet r=*std::max_element(s.begin(),s.end(),zet_comparator_t(player));
 	FILE_LOG(logDEBUG)<<((player==BLACK)?"BLACK":"WHITE")<<" playes move "<<r.zet_id<<std::endl;
 	return r;

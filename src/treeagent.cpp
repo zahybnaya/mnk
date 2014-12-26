@@ -96,7 +96,6 @@ void TreeAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 	for (std::vector<Node*>::const_iterator i = nodes.begin(); i != nodes.end(); ++i) {
 		(*i)->val+=new_val;
 		(*i)->visits++;
-		FILE_LOG(logDEBUG)<<" Back_propagating: Node with visits: " <<  (*i)->visits << " and value:" << (*i)->val<<std::endl;
 	}
 }
 

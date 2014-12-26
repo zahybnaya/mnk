@@ -20,6 +20,31 @@ void missing_values(){
 
 }
 
+Source prepeare_source(int argc, const char* argv[]){
+	std::string state_file, agent_file;
+	bool state_check = false;
+	bool agent_check = false;
+	for (int i = 0; i < argc; i++) {
+		 if (strcmp(argv[i],"-s")==0){
+			 state_file = argv[++i];
+			 state_check=true;
+			 continue;
+		 }
+		 if (strcmp(argv[i],"-a")==0){
+	 		 agent_file = argv[++i];
+			 agent_check=true;
+			 continue;
+		 }
+	}
+	if (! (state_check && agent_check) ){
+		missing_values();
+		exit(-1);
+	}
+	Source s(state_file, agent_file);
+	return s;
+}
+
+
 /**
  * Produce a match from args
  *

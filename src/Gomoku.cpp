@@ -3,6 +3,7 @@
 #include "data_struct.h"
 #include "agent.h"
 #include "agent_builder.h"
+#include "common.h"
 //#include "mex.h"
 
 #define WHITE_WINS_GAME -1
@@ -96,10 +97,26 @@ void worker_thread_super(superheuristic s,data_struct* dat,todolist* board_list)
   board_list_mutex.unlock();
 }
 
-double compute_loglik_threads(heuristic& h,data_struct* dat,todolist* board_list){
+/**
+ * The agent version of this function
+ * */
+double compute_loglik_agent_threads(heuristic& h, std::string agent_file, data_struct* dat,todolist* board_list){
   thread t[NTHREADS];
   Agent_builder b;
-  Agent* a = b.build(read_agent_params("../agents/uct1000"));
+  Agent* a = b.build(read_agent_params(agent_file));
+  for(int i=0;i<NTHREADS;i++){
+    t[i]=thread(compute_loglik_task,a,dat,board_list);
+  }
+  for(int i=0;i<NTHREADS;i++)
+    t[i].join();
+  return board_list->get_Ltot();
+}
+
+
+double compute_loglik_threads(heuristic& h, data_struct* dat,todolist* board_list){
+  thread t[NTHREADS];
+  Agent_builder b;
+  Agent* a = b.build(read_agent_params("DUMMY"));
   for(int i=0;i<NTHREADS;i++){
     t[i]=thread(compute_loglik_task,a,dat,board_list);
   }
@@ -120,7 +137,7 @@ double compute_loglik_threads_super(superheuristic& s,data_struct* dat,todolist*
 /**
  * prepeares data and submits to threads 
  * */
-double compute_loglik(heuristic& h, data_struct& dat, bool talk, int subject,
+double compute_loglik_agent(heuristic& h, std::string agent_file, data_struct& dat, bool talk, int subject,
                       int data_type, char* times_file, char* output_file){
   todolist* board_list;
   double res;
@@ -139,7 +156,31 @@ double compute_loglik(heuristic& h, data_struct& dat, bool talk, int subject,
       board_list->set_cout();
     else board_list->set_output(output_file);
   }
-  res=compute_loglik_threads(h,&dat,board_list);
+  res=compute_loglik_agent_threads(h, agent_file, &dat,board_list);
+  delete board_list;
+  return res;
+}
+
+double compute_loglik(heuristic& h, std::string agent_file, data_struct& dat, bool talk, int subject,
+                      int data_type, char* times_file, char* output_file){
+  todolist* board_list;
+  double res;
+  if(subject==-1){
+    if(times_file==NULL)
+      board_list=new todolist(dat.Nboards);
+    else board_list=new todolist(dat.Nboards,times_file);
+  }
+  else{
+    if(times_file==NULL)
+      board_list=new todolist(dat.select_boards(subject,data_type));
+    else board_list=new todolist(dat.select_boards(subject,data_type),times_file);
+  }
+  if(talk){
+    if(output_file==NULL)
+      board_list->set_cout();
+    else board_list->set_output(output_file);
+  }
+  res=compute_loglik_threads(h, &dat,board_list);
   delete board_list;
   return res;
 }
@@ -283,6 +324,38 @@ void drawboard(board b,uint64 m_black,uint64 m_white,int j, int freq[]){
   out.close();
 }
 
+void missing_values()
+{
+	std::cout << "Usage: -a <agent_file> -s <state_file>" << std::endl;
+}
+
+
+Source prepeare_source(int argc, const char* argv[]){
+	std::string state_file, agent_file;
+	bool state_check = false;
+	bool agent_check = false;
+	for (int i = 0; i < argc; i++) {
+		 if (strcmp(argv[i],"-s")==0){
+			 state_file = argv[++i];
+			 state_check=true;
+			 continue;
+		 }
+		 if (strcmp(argv[i],"-a")==0){
+	 		 agent_file = argv[++i];
+			 agent_check=true;
+			 continue;
+		 }
+	}
+	if (! (state_check && agent_check) ){
+		missing_values();
+		exit(-1);
+	}
+	FILE_LOG(logDEBUG) << "state_file:"<<state_file << " agent_file:"<<agent_file << std::endl;
+	Source s(state_file, agent_file);
+	return s;
+}
+
+
 #ifdef mex_h
 void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]){
   heuristic h;
@@ -297,9 +370,11 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]){
   h.get_params_from_matlab(paramptr);
   plhs[0] = mxCreateDoubleScalar(compute_loglik(h,dat,true,player,TEST,"times.txt","Output/out.txt"));
 }
+
 #else
-int main(int argc, char* argv[]){
-  heuristic h;
+int main(int argc, const char* argv[]){
+	Source src=prepeare_source(argc, argv);
+	heuristic h;
   superheuristic s;
   data_struct dat;
   unsigned int seed=unsigned(time(0));
@@ -314,7 +389,7 @@ int main(int argc, char* argv[]){
   global_generator.seed(seed);
   h.seed_generator(global_generator);
   for(int i=0;i<dat.Nplayers;i++)
-    cout<<dat.player_name[i]<<"\t"<<compute_loglik(h,dat,false,i,ALL,NULL,NULL)<<endl;
+    cout<<dat.player_name[i]<<"\t"<<compute_loglik_agent(h,src.agent_description_file,dat,false,i,ALL,NULL,NULL)<<endl;
   //output.close();
   return 0;
 }
