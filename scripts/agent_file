@@ -1,0 +1,6 @@
+../agents/myopic_agent
+../agents/bfsagent
+../agents/uct100
+../agents/uct1000
+../agents/uct10
+../agents/wrong_agent

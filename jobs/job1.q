@@ -18,4 +18,4 @@ RUNDIR=$SCRATCH/mnk/run-${PBS_JOBID/.*}
 mkdir -p $RUNDIR
  
 cd $RUNDIR
-$SRCDIR/loglik
+$SRCDIR 1>/loglik/home/mnk/results/loglik_agent_stateset_o 2>/home/mnk/results/loglik_agent_stateset_e
