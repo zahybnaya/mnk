@@ -12,6 +12,9 @@
 FLAGS=-std=c++11 -pthread -O3
 # TODO:If HPC module load gcc
 
+load-modules:
+	module load gcc/4.9.2
+
 states: aigames.cpp randomplayout.h randomplayout.cpp heuristic.cpp heuristic.h agent_builder.h features.cpp agent.h agent.cpp uctagent.cpp uctagent.h states.cpp agent_builder.h agent_builder.cpp treeagent.h treeagent.cpp myopicagent.h myopicagent.cpp bfsagent.cpp bfsagent.h
 	g++ $(FLAGS) aigames.cpp agent.cpp uctagent.cpp randomplayout.cpp features.cpp  heuristic.cpp myopicagent.cpp bfsagent.cpp treeagent.cpp bfs.cpp agent_builder.cpp states.cpp -ostates 
 
