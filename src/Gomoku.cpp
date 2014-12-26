@@ -61,7 +61,6 @@ void compute_loglik_task(Agent* agent,data_struct* dat,todolist* board_list){
   board_list_mutex.lock();
   while(board_list->get_next(i,success)){
     board_list_mutex.unlock();
-    //m=h.makemove_bfs(dat->allboards[i],dat->allmoves[i].player);
     m=agent->play(dat->allboards[i],dat->allmoves[i].player);
     success=(m.zet_id==dat->allmoves[i].zet_id);
     board_list_mutex.lock();
@@ -102,7 +101,6 @@ double compute_loglik_threads(heuristic& h,data_struct* dat,todolist* board_list
   Agent_builder b;
   Agent* a = b.build(read_agent_params("../agents/uct1000"));
   for(int i=0;i<NTHREADS;i++){
-    //t[i]=thread(worker_thread,h,dat,board_list);
     t[i]=thread(compute_loglik_task,a,dat,board_list);
   }
   for(int i=0;i<NTHREADS;i++)
