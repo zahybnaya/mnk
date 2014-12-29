@@ -371,10 +371,18 @@ zet heuristic::makemove(board bstart,bool player){
   depth=D_dist(engine)+D0;
   double alpha[depth+1];
   double beta[depth+1];
-  board b[depth+1];
+  vector<board> b;
+  for (int i = 0; i < depth+1; i++) {
+	  board _b;
+	  b.push_back(_b);	
+  }
   double L[depth+1];
   unsigned int i[depth+1];
-  vector<zet> candidate[depth+1];
+  vector<vector<zet>> candidate;
+  for (int j = 0; j < depth+1; j++) {
+	  vector<zet> zz;
+	  candidate.push_back(zz);
+  }
   int level=0;
   int ibest=-1;
   bool onreturn=false;

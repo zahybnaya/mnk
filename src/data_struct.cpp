@@ -232,7 +232,11 @@ void data_struct::save_board_file(char* filename){
 }
 
 void data_struct::make_test_and_train(double frac, mt19937_64 engine){
-  vector<int> board_by_player[Nplayers];
+  vector<vector<int>> board_by_player;
+  for (int i = 0; i < Nplayers ; i++) {
+	  vector<int> v;
+  	board_by_player.push_back(v);
+  }
   unsigned int n,N,k;
   train.clear();
   test.clear();

@@ -33,6 +33,7 @@ int TreeAgent::build_tree(Node* n,int iterations){
 		iterate(n);
 		iterNum++;
 	}
+	return 0;
 }
 
 
