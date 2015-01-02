@@ -27,10 +27,12 @@ class AgentParamsException: public std::exception {
 zet Agent::play(board& b,bool player){
 	std::vector<zet> s = solve(b,player);
 	FILE_LOG(logDEBUG)<<"Playing for player "<<((player==BLACK)?"BLACK":"WHITE")<< std::endl;
-	assert(b.active_player()==player);
-	for (std::vector<zet>::const_iterator i = s.begin(); i != s.end(); ++i) {
-		FILE_LOG(logDEBUG)<<"    Move:"<<i->zet_id<< " val:"<<i->val<<std::endl;
+	if(b.active_player()!=player){
+		FILE_LOG(logERROR)<<"Player  "<<((player==BLACK)?"BLACK":"WHITE")<< " is not the same as board::active_player()" << std::endl;
 	}
+//	for (std::vector<zet>::const_iterator i = s.begin(); i != s.end(); ++i) {
+//		FILE_LOG(logDEBUG)<<"    Move:"<<i->zet_id<< " val:"<<i->val<<std::endl;
+//	}
 	std::random_shuffle(s.begin(),s.end());
 	zet r=*std::max_element(s.begin(),s.end(),zet_comparator_t(player));
 	FILE_LOG(logDEBUG)<<((player==BLACK)?"BLACK":"WHITE")<<" playes move "<<r.zet_id<<std::endl;
