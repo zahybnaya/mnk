@@ -373,6 +373,7 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]){
 
 #else
 int main(int argc, const char* argv[]){
+	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
 	Source src=prepeare_source(argc, argv);
 	heuristic h;
   superheuristic s;
