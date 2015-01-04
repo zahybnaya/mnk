@@ -1,6 +1,7 @@
 #include "heuristic.h"
 #include "randomplayout.h"
 #include <random>
+#include "board.h"
 #include "log.h"
 
 RandomPlayout::RandomPlayout(){
@@ -31,8 +32,7 @@ double RandomPlayout::state_value(board& b){
 }
 
 zet RandomPlayout::select_random_move(board& b){
-	heuristic h;
-	vector<zet> moves = h.enumerate_moves(b, b.active_player());
+	vector<zet> moves = enumerate_moves(b, b.active_player());
 	return moves[rng() % moves.size()];
 }
 

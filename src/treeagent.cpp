@@ -1,5 +1,6 @@
 #include "treeagent.h"
 #include "heuristic.h"
+#include "board.h"
 
 /**
  * Returns a list of possible moves and their estimates. 
@@ -127,8 +128,7 @@ Node* TreeAgent::expand(uint64 move,Node* parent){
  * Returns the list of moves which are not expanded yet
  * */
 std::vector<zet> TreeAgent::unexpanded_moves(Node* n){
-	heuristic h;
-	vector<zet> moves = h.enumerate_moves(n->m_board, n->player);
+	vector<zet> moves = enumerate_moves(n->m_board, n->player);
 	for (std::vector<zet>::iterator i = moves.begin(); i != moves.end(); ) {
 		if (n->children.find(i->zet_id)!= n->children.end()){
 			moves.erase(i);

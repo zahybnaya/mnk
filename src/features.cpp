@@ -742,6 +742,7 @@ feature{{0x3ULL,0xcULL,2,weight,1,1},
 {0x200c0ULL,0x18100ULL,3,weight,16,16},
 {0x4018000ULL,0x3020040ULL,3,weight,16,16},
 {0x803000000ULL,0x604008000ULL,3,weight,16,16}}{
+	cout <<"Y"<< std::endl;
 	update();
 }
 #endif

@@ -14,7 +14,7 @@ public:
 	/**
 	 * Set it to random playouts
 	 * */
-	double evaulate(Node* lastNode);
+	virtual double evaulate(Node* lastNode);
 	const std::string get_name();
 private:
 	/* uct funtions */

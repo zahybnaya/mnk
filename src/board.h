@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <cstdint>
+#include <vector>
 
 #define BLACK 0
 #define WHITE 1
@@ -396,6 +397,20 @@ struct board{
   }
   uint64 pieces[2];
 };
+
+/**
+ * Returns a list of possible moves without a value
+ */
+inline vector<zet> enumerate_moves(board& b, bool player){
+  vector<zet> candidate;
+  for(uint64 m=1;m!=boardend;m<<=1){
+	if(b.isempty(m)){
+		candidate.push_back(zet(m,0,player));
+	}
+  }
+  return candidate;
+}
+
 
 inline std::ostream& operator<<(std::ostream& o, board& b){
     uint64 temp = 1,m=0;
