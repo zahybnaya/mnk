@@ -7,9 +7,9 @@
 #include <fstream>
 
 #ifndef _WIN64
-#define NTHREADS 8
+#define NTHREADS 1
 #else
-#define NTHREADS 8
+#define NTHREADS 1
 #endif
 
 struct task{
@@ -129,20 +129,27 @@ struct todolist{
       }
     }
     else {
-      Lexpt+=expt_factor/(data[i].times*data[i].tries);
-      data[i].update_fail();
+//double p=Lexpt; 
+	    Lexpt+=expt_factor/(data[i].times*data[i].tries);
+//	    if(abs(p-Lexpt)<std::numeric_limits<double>::epsilon()){
+//		    std::cout <<"updating Lexpt from ["<<p<<"]" <<"to ["<<Lexpt<<"]"<< "expt_factor:["<<expt_factor<<"] " << "data.times:["<<data[i].times<<"] " << "data.tries:["<<data[i].tries<<"] " << "total addition of:["<<expt_factor/(data[i].times*data[i].tries)<<"] " << std::endl;
+	    //}
+	    data[i].update_fail();
     }
     if(!data[i].done)
       add_task(i);
   }
   bool get_next(int& i,bool success){
     iterations++;
-    if(i!=-1 && !data[i].done)
-      task_completed(i,success);
+    if(i!=-1 && !data[i].done){
+	    task_completed(i,success);
+    }
     if(stopping_time())
       return false;
-    if(!get_task(i))
-      return false;
+    if(!get_task(i)){
+	    //std::cout << "!get_task(i)" << std::endl;
+	    return false;
+    }
     if(Nunsolved<=NTHREADS)
       add_task(i);
     return true;
@@ -158,10 +165,13 @@ struct todolist{
   double get_Ltot(){
     double Ltot=0.0;
     for(map<int,task_data>::iterator it=data.begin();it!=data.end();++it){
-      if(!it->second.done)
-        return Lexpt/N;
+      if(!it->second.done){
+	   //   std::cout << "Using Lexpt/N"<< std::endl;
+	      return Lexpt/N;
+      }
       Ltot+=it->second.L;
     }
+ //   std::cout << "Using Ltot/N"<< std::endl;
     return Ltot/N;
   }
 };

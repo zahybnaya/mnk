@@ -4,6 +4,7 @@
 #include "agent.h"
 #include "agent_builder.h"
 #include "common.h"
+#include <limits>
 //#include "mex.h"
 
 #define WHITE_WINS_GAME -1
@@ -60,15 +61,21 @@ void compute_loglik_task(Agent* agent,data_struct* dat,todolist* board_list){
   bool success=false;
   zet m;
   board_list_mutex.lock();
+  int iteration  = 0;
   while(board_list->get_next(i,success)){
-	  if(board_list->get_Ltot() > 2.5){  //just a small hack to see why the cutoff doesnt work  
-		  std::cout << " Breaking because of the cutoff"  << std::endl;
+	  iteration++;
+	  if(board_list->get_Ltot()>3.0){  
 		  break;
 	  }
-    board_list_mutex.unlock();
-    m=agent->play(dat->allboards[i],dat->allmoves[i].player);
-    success=(m.zet_id==dat->allmoves[i].zet_id);
-    board_list_mutex.lock();
+	  if (iteration>30000){
+		  //Assuming that it will slowly approach 3.0
+		  std::cout << " breaking because exceeded 30K iterations ";  
+		  break;
+	  }
+	  board_list_mutex.unlock();
+	  m=agent->play(dat->allboards[i],dat->allmoves[i].player);
+	  success=(m.zet_id==dat->allmoves[i].zet_id);
+	  board_list_mutex.lock();
   }
   board_list_mutex.unlock();
 }

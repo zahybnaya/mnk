@@ -22,7 +22,7 @@ tournament: tournament.cpp heuristic.cpp randomplayout.h randomplayout.cpp heuri
 	g++ $(FLAGS)  tournament.cpp features.cpp randomplayout.cpp agent.cpp uctagent.cpp heuristic.cpp myopicagent.cpp bfsagent.cpp treeagent.cpp bfs.cpp randomplayout.cpp agent_builder.cpp states.cpp -otournament
 
 
-loglik: *.cpp
+loglik: board_list.h Gomoku.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
 	g++ $(FLAGS) Gomoku.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ologlik
 
 
