@@ -61,6 +61,10 @@ void compute_loglik_task(Agent* agent,data_struct* dat,todolist* board_list){
   zet m;
   board_list_mutex.lock();
   while(board_list->get_next(i,success)){
+	  if(board_list->get_Ltot() > 2.5){  //just a small hack to see why the cutoff doesnt work  
+		  std::cout << " Breaking because of the cutoff"  << std::endl;
+		  break;
+	  }
     board_list_mutex.unlock();
     m=agent->play(dat->allboards[i],dat->allmoves[i].player);
     success=(m.zet_id==dat->allmoves[i].zet_id);

@@ -33,7 +33,7 @@ struct task_data{
     else tries=1;
   }
   void update_fail(){
-    L+=1.0/(tries*times);
+    L+=1.0/(tries*times); //Possible bug because board_list uses exp_factor
     tries++;
   }
 };
