@@ -14,29 +14,31 @@ STATE_FILE=$2
 
 while read agent; do
   while read state; do
-	  echo $agent $state
+	experiment_id=${agent}_${state}
+	experiment_id=${experiment_id//./_}
+	experiment_id=${experiment_id//\//_}
+	echo " Generating job $experiment_id for agent: $agent and state_file $state"
+	exp_file=../jobs/${experiment_id}.q
+	echo "#!/bin/bash" > $exp_file
+	echo "#PBS -l nodes=1:ppn=1" >> $exp_file
+	echo "#PBS -l walltime=04:00:00" >> $exp_file
+	echo "#PBS -l mem=1GB">> $exp_file
+	echo "#PBS -N $experiment_id">> $exp_file
+	echo "#PBS -M zahy.bnaya@nyu.edu">> $exp_file
+	echo "module purge">> $exp_file
+	echo "module load gcc/4.9.2 "  >> $exp_file
+	echo 'BASE_DIR=$HOME/mnk'>> $exp_file
+	echo 'SRCDIR=$BASE_DIR/src'>> $exp_file
+	echo 'RUNDIR=$SCRATCH/mnk/run-${PBS_JOBID/.*}' >> $exp_file
+	echo 'mkdir -p $RUNDIR' >> $exp_file
+	echo 'mkdir -p $RUNDIR/agents' >> $exp_file
+	echo 'mkdir -p $RUNDIR/state_sets' >> $exp_file
+	echo 'mkdir -p $RUNDIR/testbed' >> $exp_file
+	echo 'cp $SRCDIR'/${agent} '$RUNDIR'/agents/${agent} >> $exp_file
+	echo 'cp $SRCDIR'/${state} '$RUNDIR'/state_sets/${state}   >> $exp_file
+	echo 'cp $SRCDIR/loglik $RUNDIR/testbed/loglik' >> $exp_file
+	echo 'cd $RUNDIR/testbed ' >> $exp_file
+	echo '$RUNDIR'/testbed/loglik -a ${agent} -s ${state} >> $exp_file
   done <${STATE_FILE}
 done <${AGENT_FILE}
-#
-##!/bin/bash
-##PBS -l nodes=1:ppn=1
-##PBS -l walltime=1:00:00
-##PBS -l mem=1GB
-##PBS -N loglik_agent_stateset
-##PBS -M zahy.bnaya@nyu.edu
-##PBS -o /home/mnk/results/loglik_agent_stateset_o
-##PBS -e /home/mnk/results/loglik_agent_stateset_e
-# 
-#module purge
-##module load gcc/4.9.2  (only for compilation)
-#BASE_DIR=$HOME/mnk
-#SRCDIR=$BASE_DIR/src
-#RESDIR=$BASE_DIR/results
-#
-#
-#RUNDIR=$SCRATCH/mnk/run-${PBS_JOBID/.*}
-#mkdir -p $RUNDIR
-# 
-#cd $RUNDIR
-#$SRCDIR 1>/loglik/home/mnk/results/loglik_agent_stateset_o 2>/home/mnk/results/loglik_agent_stateset_e
-#
+
