@@ -64,14 +64,14 @@ void compute_loglik_task(Agent* agent,data_struct* dat,todolist* board_list){
   int iteration  = 0;
   while(board_list->get_next(i,success)){
 	  iteration++;
-	  if(board_list->get_Ltot()>3.0){  
-		  break;
-	  }
-	  if (iteration>30000){
-		  //Assuming that it will slowly approach 3.0
-		  std::cout << " breaking because exceeded 30K iterations ";  
-		  break;
-	  }
+//	  if(board_list->get_Ltot()>3.0){  
+//		  break;
+//	  }
+//	  if (iteration>30000){
+//		  //Assuming that it will slowly approach 3.0
+//		  std::cout << " breaking because exceeded 30K iterations ";  
+//		  break;
+//	  }
 	  board_list_mutex.unlock();
 	  m=agent->play(dat->allboards[i],dat->allmoves[i].player);
 	  success=(m.zet_id==dat->allmoves[i].zet_id);
@@ -79,6 +79,21 @@ void compute_loglik_task(Agent* agent,data_struct* dat,todolist* board_list){
   }
   board_list_mutex.unlock();
 }
+
+void worker_thread_notree(heuristic h,data_struct* dat,todolist* board_list){
+  int i=-1;
+  bool success=false;
+  zet m;
+  board_list_mutex.lock();
+  while(board_list->get_next(i,success)){
+    board_list_mutex.unlock();
+    m=h.makemove_notree(dat->allboards[i],dat->allmoves[i].player);
+    success=(m.zet_id==dat->allmoves[i].zet_id);
+    board_list_mutex.lock();
+  }
+  board_list_mutex.unlock();
+}
+
 
 void worker_thread(heuristic h,data_struct* dat,todolist* board_list){
   int i=-1;
@@ -126,10 +141,8 @@ double compute_loglik_agent_threads(heuristic& h, std::string agent_file, data_s
 
 double compute_loglik_threads(heuristic& h, data_struct* dat,todolist* board_list){
   thread t[NTHREADS];
-  Agent_builder b;
-  Agent* a = b.build(read_agent_params("DUMMY"));
   for(int i=0;i<NTHREADS;i++){
-    t[i]=thread(compute_loglik_task,a,dat,board_list);
+    t[i]=thread(worker_thread_notree,h,dat,board_list);
   }
   for(int i=0;i<NTHREADS;i++)
     t[i].join();
@@ -402,6 +415,7 @@ int main(int argc, const char* argv[]){
   h.seed_generator(global_generator);
   for(int i=0;i<dat.Nplayers;i++)
     cout<<dat.player_name[i]<<"\t"<<compute_loglik_agent(h,src.agent_description_file,dat,false,i,ALL,NULL,NULL)<<endl;
+    //cout<<dat.player_name[i]<<"\t"<<compute_loglik(h,src.agent_description_file,dat,false,i,ALL,NULL,NULL)<<endl;
   //output.close();
   return 0;
 }

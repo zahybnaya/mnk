@@ -10,7 +10,7 @@ RandomPlayout::RandomPlayout(){
 }
 
 /***
- * Only public function to be called
+ * The only public function to be called
  * */
 double RandomPlayout::eval(board b){
 	while(!b.is_ended()){

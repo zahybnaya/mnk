@@ -36,6 +36,34 @@ int TreeAgent::build_tree(Node* n,int iterations){
 	}
 	return 0;
 }
+/**
+ *  Distribution for the number of iterations 
+ * */
+const DISTRIBUTION get_iteration_distribution(){
+	return GEOMETRIC;
+}
+
+/**
+ *  Parameter for the distribution 
+ *  for the number of iterations TODO: Parse as language? e.g. iteration_distribution=G(0.4)/B(0.3)/Beta(0.3,0.4)
+ * */
+const double get_iteration_distribution_param(){
+	return 0;
+
+}
+
+
+/**
+ * Addition to the uct exploitation measurement
+ * */
+const DISTRIBUTION get_exploitation_noise_distribution(){
+	return BERNOULLI;
+
+}
+
+const double get_exploitation_noise_param(){
+	return 0;
+}
 
 
 /**
@@ -44,7 +72,15 @@ int TreeAgent::build_tree(Node* n,int iterations){
  * */
 void TreeAgent::iterate(Node* n){
 	std::vector<Node*> nodes = select_variation(n);	
-	double new_val = evaulate(nodes.back());
+	Node* lastNode = nodes.back();
+	Node* parent = nodes[nodes.size()-2];
+	uint64 move_id = -1;
+	for (child_map::const_iterator i = parent->children.begin(); i != parent->children.end(); ++i) {
+		if(i->second== lastNode){
+			move_id = i->first;
+		}
+	}
+	double new_val = evaulate(lastNode, parent, move_id);
 	back_propagatate(new_val,nodes);
 }
 
@@ -64,15 +100,6 @@ std::vector<Node*> TreeAgent::select_variation(Node* n){
 	return ret;
 }
 
-
-/**
- * Evaluaties a new node
- **/
-double TreeAgent::evaulate(Node* lastNode){
-	heuristic h;
-	double hv= h.evaluate(lastNode->m_board);
-	return hv;
-}
 
 /**
  *  Estimates all known estimates from node n

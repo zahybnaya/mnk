@@ -184,20 +184,6 @@ double heuristic::negamax_evaluate(board b){
   return temp;
 }
 
-
-double heuristic::evaluate(board b){
-  bool player=b.active_player();
-  double temp=weight[0]*(b.Nfull(center,player)-b.Nfull(center,!player));
-  for(unsigned int i=0;i<Nfeatures;i++)
-    if(feature[i].is_active(b)){
-      if(feature[i].contained(b,player))
-        temp+=feature[i].weight_act;
-      else if(feature[i].contained(b,!player))
-        temp-=feature[i].weight_pass;
-  }
-  return player==BLACK?temp:-temp;
-}
-
 void heuristic::write(ostream& out){
   out<<Nfeatures<<"\t"<<D0<<"\t"<<K0<<"\t"<<gamma<<"\t"<<delta<<"\t"
   <<lapse_rate<<"\t"<<vert_scale<<"\t"<<diag_scale<<"\t"<<opp_scale<<endl;
@@ -278,6 +264,20 @@ vector<zet> heuristic::enumerate_moves(board& b, bool player){
 	}
   }
   return candidate;
+}
+
+
+double heuristic::evaluate(board b){
+  bool player=b.active_player();
+  double temp=weight[0]*(b.Nfull(center,player)-b.Nfull(center,!player));
+  for(unsigned int i=0;i<Nfeatures;i++)
+    if(feature[i].is_active(b)){
+      if(feature[i].contained(b,player))
+        temp+=feature[i].weight_act;
+      else if(feature[i].contained(b,!player))
+        temp-=feature[i].weight_pass;
+  }
+  return player==BLACK?temp:-temp;
 }
 
 
@@ -466,12 +466,13 @@ double heuristic::loglik(board b,zet m){
 zet heuristic::makemove_notree(board b,bool player){
   vector<zet> candidate=get_moves(b,player);
   zet m(0,0.0,player);
-  if(lapse(engine))
-    return makerandommove(b,player);
-  remove_features();
+  if(lapse(engine)){
+	  return makerandommove(b,player);
+  }
+ // remove_features();
   if(candidate.size()>0)
     m=candidate[0];
-  restore_features();
+  //restore_features();
   return m;
 }
 

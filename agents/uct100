@@ -5,3 +5,4 @@ eval_function=1
 iterations=100
 eval_weights={0.8,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2}
 exploration_constant=0.5
+lapse_rate=0.01

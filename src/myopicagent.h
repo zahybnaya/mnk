@@ -1,15 +1,20 @@
 #ifndef MYOPICAGENT_H
 #define MYOPICAGENT_H
 #include "agent.h"
+#include <random>
+#include "heuristic.h"
 
 class MyopicAgent: public Agent{
 public:
-	MyopicAgent(){};
+	MyopicAgent(){
+	};
 	~MyopicAgent(){};
 	const std::string get_name(){return "Myopic";}
 	std::vector<zet> solve(board& b,bool player);
+	
 private:
-	/* data */
+	heuristic h;
+	std::bernoulli_distribution lapse;
 };
 
 

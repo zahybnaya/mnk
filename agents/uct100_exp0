@@ -1,8 +1,8 @@
-# A BFS implementation with 100 iterations
-implementation=BFS
+# A UCT implementation with 100 iterations
+implementation=UCT
 action_select_method=0
 eval_function=1
-iterations=10
+iterations=100
 eval_weights={0.8,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2}
+exploration_constant=0.0
 lapse_rate=0.01
-exploration_constant=0

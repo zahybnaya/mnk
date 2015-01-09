@@ -16,6 +16,7 @@ Agent* Agent_builder::build(Agent_params p){
 	assert(agent);
 	agent->set_properties(p.m_properties);
 	agent->set_agent_file(p.agent_file);
+	agent->init();
 	return agent;
 }
 

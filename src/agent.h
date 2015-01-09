@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include "board.h"
+#include <random>
 
 /**
 Agent
@@ -20,6 +21,11 @@ class Agent {
 	public:
 		Agent(){}
 		virtual ~Agent(){}
+		
+		/**
+		 * initializtion after properties are set, etc.
+		 * */
+		virtual void init();
 		/**
 		 * Retuns the move estimates of all available moves from 
 		 * board b and for player 
@@ -41,6 +47,11 @@ class Agent {
 		void set_agent_file(std::string);
 	protected:
 		/**
+		 * lapse_rate is the percentage of times that a random
+		 * move is executed
+		 * */
+		const double get_lapse_rate();
+		/**
 		 * Obtain a list of values
 		 * */
 		std::vector<double> get_array_property(std::string);
@@ -56,6 +67,8 @@ class Agent {
 		 * Returns a random move
 		 * */
 		uint64 select_random_move(std::vector<zet> &moves);
+
+		inline mt19937_64& get_generator() {return generator;}
 	private:
 		/**
 		 * A table to store arbitrary properties 
@@ -66,6 +79,15 @@ class Agent {
 		 * A file from which the agent had built
 		 * */
 		std::string agent_file;
+		/**
+		 * Random generator
+		 * */
+		std::mt19937_64 generator;
+		
+		/**
+		 * probablity to perform a random move
+		 * */
+		std::bernoulli_distribution lapse;
 };
 
 

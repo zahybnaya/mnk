@@ -4,6 +4,7 @@
 #include <exception>
 #include <cassert>
 #include <algorithm>
+#include <random>
 
 
 /**
@@ -21,6 +22,17 @@ class AgentParamsException: public std::exception {
 };
 
 
+
+/**
+ *
+ * */
+void Agent::init(){
+	mt19937_64 g;
+	g.seed(time(NULL));
+	generator.seed(g());
+	lapse = std::bernoulli_distribution(get_lapse_rate()); 
+}
+
 /**
  * Execute the best play
  * */
@@ -30,11 +42,11 @@ zet Agent::play(board& b,bool player){
 	if(b.active_player()!=player){
 		FILE_LOG(logERROR)<<"Player  "<<((player==BLACK)?"BLACK":"WHITE")<< " is not the same as board::active_player()" << std::endl;
 	}
-//	for (std::vector<zet>::const_iterator i = s.begin(); i != s.end(); ++i) {
-//		FILE_LOG(logDEBUG)<<"    Move:"<<i->zet_id<< " val:"<<i->val<<std::endl;
-//	}
+	if (lapse(get_generator())){
+		return s[std::uniform_int_distribution<int>(0,s.size())(get_generator())];
+	}
 	std::random_shuffle(s.begin(),s.end());
-	zet r=*std::max_element(s.begin(),s.end(),zet_comparator_t(player));
+	zet r=*std::min_element(s.begin(),s.end(),compare);
 	FILE_LOG(logDEBUG)<<((player==BLACK)?"BLACK":"WHITE")<<" playes move "<<r.zet_id<<std::endl;
 	return r;
 }
@@ -75,7 +87,7 @@ std::vector<double> Agent::get_array_property(std::string prop){
  * Select a random move 
  */
 uint64 Agent::select_random_move(std::vector<zet> &moves){
-	return moves[rand() % moves.size()].zet_id;
+	return moves[get_generator()() % moves.size()].zet_id; //TODO: uniform_distribution
 }
 
 const std::string Agent::get_agent_file(){
@@ -88,3 +100,6 @@ void Agent::set_agent_file(std::string af){
 
 }
 
+const double Agent::get_lapse_rate(){
+	return get_double_property("lapse_rate");
+}

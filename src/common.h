@@ -19,6 +19,11 @@ struct Source {
 	std::string agent_description_file;
 };
 
+enum DISTRIBUTION {GEOMETRIC=0,BERNOULLI=1};
+
+
+
+
 
 #endif /* end of include guard: COMMON_H */
 

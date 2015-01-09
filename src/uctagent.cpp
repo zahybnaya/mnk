@@ -21,7 +21,7 @@ const std::string UCTAgent::get_name(){
 /**
  * UCT uses a given policy to evaluate new states.
  * */
-double UCTAgent::evaulate(Node* lastNode){
+double UCTAgent::evaulate(Node* lastNode,Node* /* parent*/, uint64 ){
 	return policy.eval(lastNode->m_board);
 }
 /**
