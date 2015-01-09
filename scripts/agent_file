@@ -3,4 +3,5 @@
 ../agents/uct100
 ../agents/uct1000
 ../agents/uct10
-../agents/wrong_agent
+../agents/uct20
+../agents/uct50
