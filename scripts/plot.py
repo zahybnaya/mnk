@@ -1,5 +1,6 @@
 from sys import argv
 import matplotlib.pyplot as plt
+import numpy as np
 from re import match
 from operator import itemgetter
 
@@ -30,6 +31,18 @@ x_data = [n[1] for n in x]
 #colors = np.random.rand(N)
 #area = np.pi * (15 * np.random.rand(N))**2 # 0 to 15 point radiuses
 #plt.scatter(x, y, s=area, c=colors, alpha=0.5)
+
+lims = [
+        1,
+        3
+]
+
+# now plot both limits against eachother
+plt.plot(lims, lims, 'k-', alpha=0.75, zorder=0)
+#plt.set_aspect('equal')
+#plt.set_xlim(lims)
+#plt.set_ylim(lims)
+
 plt.scatter(x_data, y_data, alpha=0.5)
 plt.show()
 #

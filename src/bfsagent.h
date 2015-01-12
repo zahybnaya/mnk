@@ -14,6 +14,7 @@ public:
 	const std::string get_name(){return "BFS";}
 	double evaulate(Node* lastNode,Node*, uint64);
 private:
+	bool is_negamax(){return false;};
 	heuristic h;
 };
 

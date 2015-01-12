@@ -69,7 +69,16 @@ class Agent {
 		uint64 select_random_move(std::vector<zet> &moves);
 
 		inline mt19937_64& get_generator() {return generator;}
+		/**
+		 * probablity to perform a random move
+		 * */
+		std::bernoulli_distribution lapse;
 	private:
+		/**
+		 * are values stored in a negamax tree
+		 * */
+		virtual bool is_negamax()=0;
+
 		/**
 		 * A table to store arbitrary properties 
 		 * for that agent
@@ -84,10 +93,6 @@ class Agent {
 		 * */
 		std::mt19937_64 generator;
 		
-		/**
-		 * probablity to perform a random move
-		 * */
-		std::bernoulli_distribution lapse;
 };
 
 

@@ -26,9 +26,9 @@ double RandomPlayout::state_value(board& b){
 		return 1.0;
 	}
 	if (b.white_has_won()){
-		return -1.0;
+		return 0.0;
 	}
-	return 0;
+	return 0.5;
 }
 
 zet RandomPlayout::select_random_move(board& b){

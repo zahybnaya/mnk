@@ -17,6 +17,12 @@ const std::string UCTAgent::get_name(){
 	return std::string("UCT");
 }
 
+/**
+ * are values stored in a negamax tree
+ * */
+bool UCTAgent::is_negamax(){
+	return true;
+}
 
 /**
  * UCT uses a given policy to evaluate new states.
@@ -24,14 +30,16 @@ const std::string UCTAgent::get_name(){
 double UCTAgent::evaulate(Node* lastNode,Node* /* parent*/, uint64 ){
 	return policy.eval(lastNode->m_board);
 }
+
 /**
  * The uct calculation 
  * */
 double UCTAgent::uct(Node* n, int ttl_visits) { 
 	double exploration =  sqrt(log(ttl_visits)/n->visits);
 	double exploitation = n->val/n->visits;
-	bool player_turn = !n->player;//n is the child
-	exploitation=(player_turn==BLACK)?exploitation:-exploitation;
+	bool player_turn = !n->player;
+	if ( is_negamax())
+		exploitation=(player_turn==BLACK )?exploitation:-exploitation;
 	return 
 		get_exploration_constant()*exploration + exploitation; 
 }

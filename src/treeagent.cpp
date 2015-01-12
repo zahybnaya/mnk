@@ -1,6 +1,7 @@
 #include "treeagent.h"
 #include "heuristic.h"
 #include "board.h"
+#include <random>
 
 /**
  * Returns a list of possible moves and their estimates. 
@@ -9,7 +10,10 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 	FILE_LOG(logDEBUG) << "Starting to solve board:{"<< uint64tobinstring(b.pieces[0]) ;
 	FILE_LOG(logDEBUG) << ","<< uint64tobinstring(b.pieces[1])<<"}" << std::endl;
 	Node* n = create_initial_state(b);
-	build_tree(n,get_iterations());	
+	double gamma = get_iter_gamma();
+	std::geometric_distribution<int> iter_dist(gamma);
+	int num_iterations= iter_dist(get_generator());
+	build_tree(n,num_iterations);	
 	std::vector<zet> ret= move_estimates(n);
 	delete_tree(n);
 	return ret;
@@ -180,5 +184,12 @@ uint64 TreeAgent::select_random_unknown_move(Node* n){
  **/
 const int TreeAgent::get_iterations(){
 	return get_int_property("iterations");
+}
+
+/**
+ *
+ * */
+const double TreeAgent::get_iter_gamma(){
+	return get_double_property("gamma");
 }
 

@@ -15,12 +15,13 @@ public:
 	 * Set it to random playouts
 	 * */
 	virtual double evaulate(Node* lastNode, Node* p, uint64 m_id);
+	//zet play(board& b,bool player);
 	const std::string get_name();
 private:
 	/* uct funtions */
 	virtual double get_exploration_constant(); 
 	RandomPlayout policy;
-
+	bool is_negamax();
 };
 #define UCTAGENT_H
 

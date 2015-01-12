@@ -45,8 +45,13 @@ zet Agent::play(board& b,bool player){
 	if (lapse(get_generator())){
 		return s[std::uniform_int_distribution<int>(0,s.size())(get_generator())];
 	}
+	zet r;
 	std::random_shuffle(s.begin(),s.end());
-	zet r=*std::min_element(s.begin(),s.end(),compare);
+	if (player == BLACK || !is_negamax()){
+		r=*std::min_element(s.begin(),s.end(),compare);
+	} else{
+		r=*std::max_element(s.begin(),s.end(),compare);
+	}
 	FILE_LOG(logDEBUG)<<((player==BLACK)?"BLACK":"WHITE")<<" playes move "<<r.zet_id<<std::endl;
 	return r;
 }

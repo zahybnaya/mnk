@@ -469,10 +469,10 @@ zet heuristic::makemove_notree(board b,bool player){
   if(lapse(engine)){
 	  return makerandommove(b,player);
   }
- // remove_features();
+  remove_features();
   if(candidate.size()>0)
     m=candidate[0];
-  //restore_features();
+  restore_features();
   return m;
 }
 

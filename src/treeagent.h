@@ -84,6 +84,10 @@ protected:
 	const double get_exploitation_noise_param();
 
 	/**
+	 *
+	 * */
+	const double get_iter_gamma();
+	/**
 	 * returns the moves which are not 
 	 * expanded for a specific node (no node exists)
 	 * */
@@ -138,7 +142,6 @@ protected:
 
 
 private:
-
 	/**
 	 * Select a path starting from the root of the tree that 
 	 * ends with a new node
