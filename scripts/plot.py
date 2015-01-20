@@ -37,7 +37,10 @@ lims = [
         3
 ]
 
-# now plot both limits against eachother
+plt.title('Log-Likelihood')
+plt.xlabel(x_model_file.split('__')[1])
+plt.ylabel(y_model_file.split('__')[1])
+plt.grid(True)
 plt.plot(lims, lims, 'k-', alpha=0.75, zorder=0)
 #plt.set_aspect('equal')
 #plt.set_xlim(lims)
