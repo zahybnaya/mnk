@@ -1,0 +1,49 @@
+
+Cpp compilation
+================
+
+Prepeare data according to a predefined format. 
+generate new_data.cpp: (using snippet of code mailed to me)
+	Declare the NO_DATA declarative. 
+	dat.load_file_gianni("data_file_name")
+
+throw the data.cpp to the source code folder.
+
+compile the code with mex (see snippet)
+This results Gomouko_bfs.mexa64
+
+Execution
+=========
+
+Create a directory and put there:
+	the matlab code for mcs Gomouko_optim_mcs.m
+         wrapper: Gomouko_wrapper.m 
+         job script Gomouko.sh  and getbest.sh x0.mat init0.m , times.txt
+
+Change the code to start with NULL (instead of times.txt) 
+compile again.
+
+
+In the job script -t mapps to PBS_ARRAYID
+
+submit the job. 
+
+Inside the working directory creates a directory per each subject. 
+inside there's output
+
+	position(index), iterations, loglikelihood(est.),  #trails per position, loglikelihood_total, how_many_more_positions_for_subject. 
+when last field goes to 0 that's the end of the calculation and the final total loglik is shown. 
+
+Then it proceeds to the next parameter vector.
+  
+Getting the results
+===================
+Inside the subject folder
+mcsresult.mat
+
+
+
+
+
+
+
