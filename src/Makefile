@@ -6,7 +6,9 @@
 #
 # tournament: Runs black vs. white games 
 #
-# model_fitting: performs fitting 
+# loglik: calculate the loglikelihood
+#
+# model-fitting: calculates model parameters
 #
 #####
 FLAGS=-g -std=c++11 -pthread 
@@ -25,4 +27,5 @@ tournament: tournament.cpp heuristic.cpp randomplayout.h randomplayout.cpp heuri
 loglik: board_list.h Gomoku.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
 	g++ $(FLAGS) Gomoku.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ologlik
 
-
+modelfitting:
+	echo "mex -f $MATLAB_ROOT/bin/mexopts.sh -v -output Gomoku_model CXXFLAGS=\"\\\$CXXFLAGS -Wall -Wextra -std=c++11 -O3 -fexpensive-optimizations\" heuristic.cpp Gomoku.cpp bfs.cpp data_new.cpp features.cpp agent.cpp agent_builder.cpp myopicagent.cpp uctagent.cpp treeagent.cpp randomplayout.cpp data_struct.cpp bfsagent.cpp ; exit" | matlab -nodisplay
