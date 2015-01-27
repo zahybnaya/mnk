@@ -378,16 +378,35 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]){
 	unsigned int seed=unsigned(time(0));
 	mt19937_64 global_generator;
 	double* playerptr=mxGetPr(prhs[0]);
-	int player=((int) (*playerptr+0.5));
-	double* paramptr=mxGetPr(prhs[1]);
+	int player=((int) (*playerptr+0.5)); double* paramptr=mxGetPr(prhs[1]);
 	global_generator.seed(seed);
 	h.seed_generator(global_generator);
 	h.get_params_from_matlab(paramptr);
 	plhs[0] = mxCreateDoubleScalar(compute_loglik(h,dat,true,player,TEST,"times.txt","Output/out.txt"));
 }
 
+
+
+
 #else
+
+int generate_date(){
+  data_struct dat;
+  unsigned int seed=unsigned(time(0));
+  mt19937_64 global_generator;
+  global_generator.seed(seed);
+  dat.load_file_gianni("../data/2201115.csv");
+  dat.make_test_and_train(0.5,global_generator);
+  dat.write_to_header("data_new.cpp");
+  return 0;
+}
+
+
 int main(int argc, const char* argv[]){
+	if (argc>1)
+		if(strcmp(argv[1],"data")==0){
+			return generate_date();
+		}
 	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
 	Source src=prepeare_source(argc, argv);
 	heuristic h;

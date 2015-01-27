@@ -24,10 +24,11 @@ function Gomoku_optim_mcs(player)
 % You may also play with the bounds by modifying the default bounds.
 % 
 
+home=getenv('HOME')
+addpath(strcat(home,'/mnk/src/matlab/mcs'))
+addpath(strcat(home,'/mnk/src/matlab/mcs/minq5'))
+addpath(strcat(home,'/mnk/src/matlab/mcs/gls'))
 
-addpath('/scratch/svo213/Gomoku/Code/mcs')
-addpath('/scratch/svo213/Gomoku/Code/mcs/minq5')
-addpath('/scratch/svo213/Gomoku/Code/mcs/gls')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%% problem definition %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
