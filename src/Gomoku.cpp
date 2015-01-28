@@ -116,10 +116,10 @@ void worker_thread_super(superheuristic s,data_struct* dat,todolist* board_list)
 /**
  * The agent version of this function
  * */
-double compute_loglik_agent_threads(heuristic& h, std::string agent_file, data_struct* dat,todolist* board_list){
+double compute_loglik_agent_threads(Agent_params ap , data_struct* dat,todolist* board_list){
 	thread t[NTHREADS];
 	Agent_builder b;
-	Agent* a = b.build(read_agent_params(agent_file));
+	Agent* a = b.build(ap);
 	for(int i=0;i<NTHREADS;i++){
 		t[i]=thread(compute_loglik_task,a,dat,board_list);
 	}
@@ -150,8 +150,9 @@ double compute_loglik_threads_super(superheuristic& s,data_struct* dat,todolist*
 
 /**
  * prepeares data and submits to threads 
+ * Model fitting should already initialized this
  * */
-double compute_loglik_agent(heuristic& h, std::string agent_file, data_struct& dat, bool talk, int subject,
+double compute_loglik_agent(Agent_params ap , data_struct& dat, bool talk, int subject,
 		int data_type, char* times_file, char* output_file){
 	todolist* board_list;
 	double res;
@@ -170,7 +171,7 @@ double compute_loglik_agent(heuristic& h, std::string agent_file, data_struct& d
 			board_list->set_cout();
 		else board_list->set_output(output_file);
 	}
-	res=compute_loglik_agent_threads(h, agent_file, &dat,board_list);
+	res=compute_loglik_agent_threads(ap, &dat,board_list);
 	delete board_list;
 	return res;
 }

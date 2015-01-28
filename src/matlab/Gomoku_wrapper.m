@@ -1,3 +1,4 @@
-function r=Gomoku_wrapper(player,x)
-  r=Gomoku_bfs(player,[5; x]);
+function r=Gomoku_wrapper(data,x)
+	[player,agent_file]=data{1:1,1:2}
+	r=Gomoku_model(player,agent_file,[5; x]);
 end

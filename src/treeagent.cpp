@@ -187,7 +187,7 @@ const int TreeAgent::get_iterations(){
 }
 
 /**
- *
+ * Get the parameter for how many iterations
  * */
 const double TreeAgent::get_iter_gamma(){
 	return get_double_property("gamma");

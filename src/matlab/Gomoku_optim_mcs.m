@@ -1,4 +1,4 @@
-function Gomoku_optim_mcs(player)
+function Gomoku_optim_mcs(player,agent_file)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% runmcs.m %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,8 +44,7 @@ addpath(strcat(home,'/mnk/src/matlab/mcs/gls'))
 
 
 fcn = 'Gomoku_wrapper';
-data = player;
-
+data = {player, agent_file};
 % define bounds on variables (+-inf allowed)
 %
 % u: column vector of lower bounds

@@ -2,6 +2,7 @@
 #define COMMON_H
 #include <map>
 #include <string>
+#include <fstream>
 #include "log.h"
 
 typedef uint64_t uint64;
@@ -20,6 +21,53 @@ struct Source {
 };
 
 enum DISTRIBUTION {GEOMETRIC=0,BERNOULLI=1};
+
+
+inline std::pair<std::string,std::string> split_pair(const std::string &s, char delim) {
+	std::pair<std::string,std::string> p;
+	std::stringstream ss(s);
+	std::string item;
+	std::getline(ss, item, delim);
+	p.first=item;
+	std::getline(ss, item, delim);
+	p.second=item;
+	return p;
+}
+
+/***
+ * Read the agent parameters from a file
+ * */
+ inline Agent_params read_agent_params(std::string agent_description_filename) {
+	FILE_LOG(logDEBUG)<< "Reading agent params from " << agent_description_filename<< std::endl;
+	std::ifstream agent_description_file;
+	agent_description_file.open(agent_description_filename);
+	std::string line;
+	Agent_params ag_par;
+	while (std::getline(agent_description_file, line))
+	{
+		if (line.find_first_not_of(' ') == std::string::npos){
+			continue;
+		}
+		if(line.compare(0, 1 , "#") == 0) {
+			continue;
+		}
+		std::pair<std::string,std::string> p= split_pair(line,'=');
+		FILE_LOG(logDEBUG) << p.first<<":"<<p.second << std::endl;
+		ag_par.m_properties[p.first]=p.second;
+	}
+	ag_par.implementation = ag_par.m_properties["implementation"];
+	ag_par.agent_file = agent_description_filename;
+	return ag_par;
+}
+
+
+/***
+ * Look for the values of ?? and fills it with the relevant data
+ * Suggestion: ?{0,20}
+ * */
+inline void concrete(Agent_params ap){
+///fill the right data where it belongs
+}
 
 
 
