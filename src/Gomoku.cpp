@@ -175,7 +175,7 @@ double compute_loglik_agent(heuristic& h, std::string agent_file, data_struct& d
 	return res;
 }
 
-double compute_loglik(heuristic& h, std::string agent_file, data_struct& dat, bool talk, int subject,
+double compute_loglik(heuristic& h, data_struct& dat, bool talk, int subject,
 		int data_type, char* times_file, char* output_file){
 	todolist* board_list;
 	double res;

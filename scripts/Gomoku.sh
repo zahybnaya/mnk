@@ -13,11 +13,12 @@ player=${PBS_ARRAYID}
 direc=$SCRATCH/Gomoku
 module purge
 module load matlab/2014a gcc/4.9.2
-export MATLABPATH=$MATLABPATH:$SRCDIR/matlab
+export MATLABPATH=$MATLABPATH:$SRCDIR/matlab;$direc
 export LD_PRELOAD=$GCC_LIB/libstdc++.so
 mkdir -p $direc/subject$player/Output
 cd $direc/subject$player
 cp $direc/times.txt .
+cp $SRCDIR/Gomoku_model.mexa64 $direc
 rm Output/out*
 echo "Gomoku_optim_mcs($player); exit;" | matlab -nodisplay
 echo "Done"
