@@ -24,8 +24,12 @@ tournament: tournament.cpp heuristic.cpp randomplayout.h randomplayout.cpp heuri
 	g++ $(FLAGS)  tournament.cpp features.cpp randomplayout.cpp agent.cpp uctagent.cpp heuristic.cpp myopicagent.cpp bfsagent.cpp treeagent.cpp bfs.cpp randomplayout.cpp agent_builder.cpp states.cpp -otournament
 
 
-loglik: board_list.h Gomoku.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
-	g++ $(FLAGS) Gomoku.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ologlik
+loglik: loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
+	g++ $(FLAGS) loglik.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ologlik
+
+mexfunction: mexfunction.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
+	g++ $(FLAGS) mexfunction.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -omexfunction
+
 
 modelfitting:
-	echo "mex -f $MATLAB_ROOT/bin/mexopts.sh -v -output Gomoku_model CXXFLAGS=\"\\\$CXXFLAGS -Wall -Wextra -std=c++11 -O3 -fexpensive-optimizations\" heuristic.cpp Gomoku.cpp bfs.cpp data_new.cpp features.cpp agent.cpp agent_builder.cpp myopicagent.cpp uctagent.cpp treeagent.cpp randomplayout.cpp data_struct.cpp bfsagent.cpp ; exit" | matlab -nodisplay
+	echo "mex -f $MATLAB_ROOT/bin/mexopts.sh -v -output Gomoku_model CXXFLAGS=\"\\\$CXXFLAGS -Wall -Wextra -std=c++11 -O3 -fexpensive-optimizations\" heuristic.cpp mexfunction.cpp  bfs.cpp data_new.cpp features.cpp agent.cpp agent_builder.cpp myopicagent.cpp uctagent.cpp treeagent.cpp randomplayout.cpp data_struct.cpp bfsagent.cpp ; exit" | matlab -nodisplay
