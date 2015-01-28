@@ -32,4 +32,4 @@ mexfunction: mexfunction.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp
 
 
 modelfitting:
-	echo "mex -f $MATLAB_ROOT/bin/mexopts.sh -v -output Gomoku_model CXXFLAGS=\"\\\$CXXFLAGS -Wall -Wextra -std=c++11 -O3 -fexpensive-optimizations\" heuristic.cpp mexfunction.cpp  bfs.cpp data_new.cpp features.cpp agent.cpp agent_builder.cpp myopicagent.cpp uctagent.cpp treeagent.cpp randomplayout.cpp data_struct.cpp bfsagent.cpp ; exit" | matlab -nodisplay
+	echo "mex -f $$MATLAB_ROOT/bin/mexopts.sh -v -output Gomoku_model CXXFLAGS=\"\\\$$CXXFLAGS -Wall -Wextra -std=c++11 -O3 -fexpensive-optimizations\" heuristic.cpp mexfunction.cpp  bfs.cpp data_new.cpp features.cpp agent.cpp agent_builder.cpp myopicagent.cpp uctagent.cpp treeagent.cpp randomplayout.cpp data_struct.cpp bfsagent.cpp ; exit" | matlab -nodisplay
