@@ -57,7 +57,6 @@ inline std::pair<std::string,std::string> split_pair(const std::string &s, char 
 	}
 	ag_par.implementation = ag_par.m_properties["implementation"];
 	ag_par.agent_file = agent_description_filename;
-	FILE_LOG(logDEBUG)<< " ** Finished reading from : " << agent_description_filename<< std::endl;
 	return ag_par;
 }
 
@@ -71,9 +70,10 @@ inline bool is_concrete_param(std::string val){
 /**
  *  Get the right value from the parameter array
  * */
-inline double assigned_val(std::string val, double* paramptr){
+inline std::string assigned_val(std::string val, double* paramptr){
 	int ind = std::stoi(val.substr(1,1));
-	return paramptr[ind];
+	double v = paramptr[ind];
+	return std::to_string(v);
 }
 
 /***
@@ -82,11 +82,11 @@ inline double assigned_val(std::string val, double* paramptr){
  * */
 inline void concrete(Agent_params ap,double* paramptr){
 	FILE_LOG(logDEBUG) << "starting concrete " << std::endl;
-	for (properties::const_iterator i = ap.m_properties.begin(); i != ap.m_properties.end(); ++i) {
+	for (properties::iterator i = ap.m_properties.begin(); i != ap.m_properties.end(); ++i) {
 		if(is_concrete_param(i->second)){
-			FILE_LOG(logDEBUG) << "need to concrete: "<<i->first << " with value:" << i->second; 
+			FILE_LOG(logDEBUG) << "need to concrete: ["<<i->first << "] with value:" << i->second<< std::endl; 
 			ap.m_properties[i->first]=assigned_val(i->second,paramptr);
-			FILE_LOG(logDEBUG) << " assgined " <<  ap.m_properties[i->first]<< std::endl;
+			FILE_LOG(logDEBUG) << " concrete-assgined ("<< ap.m_properties[i->first]<<")"<< std::endl;
 	       	}
 	}
 }
