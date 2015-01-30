@@ -1,14 +1,13 @@
 # A BFS implementation with 100 iterations
+## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v)}
 implementation=BFS
 action_select_method=0
 eval_function=1
 iterations=10
-
 # center-square, XX__. X_X_, XXX_<your move> , XXX_<his> , XXXX_<win>, ... [vertical],[diagonal], triangles. 
 eval_weights={0.8,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2}
 exploration_constant=0
 #D0=6
-## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v)}
 D0=?0{x,x}
 #K0=5
 K0=?1{x,x}
@@ -22,15 +21,4 @@ vert_scale=?5{x,x}
 diag_scale=?6{x,x}
 #opp_scale=1.5
 opp_scale=?7{x,x}
-#  D0=input[0];
-#  K0=input[1];
-#  gamma=input[2];
-#  delta=input[3];
-#  lapse_rate=input[4];
-#  vert_scale=input[5];
-#  diag_scale=input[6];
-#  opp_scale=input[7];
-#  for(int i=8;i<14;i++)
-#    weight[i]=input[i];
-#  weight[16]=input[15];
-#
+
