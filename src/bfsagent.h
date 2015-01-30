@@ -15,6 +15,8 @@ class BFSAgent: public UCTAgent{
 		double evaulate(Node* lastNode,Node*, uint64);
 		void init();
 	private:
+		double get_triangle_weight();
+		double get_weight(int i);
 		double get_D0();
 		double get_K0();
 		double get_gamma(); 
