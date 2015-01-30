@@ -80,7 +80,7 @@ inline std::string assigned_val(std::string val, double* paramptr){
  * Look for the values of ?? and fills it with the relevant data
  * Suggestion: ?<index>{lower,upper}
  * */
-inline void concrete(Agent_params ap,double* paramptr){
+inline void concrete(Agent_params& ap,double* paramptr){
 	FILE_LOG(logDEBUG) << "starting concrete " << std::endl;
 	for (properties::iterator i = ap.m_properties.begin(); i != ap.m_properties.end(); ++i) {
 		if(is_concrete_param(i->second)){
