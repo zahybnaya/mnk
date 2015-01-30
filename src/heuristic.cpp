@@ -79,7 +79,7 @@ void heuristic::get_params_from_matlab(double* input){
   diag_scale=input[6];
   opp_scale=input[7];
   for(int i=8;i<14;i++)
-    weight[i]=input[i];
+    weight[i-8]=input[i];
   weight[16]=input[15];
   update();
 }
@@ -464,12 +464,13 @@ double heuristic::loglik(board b,zet m){
 }
 
 zet heuristic::makemove_notree(board b,bool player){
-  vector<zet> candidate=get_moves(b,player);
+  vector<zet> candidate;  
   zet m(0,0.0,player);
   if(lapse(engine)){
 	  return makerandommove(b,player);
   }
   remove_features();
+  candidate=get_moves(b,player);
   if(candidate.size()>0)
     m=candidate[0];
   restore_features();

@@ -9,6 +9,7 @@ void data_struct::add(board b, zet m, int t=0, int p=0){
   allmoves.push_back(m);
   thinking_time.push_back(t);
   player_id.push_back(p);
+  Nboards++;
 }
 
 void data_struct::print(bool pause=false){
@@ -143,28 +144,28 @@ void data_struct::load_file_zeyan(char* filename){
 void data_struct::execute_command_gianni(string c[13],bool talk=false){
   static board b;
   static bool drawoffermade=false;
-  zet m(tilestringtouint64(c[6]),0.0,c[5]=="B"?BLACK:WHITE);
-  int t=atoi(c[9].c_str());
-  int player=Nplayers-(c[4]=="0"?2:1);
+  zet m(tilestringtouint64(c[8]),0.0,(c[2]=="0")?BLACK:WHITE);
+  double t=atof(c[9].c_str());
+  int player=Nplayers-(c[1]=="0.0"?2:1);
   if(c[0]==""){
     b.reset();
     drawoffermade=false;
   }
-  else if(c[3]=="draw offer")
+  else if(c[5]=="draw offer")
     drawoffermade=true;
   else if(drawoffermade){
     drawoffermade=false;
-    if(c[3]=="draw")
+    if(c[5]=="draw")
       b.reset();
   }
   else {
-    if(c[6]!="36" && b.isempty(m))
+    if(c[5]=="playing" && c[8]!="36" && b.isempty(m))
       add(b,m,t,player);
-    if(c[3]=="win" || c[3]=="draw")
+    if(c[5]=="win" || c[5]=="draw")
       b.reset();
     else {
-      b.pieces[BLACK]=binstringtouint64(c[7]);
-      b.pieces[WHITE]=binstringtouint64(c[8]);
+      b.pieces[BLACK]=binstringtouint64(c[6]);
+      b.pieces[WHITE]=binstringtouint64(c[7]);
     }
   }
 }
@@ -188,7 +189,7 @@ void data_struct::add_names_gianni(char* filename){
 void data_struct::load_file_gianni(char* filename){
   ifstream input(filename,ios::in);
   string line;
-  string word[13];
+  string word[10];
   int index;
   int i;
   add_names_gianni(filename);
@@ -258,6 +259,7 @@ void data_struct::make_test_and_train(double frac, mt19937_64 engine){
     }
   }
   sort(test.begin(),test.end());
+  sort(train.begin(),train.end());
 }
 
 vector<unsigned int> data_struct::select_boards(int player, int data_type=ALL){

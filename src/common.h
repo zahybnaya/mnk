@@ -57,21 +57,39 @@ inline std::pair<std::string,std::string> split_pair(const std::string &s, char 
 	}
 	ag_par.implementation = ag_par.m_properties["implementation"];
 	ag_par.agent_file = agent_description_filename;
+	FILE_LOG(logDEBUG)<< " ** Finished reading from : " << agent_description_filename<< std::endl;
 	return ag_par;
 }
 
 
-/***
- * Look for the values of ?? and fills it with the relevant data
- * Suggestion: ?{0,20}
+/**
+ * Check if this param is for concretization
+ */
+inline bool is_concrete_param(std::string val){
+	return (val.compare(0, 1 , "?") == 0);
+}
+/**
+ *  Get the right value from the parameter array
  * */
-inline void concrete(Agent_params ap){
-///fill the right data where it belongs
+inline double assigned_val(std::string val, double* paramptr){
+	int ind = std::stoi(val.substr(1,1));
+	return paramptr[ind];
 }
 
-
-
-
+/***
+ * Look for the values of ?? and fills it with the relevant data
+ * Suggestion: ?<index>{lower,upper}
+ * */
+inline void concrete(Agent_params ap,double* paramptr){
+	FILE_LOG(logDEBUG) << "starting concrete " << std::endl;
+	for (properties::const_iterator i = ap.m_properties.begin(); i != ap.m_properties.end(); ++i) {
+		if(is_concrete_param(i->second)){
+			FILE_LOG(logDEBUG) << "need to concrete: "<<i->first << " with value:" << i->second; 
+			ap.m_properties[i->first]=assigned_val(i->second,paramptr);
+			FILE_LOG(logDEBUG) << " assgined " <<  ap.m_properties[i->first]<< std::endl;
+	       	}
+	}
+}
 
 #endif /* end of include guard: COMMON_H */
 

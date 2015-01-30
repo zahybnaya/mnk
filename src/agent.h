@@ -50,7 +50,7 @@ class Agent {
 		 * lapse_rate is the percentage of times that a random
 		 * move is executed
 		 * */
-		const double get_lapse_rate();
+		double get_lapse_rate() ;
 		/**
 		 * Obtain a list of values
 		 * */
@@ -58,11 +58,11 @@ class Agent {
 		/**
 		 * Obtain the int value of a property
 		 * */
-		int get_int_property(std::string);
+		int get_int_property(std::string) ;
 		/**
 		 * Obtain the double value of a property
 		 * */
-		double get_double_property(std::string);
+		double get_double_property(std::string) ;
 		/**
 		 * Returns a random move
 		 * */

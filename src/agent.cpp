@@ -60,7 +60,7 @@ zet Agent::play(board& b,bool player){
 /**
  * Reads an int property from the table
  * */
-int Agent::get_int_property(std::string prop){
+int Agent::get_int_property(std::string prop) {
 	if(m_properties.find(prop)==m_properties.end()){
 		throw AgentParamsException(prop);
 	}
@@ -70,11 +70,16 @@ int Agent::get_int_property(std::string prop){
 /**
  * Reads a double from the table
  * */
-double Agent::get_double_property(std::string prop){
+double Agent::get_double_property(std::string prop) {
 	if(m_properties.find(prop)==m_properties.end()){
 		throw AgentParamsException(prop);
 	}
+	try{
 	return std::stof(m_properties[prop]);
+	} catch (std::invalid_argument e){
+		FILE_LOG(logERROR)<<" Wrong value for property  "<< prop <<":" << m_properties[prop]<<std::endl;
+		exit(-1);
+	}
 }
 
 /**
@@ -105,6 +110,6 @@ void Agent::set_agent_file(std::string af){
 
 }
 
-const double Agent::get_lapse_rate(){
+double Agent::get_lapse_rate() {
 	return get_double_property("lapse_rate");
 }

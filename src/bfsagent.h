@@ -8,21 +8,22 @@
  * */
 
 class BFSAgent: public UCTAgent{
-public:
-	BFSAgent(){};
-	~BFSAgent(){};
-	const std::string get_name(){return "BFS";}
-	double evaulate(Node* lastNode,Node*, uint64);
-private:
-	const double get_D0();
-	const double get_K0();
-	const double get_gamma();
-	const double get_delta();
-	const double get_vert_scale();
-	const double get_diag_scale();
-	const double get_opp_scale();
-	bool is_negamax(){return false;};
-	heuristic h;
+	public:
+		BFSAgent(){};
+		~BFSAgent(){};
+		const std::string get_name(){return "BFS";}
+		double evaulate(Node* lastNode,Node*, uint64);
+		void init();
+	private:
+		double get_D0();
+		double get_K0();
+		double get_gamma(); 
+		double get_delta();
+		double get_vert_scale();
+		double get_diag_scale();
+		double get_opp_scale();
+		bool is_negamax(){return false;};
+		heuristic h;
 };
 
 

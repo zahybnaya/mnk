@@ -15,8 +15,9 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]){
 	h.seed_generator(global_generator);
 	//h.get_params_from_matlab(paramptr);
 	Agent_params ap = read_agent_params(std::string(agent_file));
+	FILE_LOG(logDEBUG) << " Starting concrete process for "<<agent_file << std::endl;
 	concrete(ap,paramptr);
-	plhs[0] = mxCreateDoubleScalar(compute_loglik_agent(ap,dat,true,player,TEST,NULL,"Output/out.txt"));
+	plhs[0] = mxCreateDoubleScalar(compute_loglik_agent_stub(ap,dat,true,player,TEST,NULL,"Output/out.txt"));
 }
 
 

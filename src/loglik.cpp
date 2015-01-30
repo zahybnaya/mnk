@@ -5,7 +5,7 @@ int main(int argc, const char* argv[]){
 		if(strcmp(argv[1],"data")==0){
 			return generate_date();
 		}
-	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
+	FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
 	Source src=prepeare_source(argc, argv);
 	heuristic h;
 	superheuristic s;
@@ -17,14 +17,11 @@ int main(int argc, const char* argv[]){
 	board b;
 	zet m;
 	cout<<"seed = "<<seed<<endl;
-	//sprintf(filename,"loglik_boards%i.txt",subject);
-	//output.open(filename,ios::out);
 	global_generator.seed(seed);
 	h.seed_generator(global_generator);
+	Agent_params ag = read_agent_params(src.agent_description_file);
 	for(int i=0;i<dat.Nplayers;i++)
-		cout<<dat.player_name[i]<<"\t"<<compute_loglik_agent(h,src.agent_description_file,dat,false,i,ALL,NULL,NULL)<<endl;
-	//cout<<dat.player_name[i]<<"\t"<<compute_loglik(h,src.agent_description_file,dat,false,i,ALL,NULL,NULL)<<endl;
-	//output.close();
+		std::cout<<dat.player_name[i]<<"\t"<<compute_loglik_agent(ag,dat,false,i,ALL,NULL,NULL)<<std::endl;
 	return 0;
 }
 
