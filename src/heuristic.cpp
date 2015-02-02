@@ -78,9 +78,9 @@ void heuristic::get_params_from_matlab(double* input){
   vert_scale=input[5];
   diag_scale=input[6];
   opp_scale=input[7];
-  for(int i=8;i<14;i++)
-    weight[i-8]=input[i];
-  weight[16]=input[15];
+  for(int i=0;i<6;i++)
+    weight[i]=input[i+8];
+  weight[16]=input[14];
   update();
 }
 

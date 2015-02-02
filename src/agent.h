@@ -45,12 +45,13 @@ class Agent {
 			this->m_properties=p;
 		}
 		void set_agent_file(std::string);
-	protected:
 		/**
 		 * lapse_rate is the percentage of times that a random
 		 * move is executed
 		 * */
 		double get_lapse_rate() ;
+
+	protected:
 		/**
 		 * Obtain a list of values
 		 * */

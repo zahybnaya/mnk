@@ -51,10 +51,11 @@ data = {player, agent_file};
 % v: column vector of upper bounds
 % u(k)<v(k) is required
 %
-u =[2; 0.001; 0.0; 0.01; 0.25; 0.25; 0.25; -inf*ones(7,1)];
-v =[8; 0.1; 1.0; 1.0; 4.0; 4.0; 4.0;  inf*ones(7,1)];
+u =[-20*ones(14,1)];
+v =[20*ones(14,1)];
+%u =[2; 0.001; 0.0; 0.01; 0.25; 0.25; 0.25; -inf*ones(7,1)];
+%v =[8; 0.1; 1.0; 1.0; 4.0; 4.0; 4.0;  inf*ones(7,1)];
 dimension=14
-
 use_defaults=0
 % *** If you just want to use the default settings,
 % *** you don't need to edit the rest of the file,
@@ -124,9 +125,12 @@ prt = 2;	% print level
 % find the best values, and to use these on the others. 
 %
 n = length(u);		% problem dimension
-smax = n+5;%5*n+10;		% number of levels used
-nf = 4000;%50*n^2; 		% limit on number of f-calls
-stop(1) = n;%3*n;		% = m, integer defining stopping test
+%smax = n+5;%5*n+10;		% number of levels used
+smax = 5*n+10;		% number of levels used
+%nf = 4000;%50*n^2; 		% limit on number of f-calls
+nf = 50*n^2; 		% limit on number of f-calls
+%stop(1) = n;%3*n;		% = m, integer defining stopping test
+stop(1) = 3*n;		% = m, integer defining stopping test
 stop(2) = -inf;		% = freach, function value to reach
 			% if m>0, run until m sweeps without progress
 			% if m=0, run until fbest<=freach

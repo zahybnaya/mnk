@@ -14,7 +14,6 @@ class BFSAgent: public UCTAgent{
 		const std::string get_name(){return "BFS";}
 		double evaulate(Node* lastNode,Node*, uint64);
 		void init();
-	private:
 		double get_triangle_weight();
 		double get_weight(int i);
 		double get_D0();
