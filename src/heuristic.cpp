@@ -194,17 +194,33 @@ void heuristic::write(ostream& out){
     feature[i].write(out);
 }
 
+//void heuristic::remove_features(){
+//  unsigned int i=0;
+//  while(i<Nfeatures){
+//    if(attention(engine)){
+//      feature_backup.push_back(feature[i]);
+//      feature.erase(feature.begin()+i);
+//      Nfeatures--;
+//    }
+//    else i++;
+//  }
+//}
+//
 void heuristic::remove_features(){
-  unsigned int i=0;
-  while(i<Nfeatures){
-    if(attention(engine)){
-      feature_backup.push_back(feature[i]);
-      feature.erase(feature.begin()+i);
-      Nfeatures--;
-    }
-    else i++;
-  }
+	int removed_counter = 0;
+	vector<pattern>::iterator i = feature.begin();
+	while ( i != feature.end() ) {
+		if(attention(engine)){
+			feature_backup.push_back(*i);
+			i=feature.erase(i);
+			removed_counter++;
+		}else{
+			++i;
+		}
+	}
+	Nfeatures -=removed_counter;
 }
+
 
 void heuristic::restore_features(){
   for(unsigned int i=0;i<feature_backup.size();i++){

@@ -54,12 +54,14 @@ void round_robin(heuristic* participant,int Nparticipants,ofstream& output,int f
 /**
  * The execution of a new loglik
  * */
-void compute_loglik_task(Agent* agent,data_struct* dat,todolist* board_list){
+void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 	int i=-1;
 	bool success=false;
 	zet m;
 	board_list_mutex.lock();
 	int iteration  = 0;
+	Agent_builder b;
+	Agent* agent = b.build(ap);
 	while(board_list->get_next(i,success)){
 		iteration++;
 		board_list_mutex.unlock();
@@ -118,10 +120,8 @@ void worker_thread_super(superheuristic s,data_struct* dat,todolist* board_list)
  * */
 double compute_loglik_agent_threads(Agent_params ap , data_struct* dat,todolist* board_list){
 	thread t[NTHREADS];
-	Agent_builder b;
-	Agent* a = b.build(ap);
 	for(int i=0;i<NTHREADS;i++){
-		t[i]=thread(compute_loglik_task,a,dat,board_list);
+		t[i]=thread(compute_loglik_task,ap,dat,board_list);
 	}
 	for(int i=0;i<NTHREADS;i++)
 		t[i].join();
