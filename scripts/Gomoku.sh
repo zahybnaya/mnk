@@ -20,7 +20,7 @@ cd $direc/subject$player
 rm Output/out*
 export MATLABPATH=$direc:$SRCDIR/matlab
 export LD_PRELOAD=$GCC_LIB/libstdc++.so
-echo "Gomoku_optim_mcs($player,'$BASE_DIR/agents/bfsagent'); exit;" | matlab -nodisplay
+echo "Gomoku_optim_mcs($player,'$BASE_DIR/agents/bfsagent', '$BASE_DIR/data/2801115.csv'); exit;" | matlab -nodisplay
 echo "Done"
 
 
