@@ -5,6 +5,8 @@
 #include <fstream>
 #include "common.h"
 
+data_struct::data_struct(): Nplayers(0), Nboards(0), Ntest(0), Ntrain(0){}
+
 void data_struct::add(board b, zet m, int t=0, int p=0){
   allboards.push_back(b);
   allmoves.push_back(m);
