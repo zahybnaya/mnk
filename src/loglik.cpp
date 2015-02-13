@@ -1,15 +1,12 @@
 #include "Gomoku.cpp"
 
 int main(int argc, const char* argv[]){
-	if (argc>1)
-		if(strcmp(argv[1],"data")==0){
-			return generate_date();
-		}
 	FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
 	Source src=prepeare_source(argc, argv);
 	heuristic h;
 	superheuristic s;
-	data_struct dat;
+	data_struct dat; 
+       	dat = load_data(dat,src.state_file);
 	unsigned int seed=unsigned(time(0));
 	mt19937_64 global_generator;
 	char filename[128];
@@ -21,7 +18,8 @@ int main(int argc, const char* argv[]){
 	h.seed_generator(global_generator);
 	Agent_params ag = read_agent_params(src.agent_description_file);
 	for(int i=0;i<dat.Nplayers;i++)
-		std::cout<<dat.player_name[i]<<"\t"<<compute_loglik_agent(ag,dat,false,i,ALL,NULL,NULL)<<std::endl;
+		std::cout<<i<<"\t"<<compute_loglik_agent(ag,dat,false,i,ALL,NULL,NULL)<<std::endl;
 	return 0;
 }
+
 

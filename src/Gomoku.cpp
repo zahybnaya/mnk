@@ -370,7 +370,7 @@ void drawboard(board b,uint64 m_black,uint64 m_white,int j, int freq[]){
 
 void missing_values()
 {
-	std::cout << "Usage: -a <agent_file> -s <state_file>" << std::endl;
+	std::cout << "Usage: -a <agent_file> -d <data_file>" << std::endl;
 }
 
 
@@ -379,7 +379,7 @@ Source prepeare_source(int argc, const char* argv[]){
 	bool state_check = false;
 	bool agent_check = false;
 	for (int i = 0; i < argc; i++) {
-		if (strcmp(argv[i],"-s")==0){
+		if (strcmp(argv[i],"-d")==0){
 			state_file = argv[++i];
 			state_check=true;
 			continue;
@@ -394,20 +394,19 @@ Source prepeare_source(int argc, const char* argv[]){
 		missing_values();
 		exit(-1);
 	}
-	FILE_LOG(logDEBUG) << "state_file:"<<state_file << " agent_file:"<<agent_file << std::endl;
+	FILE_LOG(logDEBUG) << "data_file:"<<state_file << " agent_file:"<<agent_file << std::endl;
 	Source s(state_file, agent_file);
 	return s;
 }
 
-int generate_date(){
-  data_struct dat;
-  unsigned int seed=unsigned(time(0));
-  mt19937_64 global_generator;
-  global_generator.seed(seed);
-  dat.load_file_gianni("../data/2201115.csv");
-  dat.make_test_and_train(0.5,global_generator);
-  dat.write_to_header("data_new.cpp");
-  return 0;
+data_struct& load_data(data_struct& dat,std::string filename){
+	unsigned int seed=unsigned(time(0));
+	mt19937_64 global_generator;
+	global_generator.seed(seed);
+	dat.load_file(filename);
+	dat.make_test_and_train(0.5,global_generator);
+	FILE_LOG(logDEBUG) <<dat<< std::endl;
+	return dat;
 }
 
 

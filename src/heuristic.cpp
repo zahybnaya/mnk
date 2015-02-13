@@ -236,9 +236,6 @@ double heuristic::logprior(){
         +(log(opp_scale)+0.5*(log(opp_scale)-1.0)*(log(opp_scale)-1.0));
 }
 
-//TODO: Deal with this
-// heuristic::heuristic(): weight {0.8,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2},
-// Nfeatures(0), D0(6.0), K0(5.0), gamma(0.025), delta(0.2), lapse_rate(0.01) ,vert_scale(1.8), diag_scale(1.2), opp_scale(1.5){ update();};
 
 
 void heuristic::write_to_header(char* filename){

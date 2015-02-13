@@ -47,7 +47,7 @@ double BFSAgent::get_weight(int i){
 	return get_double_property(t);
 }
 /**
- *
+ * Initializaion of the heuristic properties
  * */
 void BFSAgent::init(){
 	Agent::init();
@@ -62,6 +62,8 @@ void BFSAgent::init(){
 		h.weight[i]=get_weight(i);
 	h.weight[16]=get_triangle_weight();
 	h.update();
+	FILE_LOG(logDEBUG) << "Init an agent with the following properties- " << " h.D0:" << get_D0() <<" h.K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
+
 }
 
 

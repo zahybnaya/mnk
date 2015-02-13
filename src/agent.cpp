@@ -38,7 +38,8 @@ void Agent::init(){
  * */
 zet Agent::play(board& b,bool player){
 	std::vector<zet> s = solve(b,player);
-	FILE_LOG(logDEBUG)<<"Playing for player "<<((player==BLACK)?"BLACK":"WHITE")<< std::endl;
+	FILE_LOG(logDEBUG)<<"Playing for player "<<((player==BLACK)?"BLACK":"WHITE")<< " there are "<< s.size() <<" moves" << std::endl;
+	FILE_LOG(logDEBUG)<<" board is :" <<b<<std::endl;
 	if(b.active_player()!=player){
 		FILE_LOG(logERROR)<<"Player  "<<((player==BLACK)?"BLACK":"WHITE")<< " is not the same as board::active_player()" << std::endl;
 	}

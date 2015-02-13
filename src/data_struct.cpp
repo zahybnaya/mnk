@@ -1,14 +1,15 @@
 #include "board.h"
 #include "data_struct.h"
 #include <algorithm>
+#include <set>
 #include <fstream>
-using namespace std;
+#include "common.h"
 
 void data_struct::add(board b, zet m, int t=0, int p=0){
   allboards.push_back(b);
   allmoves.push_back(m);
-  thinking_time.push_back(t);
-  player_id.push_back(p);
+  thinking_times.push_back(t);
+  player_ids.push_back(p);
   Nboards++;
 }
 
@@ -23,11 +24,11 @@ void data_struct::print(bool pause=false){
 void data_struct::clear(){
   allboards.clear();
   allmoves.clear();
-  thinking_time.clear();
-  player_id.clear();
+  thinking_times.clear();
+  player_ids.clear();
   train.clear();
   test.clear();
-  player_name.clear();
+  player_names.clear();
   Nboards=0;
   Nplayers=0;
   Ntrain=0;
@@ -110,12 +111,12 @@ void data_struct::add_names_zeyan(char* filename){
   unsigned int j=s.find('-',i+1);
   unsigned int k=s.find('-',j+1);
   if(k==s.length()){
-    player_name.push_back(s.substr(i+1,j-1));
+    player_names.push_back(s.substr(i+1,j-1));
     Nplayers++;
   }
   else {
-    player_name.push_back(s.substr(i+1,j-1));
-    player_name.push_back(s.substr(j+1,k-1));
+    player_names.push_back(s.substr(i+1,j-1));
+    player_names.push_back(s.substr(j+1,k-1));
     Nplayers+=2;
   }
 }
@@ -176,22 +177,131 @@ void data_struct::add_names_gianni(char* filename){
   unsigned int i=s.find('_',namestart+1);
   unsigned int j=s.find('_',i+1);
   if(j==s.length()){
-    player_name.push_back(s.substr(namestart+1,i-namestart-1));
+    player_names.push_back(s.substr(namestart+1,i-namestart-1));
     Nplayers++;
   }
   else {
-    player_name.push_back(s.substr(namestart+1,i-namestart-1));
-    player_name.push_back(s.substr(i+1,j-i-1));
+    player_names.push_back(s.substr(namestart+1,i-namestart-1));
+    player_names.push_back(s.substr(i+1,j-i-1));
     Nplayers+=2;
   }
 }
 
+
+
+
+
+/**
+ * Should be the beggining of the source file 
+ * current format:
+ * ,subject,color,gi,mi,status,bp,wp,response,rt
+ * */
+enum IX {PLAYER_ID_IX=1, COLOR_IX=2, BOARD_BLACK_IX=6, BOARD_WHITE_IX=7, MOVE_IX=8, RT_IX=9 };
+       
+
+
+
+/**
+ * Add a player
+ * */
+void data_struct::add_player(std::string player_id){
+	std::string pid=split_pair(player_id,'.').first;
+	player_ids.push_back(std::stoi(pid));
+}
+
+/**
+ * Add a board
+ * */
+void data_struct::add_board(std::string black_pieces, std::string white_pieces) {
+	board b;
+	b.pieces[BLACK]=binstringtouint64(black_pieces);
+	b.pieces[WHITE]=binstringtouint64(white_pieces);
+	allboards.push_back(b);
+}
+
+
+/**
+ * add a move.
+ * */
+void data_struct::add_move(std::string move_id, std::string color) {
+	uint64 zet_id = tilestringtouint64(move_id);
+	zet m(zet_id,0.0,(color=="0")?BLACK:WHITE);
+	allmoves.push_back(m);
+}
+
+
+/**
+ * Add thinking time
+ * */
+void data_struct::add_thinking_time(std::string rt){
+	thinking_times.push_back(std::stoi(rt));
+}
+
+bool is_header(std::string line){
+	return line.compare(0,1,",")==0;
+}
+
+bool is_ai(std::string player_id){
+	return split_pair(player_id,'.').second=="01";
+}
+
+bool is_board_full(std::string black_pieces, std::string white_pieces){
+	board b;
+	b.pieces[BLACK]=binstringtouint64(black_pieces);
+	b.pieces[WHITE]=binstringtouint64(white_pieces);
+	return b.is_ended();
+}
+/**
+ * load a single line
+ * */
+void data_struct::load(std::string line){
+	if (!is_header(line)){ 
+		std::vector<std::string> tokens = split(line,',');
+		if (is_ai(tokens[PLAYER_ID_IX]) || is_board_full(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX])){
+			return;
+		}
+		add_player(tokens[PLAYER_ID_IX]);
+		add_board(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX]);
+		add_move(tokens[MOVE_IX], tokens[COLOR_IX]);
+		add_thinking_time(tokens[RT_IX]);
+	}
+}
+
+/**
+ *
+ * */
+int data_struct::count_distinct_players(){
+	std::set<int> d; 
+	d.insert(player_ids.begin(),player_ids.end());
+	return d.size();
+}
+
+/**
+ * load a file
+ * */
+void data_struct::load_file(std::string filename){
+	std::ifstream input(filename,std::ios::in);
+	std::string line, word[10];
+	int index,i;
+	while (std::getline(input,line)){
+		load(line);
+	}
+	Nplayers = count_distinct_players();
+	Nboards = allboards.size();
+}
+
+
+/*
+ *
+ *  should be the end of source file
+ *
+ * */
+
+
 void data_struct::load_file_gianni(char* filename){
   ifstream input(filename,ios::in);
-  string line;
-  string word[10];
-  int index;
-  int i;
+  string line, word[10];
+  int index,i;
   add_names_gianni(filename);
   getline(input,line);
   while(!input.eof()){
@@ -208,6 +318,9 @@ void data_struct::load_file_gianni(char* filename){
       execute_command_gianni(word,true);
   }
 }
+
+
+
 
 void data_struct::load_board_file(char* filename){
   ifstream input(filename,ios::in);
@@ -236,14 +349,14 @@ void data_struct::make_test_and_train(double frac, mt19937_64 engine){
   vector<vector<int>> board_by_player;
   for (int i = 0; i < Nplayers ; i++) {
 	  vector<int> v;
-  	board_by_player.push_back(v);
+	  board_by_player.push_back(v);
   }
   unsigned int n,N,k;
   train.clear();
   test.clear();
   Ntest=Ntrain=0;
   for(unsigned int j=0;j<Nboards;j++)
-    board_by_player[player_id[j]].push_back(j);
+    board_by_player[player_ids[j]].push_back(j);
   for(unsigned int p=0;p<Nplayers;p++){
     N=board_by_player[p].size();
     n=(unsigned int) N*frac;
@@ -266,16 +379,16 @@ vector<unsigned int> data_struct::select_boards(int player, int data_type=ALL){
   vector<unsigned int> boards;
   if(data_type==TEST){
     for(unsigned int i=0;i<Ntest;i++)
-      if(player_id[test[i]]==player)
+      if(player_ids[test[i]]==player)
         boards.push_back(test[i]);
   }
   else if(data_type==TRAIN){
     for(unsigned int i=0;i<Ntrain;i++)
-      if(player_id[train[i]]==player)
+      if(player_ids[train[i]]==player)
         boards.push_back(train[i]);
   }
   else for(unsigned int i=0;i<Nboards;i++)
-    if(player_id[i]==player)
+    if(player_ids[i]==player)
       boards.push_back(i);
   return boards;
 }
@@ -290,8 +403,8 @@ void data_struct::write_to_header(char* filename){
   <<"data_struct::data_struct(): Nplayers("<<Nplayers<<"), Nboards("<<Nboards<<"), Ntest("<<Ntest<<"), Ntrain("<<Ntrain<<"),\n"
   <<"player_name{";
   for(unsigned int i=0;i<Nplayers-1;i++)
-    headout<<"\""<<player_name[i]<<"\",\n";
-  headout<<"\""<<player_name[Nplayers-1]<<"\"},\n"
+    headout<<"\""<<player_names[i]<<"\",\n";
+  headout<<"\""<<player_names[Nplayers-1]<<"\"},\n"
   <<"allboards{"<<hex;
   for(unsigned int i=0;i<Nboards-1;i++)
     headout<<"{0x"<<allboards[i].pieces[BLACK]<<"ULL,0x"<<allboards[i].pieces[WHITE]<<"ULL},\n";
@@ -302,12 +415,12 @@ void data_struct::write_to_header(char* filename){
   headout<<"{0x"<<allmoves[Nboards-1].zet_id<<"ULL,0.0,"<<((allmoves[Nboards-1].player==BLACK)?"BLACK":"WHITE")<<"}},\n"
   <<"thinking_time{"<<dec;
   for(unsigned int i=0;i<Nboards-1;i++)
-    headout<<thinking_time[i]<<",\n";
-  headout<<thinking_time[Nboards-1]<<"},\n"
+    headout<<thinking_times[i]<<",\n";
+  headout<<thinking_times[Nboards-1]<<"},\n"
   <<"player_id{";
   for(unsigned int i=0;i<Nboards-1;i++)
-    headout<<player_id[i]<<",\n";
-  headout<<player_id[Nboards-1]<<"},\n"
+    headout<<player_ids[i]<<",\n";
+  headout<<player_ids[Nboards-1]<<"},\n"
   <<"test{";
   for(unsigned int i=0;i<Ntest-1;i++)
     headout<<test[i]<<",\n";

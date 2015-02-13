@@ -24,8 +24,8 @@ tournament: tournament.cpp heuristic.cpp randomplayout.h randomplayout.cpp heuri
 	g++ $(FLAGS)  tournament.cpp features.cpp randomplayout.cpp agent.cpp uctagent.cpp heuristic.cpp myopicagent.cpp bfsagent.cpp treeagent.cpp bfs.cpp randomplayout.cpp agent_builder.cpp states.cpp -otournament
 
 
-loglik: loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
-	g++ $(FLAGS) loglik.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ologlik
+loglik: loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
+	g++ $(FLAGS) loglik.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ologlik
 
 mexfunction: mexfunction.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
 	g++ $(FLAGS) mexfunction.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp data_new.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -omexfunction
