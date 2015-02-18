@@ -1,7 +1,7 @@
 #include "Gomoku.cpp"
 
 int main(int argc, const char* argv[]){
-	FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
+	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
 	Source src=prepeare_source(argc, argv);
 	heuristic h;
 	superheuristic s;

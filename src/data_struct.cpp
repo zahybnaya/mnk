@@ -4,6 +4,7 @@
 #include <set>
 #include <fstream>
 #include "common.h"
+#include <cassert>
 
 data_struct::data_struct(): Nplayers(0), Nboards(0), Ntest(0), Ntrain(0){}
 
@@ -198,7 +199,7 @@ void data_struct::add_names_gianni(char* filename){
  * current format:
  * ,subject,color,gi,mi,status,bp,wp,response,rt
  * */
-enum IX {PLAYER_ID_IX=1, COLOR_IX=2, BOARD_BLACK_IX=6, BOARD_WHITE_IX=7, MOVE_IX=8, RT_IX=9 };
+enum IX {PLAYER_ID_IX=1, COLOR_IX=2, DESC_IX=5, BOARD_BLACK_IX=6, BOARD_WHITE_IX=7, MOVE_IX=8, RT_IX=9 };
        
 
 
@@ -208,27 +209,42 @@ enum IX {PLAYER_ID_IX=1, COLOR_IX=2, BOARD_BLACK_IX=6, BOARD_WHITE_IX=7, MOVE_IX
  * */
 void data_struct::add_player(std::string player_id){
 	std::string pid=split_pair(player_id,'.').first;
-	player_ids.push_back(std::stoi(pid));
+	int player = std::stoi(pid);
+	player_ids.push_back(player);
 }
 
 /**
  * Add a board
+ * is_postmove - is the description before the player had played
  * */
-void data_struct::add_board(std::string black_pieces, std::string white_pieces) {
+bool data_struct::add_board(std::string black_pieces, std::string white_pieces, bool is_postmove, std::string move_id, std::string color) {
 	board b;
 	b.pieces[BLACK]=binstringtouint64(black_pieces);
 	b.pieces[WHITE]=binstringtouint64(white_pieces);
+	zet z = make_zet(move_id,color);
+	bool ans = 0;
+	assert(!is_postmove && !b.contains(z.zet_id,z.player) || is_postmove && b.contains(z.zet_id,z.player));
+	if (is_postmove)
+		b.remove_piece(z);
 	allboards.push_back(b);
+	return ans;
+
 }
 
+/**
+ * Create the move
+ * */
+inline zet data_struct::make_zet(std::string move_id, std::string color){
+	uint64 zet_id = tilestringtouint64(move_id);
+	zet m(zet_id,0.0,(color=="0")?BLACK:WHITE);
+	return m;
+}
 
 /**
  * add a move.
  * */
 void data_struct::add_move(std::string move_id, std::string color) {
-	uint64 zet_id = tilestringtouint64(move_id);
-	zet m(zet_id,0.0,(color=="0")?BLACK:WHITE);
-	allmoves.push_back(m);
+		allmoves.push_back(make_zet(move_id,color));
 }
 
 
@@ -253,18 +269,29 @@ bool is_board_full(std::string black_pieces, std::string white_pieces){
 	b.pieces[WHITE]=binstringtouint64(white_pieces);
 	return b.is_ended();
 }
+
+
+
+bool is_playing_position(std::string description){
+	return (description == "playing" || description == "AFC");
+}
+
+
+
 /**
  * load a single line
  * */
 void data_struct::load(std::string line){
 	if (!is_header(line)){ 
 		std::vector<std::string> tokens = split(line,',');
-		if (is_ai(tokens[PLAYER_ID_IX]) || is_board_full(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX])){
+		if (!is_playing_position(tokens[DESC_IX]) ||  is_ai(tokens[PLAYER_ID_IX]) || 
+				is_board_full(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX])){
 			return;
 		}
 		add_player(tokens[PLAYER_ID_IX]);
-		add_board(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX]);
 		add_move(tokens[MOVE_IX], tokens[COLOR_IX]);
+		if (add_board(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX], false,tokens[MOVE_IX], tokens[COLOR_IX] ))
+			std::cout << line<< std::endl;
 		add_thinking_time(tokens[RT_IX]);
 	}
 }
@@ -433,3 +460,5 @@ void data_struct::write_to_header(char* filename){
   headout<<train[Ntrain-1]<<"}{}\n#endif\n";
   headout.close();
 }
+
+
