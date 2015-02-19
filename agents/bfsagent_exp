@@ -22,4 +22,4 @@ weights_4=?12{x,x}
 weights_5=?13{x,x}
 weights_6=?14{x,x}
 triangle_weight=?15{x,x}
-exploration_constant=0
+exploration_constant=?16{0,5}

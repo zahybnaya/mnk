@@ -51,9 +51,9 @@ data = {player, agent_file, data_file};
 % v: column vector of upper bounds
 % u(k)<v(k) is required
 %
-u =[2; 0.001; 0.0; 0.01; 0.25; 0.25; 0.25; -inf*ones(7,1)];
-v =[8; 0.1; 1.0; 1.0; 4.0; 4.0; 4.0;  inf*ones(7,1)];
-dimension=14
+u =[2; 0.001; 0.0; 0.01; 0.25; 0.25; 0.25; -inf*ones(7,1),0];
+v =[8; 0.1; 1.0; 1.0; 4.0; 4.0; 4.0;  inf*ones(7,1),5];
+dimension=15
 use_defaults=0
 % *** If you just want to use the default settings,
 % *** you don't need to edit the rest of the file,
