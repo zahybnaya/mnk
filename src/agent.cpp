@@ -37,6 +37,7 @@ void Agent::init(){
  * Execute the best play
  * */
 zet Agent::play(board& b,bool player){
+	this->playing_color = player;
 	std::vector<zet> s = solve(b,player);
 	FILE_LOG(logDEBUG)<<"Playing for player "<<((player==BLACK)?"BLACK":"WHITE")<< " there are "<< s.size() <<" moves" << std::endl;
 	FILE_LOG(logDEBUG)<<" board is :" <<b<<std::endl;

@@ -10,10 +10,9 @@ int main(int argc, const char* argv[]){
 	unsigned int seed=unsigned(time(0));
 	mt19937_64 global_generator;
 	char filename[128];
-	ofstream output;
 	board b;
 	zet m;
-	cout<<"seed = "<<seed<<endl;
+	std::cout<<"seed = "<<seed<<std::endl;
 	global_generator.seed(seed);
 	h.seed_generator(global_generator);
 	Agent_params ag = read_agent_params(src.agent_description_file);
