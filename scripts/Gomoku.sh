@@ -1,12 +1,11 @@
 #!/bin/bash
 #PBS -N Gomoku_bfs
 #PBS -l nodes=1:ppn=1
-#PBS -l walltime=12:00:00
-#PBS -l mem=1GB
+#PBS -l walltime=26:00:00
+#PBS -l mem=2GB
 #PBS -t 0
 #PBS -M zb9@nyu.edu
 #PBS -m abe
-
 BASE_DIR=$HOME/mnk
 SRCDIR=$BASE_DIR/src
 player=${PBS_ARRAYID}
