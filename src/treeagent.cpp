@@ -9,6 +9,7 @@
 std::vector<zet> TreeAgent::solve(board& b,bool player){
 	FILE_LOG(logDEBUG) << "Starting to solve board:{"<< uint64tobinstring(b.pieces[0]) ;
 	FILE_LOG(logDEBUG) << ","<< uint64tobinstring(b.pieces[1])<<"}" << std::endl;
+	this->playing_color=player;
 	Node* n = create_initial_state(b);
 	double gamma = get_iter_gamma();
 	std::geometric_distribution<int> iter_dist(gamma);

@@ -12,7 +12,7 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]){
 	char* agent_file =mxArrayToString(prhs[1]);
 	char* data_file =mxArrayToString(prhs[2]);
 	data_struct dat;
-       	dat = load_data(dat,std::string(data_file));
+       	dat = load_data(dat,std::string(data_file)); //TODO: Filter by subject (here it's player)
 	double* paramptr=mxGetPr(prhs[3]);
 	Agent_params ap = read_agent_params(std::string(agent_file));
 	FILE_LOG(logDEBUG) << " Starting concrete process for "<<agent_file << std::endl;

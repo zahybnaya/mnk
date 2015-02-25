@@ -51,6 +51,11 @@ class Agent {
 		 * */
 		double get_lapse_rate() ;
 
+		/**
+		 * What color is this agent playing
+		 * */
+		inline bool get_playing_color() {return playing_color;}
+
 	protected:
 		/**
 		 * Obtain a list of values
@@ -74,7 +79,12 @@ class Agent {
 		 * probablity to perform a random move
 		 * */
 		std::bernoulli_distribution lapse;
+		/**
+		 * Color of agent
+		 * */
+		bool playing_color;
 	private:
+		
 		/**
 		 * are values stored in a negamax tree
 		 * */

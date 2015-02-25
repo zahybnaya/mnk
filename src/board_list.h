@@ -147,7 +147,6 @@ struct todolist{
     if(stopping_time())
       return false;
     if(!get_task(i)){
-	    //std::cout << "!get_task(i)" << std::endl;
 	    return false;
     }
     if(Nunsolved<=NTHREADS)
@@ -166,12 +165,10 @@ struct todolist{
     double Ltot=0.0;
     for(map<int,task_data>::iterator it=data.begin();it!=data.end();++it){
       if(!it->second.done){
-	   //   std::cout << "Using Lexpt/N"<< std::endl;
 	      return Lexpt/N;
       }
       Ltot+=it->second.L;
     }
- //   std::cout << "Using Ltot/N"<< std::endl;
     return Ltot/N;
   }
 };

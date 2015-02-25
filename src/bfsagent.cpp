@@ -4,6 +4,7 @@
  * Evaluaties a new node
  **/
 double BFSAgent::evaulate(Node* lastNode, Node* parent, uint64 move_id){
+	h.self = get_playing_color();
 	h.remove_features();
 	std::vector<zet> moves = h.get_moves(parent->m_board/*parent*/,parent->player /*parent*/,false); 
 	for ( std::vector<zet>::const_iterator i = moves.begin(); i != moves.end(); ++i) {

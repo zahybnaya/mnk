@@ -11,8 +11,7 @@
 # model-fitting: calculates model parameters
 #
 #####
-FLAGS=-g -std=c++11 -pthread  -Wall
-# TODO:If HPC module load gcc
+FLAGS=-g -O3 -std=c++11 -pthread  -Wall
 
 load-modules:
 	module load gcc/4.9.2
