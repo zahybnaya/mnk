@@ -9,7 +9,6 @@ int main(int argc, const char* argv[]){
        	dat = load_data(dat,src.state_file);
 	unsigned int seed=unsigned(time(0));
 	mt19937_64 global_generator;
-	char filename[128];
 	board b;
 	zet m;
 	std::cout<<"seed = "<<seed<<std::endl;

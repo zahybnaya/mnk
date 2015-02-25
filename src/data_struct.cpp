@@ -310,8 +310,7 @@ int data_struct::count_distinct_players(){
  * */
 void data_struct::load_file(std::string filename){
 	std::ifstream input(filename,std::ios::in);
-	std::string line, word[10];
-	int index,i;
+	std::string line;
 	while (std::getline(input,line)){
 		load(line);
 	}
