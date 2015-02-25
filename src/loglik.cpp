@@ -15,7 +15,7 @@ int main(int argc, const char* argv[]){
 	global_generator.seed(seed);
 	h.seed_generator(global_generator);
 	Agent_params ag = read_agent_params(src.agent_description_file);
-	for(int i=0;i<dat.Nplayers;i++)
+	for(unsigned int i=0;i<dat.Nplayers;i++)
 		std::cout<<i<<"\t"<<compute_loglik_agent(ag,dat,false,i,ALL,NULL,NULL)<<std::endl;
 	return 0;
 }

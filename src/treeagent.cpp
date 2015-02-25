@@ -44,7 +44,7 @@ int TreeAgent::build_tree(Node* n,int iterations){
 /**
  *  Distribution for the number of iterations 
  * */
-const DISTRIBUTION get_iteration_distribution(){
+DISTRIBUTION get_iteration_distribution(){
 	return GEOMETRIC;
 }
 
@@ -52,7 +52,7 @@ const DISTRIBUTION get_iteration_distribution(){
  *  Parameter for the distribution 
  *  for the number of iterations TODO: Parse as language? e.g. iteration_distribution=G(0.4)/B(0.3)/Beta(0.3,0.4)
  * */
-const double get_iteration_distribution_param(){
+double get_iteration_distribution_param(){
 	return 0;
 
 }
@@ -61,12 +61,12 @@ const double get_iteration_distribution_param(){
 /**
  * Addition to the uct exploitation measurement
  * */
-const DISTRIBUTION get_exploitation_noise_distribution(){
+DISTRIBUTION get_exploitation_noise_distribution(){
 	return BERNOULLI;
 
 }
 
-const double get_exploitation_noise_param(){
+double get_exploitation_noise_param(){
 	return 0;
 }
 
@@ -183,14 +183,14 @@ uint64 TreeAgent::select_random_unknown_move(Node* n){
 /**
  * How many iterations 
  **/
-const int TreeAgent::get_iterations(){
+int TreeAgent::get_iterations(){
 	return get_int_property("iterations");
 }
 
 /**
  * Get the parameter for how many iterations
  * */
-const double TreeAgent::get_iter_gamma(){
+double TreeAgent::get_iter_gamma(){
 	return get_double_property("gamma");
 }
 

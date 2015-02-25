@@ -82,7 +82,7 @@ inline bool is_concrete_param(std::string val){
  *  Get the right value from the parameter array
  * */
 inline std::string assigned_val(std::string val, double* paramptr){
-	int start_range = val.find("{");
+	size_t start_range = val.find("{");
 	if (start_range == std::string::npos){
 		FILE_LOG(logERROR) << "Wrong format for concerete "<<val<<std::endl;
 		exit(-1);

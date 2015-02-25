@@ -145,7 +145,7 @@ void data_struct::load_file_zeyan(char* filename){
   }
 }
 
-void data_struct::execute_command_gianni(string c[13],bool talk=false){
+void data_struct::execute_command_gianni(string c[13],bool /*talk=false*/){
   static board b;
   static bool drawoffermade=false;
   zet m(tilestringtouint64(c[8]),0.0,(c[2]=="0")?BLACK:WHITE);
@@ -223,7 +223,7 @@ bool data_struct::add_board(std::string black_pieces, std::string white_pieces, 
 	b.pieces[WHITE]=binstringtouint64(white_pieces);
 	zet z = make_zet(move_id,color);
 	bool ans = 0;
-	assert(!is_postmove && !b.contains(z.zet_id,z.player) || is_postmove && b.contains(z.zet_id,z.player));
+	assert((!is_postmove && !b.contains(z.zet_id,z.player)) || (is_postmove && b.contains(z.zet_id,z.player)));
 	if (is_postmove)
 		b.remove_piece(z);
 	allboards.push_back(b);
@@ -375,7 +375,7 @@ void data_struct::save_board_file(char* filename){
 
 void data_struct::make_test_and_train(double frac, mt19937_64 engine){
   vector<vector<int>> board_by_player;
-  for (int i = 0; i < Nplayers ; i++) {
+  for (unsigned int i = 0; i < Nplayers ; i++) {
 	  vector<int> v;
 	  board_by_player.push_back(v);
   }

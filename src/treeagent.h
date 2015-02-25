@@ -59,7 +59,7 @@ public:
 	/**
 	 * Iterations for the tree
 	 * */
-	const int get_iterations();
+	int get_iterations();
 
 
 	std::vector<zet> solve(board& b,bool player);
@@ -68,25 +68,25 @@ protected:
 	/**
 	 *  Distribution for the number of iterations 
 	 * */
-	const DISTRIBUTION get_iteration_distribution();
+	DISTRIBUTION get_iteration_distribution();
 
 	/**
 	 *  Parameter for the distribution 
 	 *  for the number of iterations TODO: Parse as language? e.g. iteration_distribution=G(0.4)/B(0.3)/Beta(0.3,0.4)
 	 * */
-	const double get_iteration_distribution_param();
+	double get_iteration_distribution_param();
 
 
 	/**
 	 * Addition to the uct exploitation measurement
 	 * */
-	const double get_exploitation_noise_distribution();
-	const double get_exploitation_noise_param();
+	double get_exploitation_noise_distribution();
+	double get_exploitation_noise_param();
 
 	/**
 	 *
 	 * */
-	const double get_iter_gamma();
+	double get_iter_gamma();
 	/**
 	 * returns the moves which are not 
 	 * expanded for a specific node (no node exists)
