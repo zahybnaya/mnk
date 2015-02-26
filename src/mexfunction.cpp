@@ -20,7 +20,7 @@ void mexFunction(int /*nlhs*/, mxArray *plhs[],int /*nrhs*/, const mxArray *prhs
 		assert(!is_concrete_param(i->second));
 	}
 	char* output="Output/out.txt";
-	plhs[0] = mxCreateDoubleScalar(compute_loglik_agent(ap,dat,true,player,TEST,NULL,output));
+	plhs[0] = mxCreateDoubleScalar(compute_loglik_agent(ap,dat,true,player,ALL,NULL,output));
 }
 
 

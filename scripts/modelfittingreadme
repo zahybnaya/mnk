@@ -1,45 +1,23 @@
 
-Cpp compilation
-================
-
-Prepeare data according to a predefined format. 
-generate new_data.cpp: (using snippet of code mailed to me)
-	Declare the NO_DATA declarative. 
-	dat.load_file_gianni("data_file_name")
-
-throw the data.cpp to the source code folder.
-
-compile the code with mex (see snippet)
-This results Gomouko_bfs.mexa64
-
 Execution
 =========
 
-Create a directory and put there:
-	the matlab code for mcs Gomouko_optim_mcs.m
-         wrapper: Gomouko_wrapper.m 
-         job script Gomouko.sh  and getbest.sh x0.mat init0.m , times.txt
+model fitting is done by the mcs matlab package (located in /src/matlab).
+The model fitting jobs calls matlab Gomouko_optim_mcs.m function that gets the player number, the agent_file and the data_file 
 
-Change the code to start with NULL (instead of times.txt) 
-compile again.
+Important variables: 
 
+player  = a number 
+agent   = an identifier of the agent implementation. 
+	The following files must exist: 1) agent_file (named <agents the directory>/agent) and 2) a corresponding directory under matlab
+	with the bounds (bounds_agent.m) and initial values (init0.m).
+ 
+ 
 
-In the job script -t mapps to PBS_ARRAYID
-
-submit the job. 
-
-Inside the working directory creates a directory per each subject. 
-inside there's output
-
-	position(index), iterations, loglikelihood(est.),  #trails per position, loglikelihood_total, how_many_more_positions_for_subject. 
-when last field goes to 0 that's the end of the calculation and the final total loglik is shown. 
-
-Then it proceeds to the next parameter vector.
   
 Getting the results
 ===================
-Inside the subject folder
-mcsresult.mat
+Inside the subject folder mcsresult.mat
 
 
 

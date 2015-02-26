@@ -45,7 +45,8 @@ zet Agent::play(board& b,bool player){
 		FILE_LOG(logERROR)<<"Player  "<<((player==BLACK)?"BLACK":"WHITE")<< " is not the same as board::active_player()" << std::endl;
 	}
 	if (lapse(get_generator())){
-		return s[std::uniform_int_distribution<int>(0,s.size())(get_generator())];
+		int rn_n = std::uniform_int_distribution<int>(0,s.size()-1)(get_generator());
+		return s[rn_n];
 	}
 	zet r;
 	std::random_shuffle(s.begin(),s.end());

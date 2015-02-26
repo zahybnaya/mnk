@@ -7,6 +7,7 @@ int main(int argc, const char* argv[]){
 	superheuristic s;
 	data_struct dat; 
        	dat = load_data(dat,src.state_file);
+	std::cout<<"dat.Nplayers"<<dat.Nplayers<<std::endl;
 	unsigned int seed=unsigned(time(0));
 	mt19937_64 global_generator;
 	board b;
