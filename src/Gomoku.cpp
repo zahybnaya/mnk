@@ -70,6 +70,7 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 		board_list_mutex.lock();
 	}
 	board_list_mutex.unlock();
+	delete agent;
 }
 
 void worker_thread_notree(heuristic h,data_struct* dat,todolist* board_list){
@@ -404,7 +405,7 @@ data_struct& load_data(data_struct& dat,std::string filename){
 	mt19937_64 global_generator;
 	global_generator.seed(seed);
 	dat.load_file(filename);
-	dat.make_test_and_train(0.5,global_generator);
+//	dat.make_test_and_train(0.5,global_generator);
 	FILE_LOG(logDEBUG) <<dat<< std::endl;
 	return dat;
 }

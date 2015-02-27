@@ -417,7 +417,8 @@ vector<unsigned int> data_struct::select_boards(int player, int data_type=ALL){
   }
   else for(unsigned int i=0;i<Nboards;i++)
     if(player_ids[i]==player)
-      boards.push_back(i);
+      boards.push_back(i); 
+  std::cout<<"Boards:"<<boards.size()<<std::endl;
   return boards;
 }
 
