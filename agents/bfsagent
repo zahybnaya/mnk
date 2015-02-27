@@ -20,6 +20,5 @@ weights_2=?10{x,x}
 weights_3=?11{x,x}
 weights_4=?12{x,x}
 weights_5=?13{x,x}
-weights_6=?14{x,x}
-triangle_weight=?15{x,x}
+triangle_weight=?14{x,x}
 exploration_constant=0
