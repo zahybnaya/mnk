@@ -16,7 +16,8 @@ player=${PBS_ARRAYID}
 agent=myopicagent
 data=playing_only.csv
 agent_file=$BASE_DIR/agents/$agent
-data_file=$BASE_DIR/data/${data}SUB${player}.0test.csv
+test_data_file=$BASE_DIR/data/${data}SUB${player}.0test.csv
+train_data_file=$BASE_DIR/data/${data}SUB${player}.0train.csv
 result_path=$direc/${agent}_${data}_subject$player
 
 module purge
@@ -25,6 +26,6 @@ export MATLABPATH=$MATLABPATH:$SRCDIR/matlab:$direc
 export LD_PRELOAD=$GCC_LIB/libstdc++.so
 
 cd $result_path
-echo "cross_validate($player,'$agent_file','$data_file'); exit;" | matlab -nodisplay
+echo "cross_validate($player,'$agent_file','$train_data_file', '$test_data_file'); exit;" | matlab -nodisplay
 echo "Done"
 

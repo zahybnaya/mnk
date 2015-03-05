@@ -12,6 +12,7 @@ Agent_params read_agent_params(std::string agent_description_filename);
 
 class Agent_builder {
 	public:
+		~Agent_builder();
 		Agent_builder();
 		Agent* build(Agent_params p);
 	private:

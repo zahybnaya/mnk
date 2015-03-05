@@ -6,6 +6,12 @@
 
 template<typename T> Agent* create_agent() {  return new T; }
 
+Agent_builder::~Agent_builder(){
+	delete agent_constructors["UCT"];
+	delete agent_constructors["MYOPIC"];
+	delete agent_constructors["BFS"]; 
+	
+}
 Agent_builder::Agent_builder(){
 	register_constructors();
 }

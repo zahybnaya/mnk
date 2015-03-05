@@ -6,6 +6,7 @@ eval_function=1
 iterations=10
 # center-square, XX__. X_X_, XXX_<your move> , XXX_<his> , XXXX_<win>, ... [vertical],[diagonal], triangles. 
 weights={0.8, 1.0, 0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2}
-lapse_rate=?0{x,x}
-gamma=?1{x,x}
-exploration_constant=?2{x,x}
+D0=?0{x,x}
+lapse_rate=?1{x,x}
+gamma=?2{x,x}
+exploration_constant=?3{x,x}
