@@ -2,7 +2,21 @@ from sys import argv
 import matplotlib.pyplot as plt
 import numpy as np
 from re import match
+from itertools import product
 from operator import itemgetter
+
+def read_tuples(filename):
+    """
+    returns a dict from the file
+    """
+    d = []
+    with open(filename) as f:
+        for line in f:
+            if line.isspace():
+                continue
+            tup = line.split()
+            d.append(tup)
+    return d
 
 
 def read_dict(filename):
@@ -12,41 +26,38 @@ def read_dict(filename):
     d = {}
     with open(filename) as f:
         for line in f:
-            if not match(r"[A-Z]{2} *", line):
-                continue
+           # if not match(r"[A-Z]{2} *", line):
+            #    continue
             (key, val) = line.split()
             d[key] = val
     return d
 
-x_model_file = argv[1]
-y_model_file = argv[2]
-x = read_dict(x_model_file)
-y = read_dict(y_model_file)
+model_file = argv[1]
+data = read_tuples(model_file)
 
-N = len(x)
-x=sorted(x.items(), key=itemgetter(1))
-y_data = [y[n[0]] for n in x]
-x_data = [n[1] for n in x]
+subjects = sorted(set([x[1] for x in data ]))
+models = set([x[0] for x in data ])
+lims = [
+        1,
+        3.2
+]
 
+for compare in product(models,models):
+    if compare[0] == compare[1]:
+        continue;
+    data_1 = [d[2] for s in subjects for d in data if d[1] == s and d[0]==compare[0]]
+    data_2 = [d[2] for s in subjects for d in data if d[1] == s and d[0]==compare[1]]
 #colors = np.random.rand(N)
 #area = np.pi * (15 * np.random.rand(N))**2 # 0 to 15 point radiuses
 #plt.scatter(x, y, s=area, c=colors, alpha=0.5)
-
-lims = [
-        1,
-        3
-]
-
-plt.title('Log-Likelihood')
-plt.xlabel(x_model_file.split('__')[1])
-plt.ylabel(y_model_file.split('__')[1])
-plt.grid(True)
-plt.plot(lims, lims, 'k-', alpha=0.75, zorder=0)
-#plt.set_aspect('equal')
-#plt.set_xlim(lims)
-#plt.set_ylim(lims)
-
-plt.scatter(x_data, y_data, alpha=0.5)
-plt.show()
+    plt.title('Log-Likelihood')
+    plt.xlabel(compare[0])
+    plt.ylabel(compare[1])
+    plt.grid(True)
+    plt.axis([1,3.2,1,3.2])
+    plt.scatter(data_1, data_2, s=215,  alpha=0.8)
+    plt.plot(lims, lims, 'k--', alpha=0.85, zorder=0)
+    #plt.show()
+    plt.savefig(compare[0]+"_vs_"+compare[1]+"png")
 #
 
