@@ -59,5 +59,6 @@ for compare in product(models,models):
     plt.plot(lims, lims, 'k--', alpha=0.85, zorder=0)
     #plt.show()
     plt.savefig(compare[0]+"_vs_"+compare[1]+"png")
+    plt.close()
 #
 
