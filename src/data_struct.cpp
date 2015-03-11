@@ -217,17 +217,15 @@ void data_struct::add_player(std::string player_id){
  * Add a board
  * is_postmove - is the description before the player had played
  * */
-bool data_struct::add_board(std::string black_pieces, std::string white_pieces, bool is_postmove, std::string move_id, std::string color) {
+void data_struct::add_board(std::string black_pieces, std::string white_pieces, bool is_postmove, std::string move_id, std::string color) {
 	board b;
 	b.pieces[BLACK]=binstringtouint64(black_pieces);
 	b.pieces[WHITE]=binstringtouint64(white_pieces);
 	zet z = make_zet(move_id,color);
-	bool ans = 0;
 	assert((!is_postmove && !b.contains(z.zet_id,z.player)) || (is_postmove && b.contains(z.zet_id,z.player)));
 	if (is_postmove)
 		b.remove_piece(z);
 	allboards.push_back(b);
-	return ans;
 
 }
 
@@ -290,8 +288,7 @@ void data_struct::load(std::string line){
 		}
 		add_player(tokens[PLAYER_ID_IX]);
 		add_move(tokens[MOVE_IX], tokens[COLOR_IX]);
-		if (add_board(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX], false,tokens[MOVE_IX], tokens[COLOR_IX] ))
-			std::cout << line<< std::endl;
+		add_board(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX], false,tokens[MOVE_IX], tokens[COLOR_IX]); 
 		add_thinking_time(tokens[RT_IX]);
 	}
 }
@@ -403,6 +400,9 @@ void data_struct::make_test_and_train(double frac, mt19937_64 engine){
   sort(train.begin(),train.end());
 }
 
+/**
+ *  Retrieves the board indeices for a player
+ * */
 vector<unsigned int> data_struct::select_boards(int player, int data_type=ALL){
   vector<unsigned int> boards;
   if(data_type==TEST){
@@ -418,7 +418,6 @@ vector<unsigned int> data_struct::select_boards(int player, int data_type=ALL){
   else for(unsigned int i=0;i<Nboards;i++)
     if(player_ids[i]==player)
       boards.push_back(i); 
-  std::cout<<"Boards:"<<boards.size()<<std::endl;
   return boards;
 }
 

@@ -39,7 +39,7 @@ struct data_struct{
   void load(std::string);
   void add_player(std::string);
   void add_move(std::string move_id, std::string color);
-  bool add_board(std::string black_pieces,std::string white_pieces, bool is_postmove,std::string move_id, std::string color );
+  void add_board(std::string black_pieces,std::string white_pieces, bool is_postmove,std::string move_id, std::string color );
   void add_thinking_time(std::string);
   zet make_zet(std::string move_id, std::string color);
 

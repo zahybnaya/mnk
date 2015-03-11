@@ -2,6 +2,7 @@
 #include "agent.h"
 #include "agent_builder.h"
 #include "states.h"
+#include "data_struct.h"
 #include <unistd.h>
 #include <fstream>
 #include <sstream>
@@ -28,10 +29,12 @@ void print_agent(std::ostream& o,Agent* a, board b, std::vector<zet> zets){
 }
 
 
+/**
+ * Execute the agent on states object
+ * */
 void execute_agent(Agent* a, States s)
 {
 	FILE_LOG(logDEBUG) << "executing agent "<<a->get_name()<<"..." << std::endl;
-	int num_zets;
 	for (state_it it = s.begin(); it!=s.end();it++){
 		board b = *it;
 		std::vector<zet> zets=a->solve(b,true);
@@ -40,9 +43,27 @@ void execute_agent(Agent* a, States s)
 	}  
 }
 
+/**
+ * Executes the agen on a data_struct
+ * */
+void execute_agent(Agent* a, int player_num, data_struct &dat )
+{
+	std::vector<unsigned int> boards= dat.select_boards(player_num,ALL);
+	FILE_LOG(logDEBUG) << "executing agent "<<a->get_name()<<"..." << std::endl;
+
+	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();it++){
+		board b = dat.allboards[*it];
+		std::vector<zet> zets=a->solve(b,true);
+		print_header(std::cout);
+		print_agent(std::cout,a,b,zets);
+	}  
+}
+
+
 int missing_values(){
 
 	std::cout << " Usage: -s <state_file> -a <agent_description_file>"  << std::endl;
+	return -1;
 
 
 }
@@ -73,17 +94,23 @@ Source prepeare_source(int argc, const char* argv[]){
 }
 
 
+/***
+ *  This loads the data and for each player, agent performs an action
+ * */
+
 int main(int argc, const char *argv[])
 {
-	FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
+	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
 	FILE_LOG(logDEBUG) << "Initializing aigames"<<std::endl; 
 	Source s = prepeare_source(argc,argv);
-	States states = get_states(s);
+	data_struct dat; 
+        dat.load_file(s.state_file);
 	Agent_params p = read_agent_params(s.agent_description_file); 
 	Agent_builder b;
 	Agent* agent = b.build(p);
-	execute_agent(agent, states);	
+	for (int player_number=0;player_number<dat.Nplayers;++player_number){
+		execute_agent(agent, player_number, dat);	
+	}
 	delete agent;
-
 	return 0;
 }

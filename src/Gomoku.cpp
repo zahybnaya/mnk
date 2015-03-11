@@ -405,7 +405,6 @@ data_struct& load_data(data_struct& dat,std::string filename){
 	mt19937_64 global_generator;
 	global_generator.seed(seed);
 	dat.load_file(filename);
-//	dat.make_test_and_train(0.5,global_generator);
 	FILE_LOG(logDEBUG) <<dat<< std::endl;
 	return dat;
 }
