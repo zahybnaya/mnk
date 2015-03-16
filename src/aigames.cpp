@@ -18,14 +18,14 @@ States get_states(Source s) {
 
 void print_header(std::ostream& o)
 {
-	o<<"agent_name,agent_file,board,move,value"<<std::endl;
+	o<<"index,subject,color,gi,mi,status,bp,wp,response,rt"<<std::endl;
+
 }
 
-void print_agent(std::ostream& o,Agent* a, board b, std::vector<zet> zets){
-	for (std::vector<zet>::const_iterator i = zets.begin(); i != zets.end(); ++i) {
-		o<<a->get_name()<<","<<a->get_agent_file()<<",{"<<b.pieces[BLACK]<<"," <<b.pieces[WHITE]<<"},"
-		       	<<i->zet_id<<","<<i->val<<std::endl;
-	}
+
+void print_agent(bool player,std::ostream& o,Agent* a, board b, zet m){
+		o<<"0,"<<a->get_agent_file()<<","<<player<<","<<"0,0,fake,"<<uint64tobinstring(b.pieces[BLACK])<<"," <<uint64tobinstring(b.pieces[WHITE])<<","
+		       	<<m.zet_id<<","<<"0"<<std::endl;
 }
 
 
@@ -39,7 +39,7 @@ void execute_agent(Agent* a, States s)
 		board b = *it;
 		std::vector<zet> zets=a->solve(b,true);
 		print_header(std::cout);
-		print_agent(std::cout,a,b,zets);
+		//print_agent(std::cout,a,b,zets);
 	}  
 }
 
@@ -51,11 +51,12 @@ void execute_agent(Agent* a, int player_num, data_struct &dat )
 	std::vector<unsigned int> boards= dat.select_boards(player_num,ALL);
 	FILE_LOG(logDEBUG) << "executing agent "<<a->get_name()<<"..." << std::endl;
 
-	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();it++){
+	print_header(std::cout);
+	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();++it){
 		board b = dat.allboards[*it];
-		std::vector<zet> zets=a->solve(b,true);
-		print_header(std::cout);
-		print_agent(std::cout,a,b,zets);
+		bool player = dat.allmoves[*it].player;
+		zet m=a->play(b,player);
+		print_agent(player,std::cout,a,b,m);
 	}  
 }
 
