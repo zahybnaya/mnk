@@ -29,9 +29,6 @@ addpath(strcat(home,'/mnk/src/matlab/mcs'))
 addpath(strcat(home,'/mnk/src/matlab/mcs/minq5'))
 addpath(strcat(home,'/mnk/src/matlab/mcs/gls'))
 [agent_path,agent_name]=fileparts(agent_file)
-% TODO: Add the initialization and u,v of that specific agent
-%addpath(strcat(home,'/mnk/src/matlab/uctagent'))
-%addpath(strcat(home,'/mnk/src/matlab/bfsagent_exp'))
 addpath(strcat(home,'/mnk/src/matlab/',agent_name))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

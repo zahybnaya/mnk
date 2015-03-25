@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <fstream>
 #include <sstream>
+#include <cassert>
+
 
 States get_states(Source s) {
 	FILE_LOG(logDEBUG)  << "getting states from source file" << std::endl;
@@ -23,25 +25,11 @@ void print_header(std::ostream& o)
 }
 
 
-void print_agent(bool player,std::ostream& o,Agent* a, board b, zet m){
-		o<<"0,"<<a->get_agent_file()<<","<<player<<","<<"0,0,fake,"<<uint64tobinstring(b.pieces[BLACK])<<"," <<uint64tobinstring(b.pieces[WHITE])<<","
-		       	<<m.zet_id<<","<<"0"<<std::endl;
+void print_agent(bool color,std::ostream& o,Agent* a, board b, zet m, int player_num){
+		o<<"0,"<<player_num<<","<<color<<","<<"0,0,playing,"<<uint64tobinstring(b.pieces[BLACK])<<"," <<uint64tobinstring(b.pieces[WHITE])<<","
+		       	<<uint64totile(m.zet_id)<<","<<"0"<<std::endl;
 }
 
-
-/**
- * Execute the agent on states object
- * */
-void execute_agent(Agent* a, States s)
-{
-	FILE_LOG(logDEBUG) << "executing agent "<<a->get_name()<<"..." << std::endl;
-	for (state_it it = s.begin(); it!=s.end();it++){
-		board b = *it;
-		std::vector<zet> zets=a->solve(b,true);
-		print_header(std::cout);
-		//print_agent(std::cout,a,b,zets);
-	}  
-}
 
 /**
  * Executes the agen on a data_struct
@@ -49,15 +37,16 @@ void execute_agent(Agent* a, States s)
 void execute_agent(Agent* a, int player_num, data_struct &dat )
 {
 	std::vector<unsigned int> boards= dat.select_boards(player_num,ALL);
-	FILE_LOG(logDEBUG) << "executing agent "<<a->get_name()<<"..." << std::endl;
-
+	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
 	print_header(std::cout);
 	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();++it){
 		board b = dat.allboards[*it];
-		bool player = dat.allmoves[*it].player;
-		zet m=a->play(b,player);
-		print_agent(player,std::cout,a,b,m);
-	}  
+		bool color = dat.allmoves[*it].player;
+		zet m=a->play(b,color);
+		assert(!b.contains(m.zet_id,m.player));
+		assert(!b.contains(m.zet_id,color));
+		print_agent(color,std::cout,a,b,m,player_num);
+	} 
 }
 
 

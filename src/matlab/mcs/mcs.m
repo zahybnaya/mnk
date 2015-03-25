@@ -304,6 +304,11 @@ while s < smax & ncall + 1 <= nf
                    % by expected gain
       splt = 0;
     else
+      display(par)
+      display(f(1,par))
+      display(f0)
+      display(f1)
+      display(f2)
       [e,isplit(par),z(2,par)] = exgain(n,n0,l,L,x,y,x1,x2,f(1,par),f0,f1,f2);
       % splitting by expected gain
       % compute the expected gain vector e and the potential splitting 

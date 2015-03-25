@@ -32,6 +32,18 @@
 % subint.m
 
 function [e,isplit,splval] = exgain(n,n0,l,L,x,y,x1,x2,fx,f0,f1,f2)
+display(n)
+display(n0)
+display(l)
+display(L)
+display(x)
+display(y)
+display(x1)
+display(x2)
+display(fx)
+display(f0)
+display(f1)
+display(f2)
 emin = Inf;  % initialization
 for i = 1:n
   if n0(i) == 0

@@ -222,6 +222,11 @@ void data_struct::add_board(std::string black_pieces, std::string white_pieces, 
 	b.pieces[BLACK]=binstringtouint64(black_pieces);
 	b.pieces[WHITE]=binstringtouint64(white_pieces);
 	zet z = make_zet(move_id,color);
+	if (b.contains(z.zet_id,z.player)){
+		cout<<black_pieces<<","<<white_pieces<<" move:"<<move_id<<" contains:"<< b.contains(z.zet_id,z.player)<<" is_postmove " <<is_postmove<<" color:"<<color<<std::endl;
+		cout<<b;
+		cout<<std::endl;
+	}
 	assert((!is_postmove && !b.contains(z.zet_id,z.player)) || (is_postmove && b.contains(z.zet_id,z.player)));
 	if (is_postmove)
 		b.remove_piece(z);

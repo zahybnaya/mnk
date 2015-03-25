@@ -27,8 +27,14 @@ for i = 1:n
   x(i) = x0(i,l(i));
 end
 x = x';
+display(x)
+display(data)
+display(fcn)
 f1 = feval(fcn,data,x);
+display(f1)
+display(l(1))
 f0(l(1),1) = f1;
+display(f0)
 ncall = ncall + 1; 
 for i = 1:n
   istar(i) = l(i);

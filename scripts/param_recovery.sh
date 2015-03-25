@@ -1,12 +1,18 @@
 
 #!/bin/bash 
-
 model_file=$1
-fake_files=[] #find the fake_files that match the model_file
-param_list=`python get_param_list.py $model_file`
-for fitted_file in fake_files; do 
-	DS= #find the ds from file_name
-	generated_values=`python get_generated_values $fitted_file`
-	echo 'param_recovery(['p1'; 'p2'; 'p3'] , [0.11 ; 0.21 ; 0.31] , '$FITTED_FILE' , '$DS')' | matlab 
+BASE_DIR=$HOME/mnk
+SRCDIR=$BASE_DIR/src
+direc=$SCRATCH/Gomoku
+module purge
+module load matlab/2014a gcc/4.9.2
+export MATLABPATH=$direc:$SRCDIR/matlab
+export LD_PRELOAD=$GCC_LIB/libstdc++.so
+agent_name=`basename $model_file`
+fake_files=`find $SCRATCH/Gomoku/ -path *fake*${agent_name}*/mcsresult.mat `
+for fitted_file in ${fake_files[@]}; do 
+	matlab_line=`python gen_matlab_line.py $fitted_file`
+	echo "$matlab_line ; exit "| matlab -nodisplay
+	#echo 'param_recovery(['p1'; 'p2'; 'p3'] , [0.11 ; 0.21 ; 0.31] , '$FITTED_FILE' , '$DS')' | matlab 
 done
 
