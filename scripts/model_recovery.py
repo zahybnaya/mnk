@@ -18,7 +18,6 @@ def get_fit_params(model_file):
 			vals=line.split('?')
 			if len(vals)==2:
 				pname=line.split('=')[0].strip()
-				print line	
 				u,v,step=line[line.find('{')+1:line.find('}')].split(',')
 				params[pname]={'u':float(u), 'v':float(v), 'step':float(step)}
 			else:
@@ -71,12 +70,47 @@ def execute_fake_data(stimuli,gen_model_file,point_ind,num_of_data_sets):
 		with open('generate_fake_data_.sh', 'a') as f:
 			f.write(line)
 
-def create_fitting_job_script(model_file,point_ind):
+def create_fitting_job_script(model_file,point_ind,num_of_ds):
 	"""
 	Writes the job script
 	"""
-	pass
-
+	content = '''
+#!/bin/bash
+#PBS -N @AGENT_fitting
+#PBS -l nodes=1:ppn=10
+#PBS -l walltime=26:00:00
+#PBS -l mem=4GB
+#PBS -t 1-9
+#PBS -M zb9@nyu.edu
+#PBS -m abe
+BASE_DIR=$HOME/mnk
+SRCDIR=$BASE_DIR/src
+DIREC=$SCRATCH/Gomoku
+AGENT=@AGENT
+POINT=${PBS_ARRAYID}
+AGENT_FILE=$BASE_DIR/agents/${AGENT}  
+module purge
+module load matlab/2014a gcc/4.9.2
+export MATLABPATH=$DIREC:$SRCDIR/matlab
+export LD_PRELOAD=$GCC_LIB/libstdc++.so
+cp $SRCDIR/Gomoku_model.mexa64 $DIREC
+for DS in {0..@DS}; do 
+	DATA_FILE=$BASE_DIR'/data/agents'${AGENT}'___fake_'${POINT}'0000_DS'${DS}
+	RESULT_PATH=$DIREC/fake_${AGENT}_${POINT}0000_DS${DS}
+	mkdir -p ${RESULT_PATH}/Output
+	cd ${RESULT_PATH}
+	rm Output/out*
+	echo "Gomoku_optim_mcs(-1,'$AGENT_FILE', '$DATA_FILE'); exit;" | matlab -nodisplay
+	echo "Done"
+done;
+'''
+	agent_desc=model_file.split('/')[-1].replace('.','')
+	content = content.replace('@AGENT',agent_desc).replace('@DS',str(num_of_ds))
+	job_name='Gomoku_fake_fitting_'+agent_desc+'.pbs'
+	print " Job name:" + job_name
+	with open(job_name, 'w') as f:
+		f.write(content)
+		
 
 
 
@@ -88,14 +122,13 @@ except:
 	print_usage()
 
 otherlines,parameters=get_fit_params(model_file)  #e.g., p1=?1{u,v} p2=?2{u,v}
-print parameters
 point_ind=0
 for point in create_points(parameters):
-	print point
+	print "Creates point:"+str(point)
 	gen_model_file=create_generating_model_file(model_file,point,point_ind,otherlines) 
 	execute_fake_data(stimuli,gen_model_file,point_ind,num_of_data_sets)
 	point_ind+=1
 
-create_fitting_job_script(model_file,point_ind) # for fitting this model with the relevant data_file[s]
+create_fitting_job_script(model_file,point_ind,num_of_data_sets) # for fitting this model with the relevant data_file[s]
 
 

@@ -10,7 +10,7 @@ def get_fit_params(model_file):
 	params = {}
 	with open(model_file) as f:
 		for line in f:
-			if line.startswith('#'):
+			if line.startswith('#') or line.isspace() or line=='':
 				continue
 			vals=line.split('?')
 			if len(vals)==2:
@@ -29,6 +29,7 @@ fake_model_file='../agents/'+agent+'___fake_'+point   #../agents/uctagent___fake
 
 _,params = get_fit_params(model_file)
 generating_params,_= get_fit_params(fake_model_file)
+print generating_params
 gen_param_dict = dict([ (p.split('=')[0].strip(),p.split('=')[1].strip())  for p in generating_params if not p.startswith('#') ])
 
 sorted_params =sorted(params, key=lambda x:params[x]['ind'])
