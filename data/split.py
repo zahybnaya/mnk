@@ -5,17 +5,17 @@
 #
 
 
-from sys import argv 
+from sys import argv
 from random import shuffle
 import csv
 
 try:
 	data_file = argv[1]
 	split_percentage = argv[2]
-except: 
+except:
 	print ("usage:")
 	exit
-	
+
 
 def read_dict(data_file):
     """
@@ -43,7 +43,7 @@ def write_data(outputfile,data):
 
 
 data=read_dict(data_file)
-subjects=set([d['subject'] for d in data if d['subject'].endswith('0') ])
+subjects=set([d['subject'] for d in data if not d['subject'].endswith('.01') ])
 print "Subjects: "+ str(len(subjects))
 
 for s in subjects:
@@ -55,9 +55,6 @@ for s in subjects:
 	test_data = subject_data[train_n:]
 	write_data(data_file+"SUB"+s+"train.csv",train_data)
 	write_data(data_file+"SUB"+s+"test.csv",test_data)
-	
-	
-	
 
 
 
