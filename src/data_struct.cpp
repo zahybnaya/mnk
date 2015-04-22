@@ -302,9 +302,9 @@ void data_struct::load(std::string line){
  *
  * */
 int data_struct::count_distinct_players(){
-	std::set<int> d; 
-	d.insert(player_ids.begin(),player_ids.end());
-	return d.size();
+	distinct_players.clear();
+	distinct_players.insert(player_ids.begin(),player_ids.end());
+	return distinct_players.size();
 }
 
 /**
@@ -412,17 +412,20 @@ vector<unsigned int> data_struct::select_boards(int player, int data_type=ALL){
   vector<unsigned int> boards;
   if(data_type==TEST){
     for(unsigned int i=0;i<Ntest;i++)
-      if(player_ids[test[i]]==player)
+      if(player_ids[test[i]]==player || player==-1)
         boards.push_back(test[i]);
   }
   else if(data_type==TRAIN){
     for(unsigned int i=0;i<Ntrain;i++)
-      if(player_ids[train[i]]==player)
+      if(player_ids[train[i]]==player || player==-1)
         boards.push_back(train[i]);
   }
   else for(unsigned int i=0;i<Nboards;i++)
-    if(player_ids[i]==player)
+    if(player_ids[i]==player || player==-1)
       boards.push_back(i); 
+  if (boards.size() == 0 ){
+	throw std::runtime_error("No boards found!");
+  }
   return boards;
 }
 

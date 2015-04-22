@@ -5,6 +5,7 @@
 #include "board.h"
 #include <random>
 #include <vector>
+#include <set>
 
 #define TEST 1
 #define TRAIN 2
@@ -22,6 +23,7 @@ struct data_struct{
   vector<int> player_ids;
   vector<int> test;
   vector<int> train;
+  set<int> distinct_players;
   data_struct();
   
   int count_distinct_players();

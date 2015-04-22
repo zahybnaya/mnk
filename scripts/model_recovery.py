@@ -1,6 +1,26 @@
 #!/bin/python
 #	
-# mode: fixed (e.g., go on the entire range of values)
+# There are three modes of creating points in the parameter space. 
+#
+#  Method 1: exhaustive
+#  --------------------- 
+#  Each parameter p is defined by  <u,v,step> where u is lower bound, v upper bound and step is a reasonable variance in that parameter.
+#  this method generates points for the Cartesian product of all possible parameters values.
+#
+#  Method 2: discrete-uniform-sampling (M). 
+#  -------------------------------------
+#  This method restricts the sampling points to M. 
+#  each point x is assigned a value for each parameter p  according to a discrete uniform distribution 
+#
+#  Method 3: sparse-sampling(M)
+#  --------------------------- 
+#  for each parameter p with range of values n we generate M points. If M>n we generate m/n points for each value
+#  If M<n we select values with equal distance from each other.  
+#  The M points are then achieved by combining values randomly. 
+#
+# if point_limit is less than inf the points should reflect a "good" sampling from the parameter space. 
+#
+#
 
 from sys import argv
 from copy import copy
@@ -27,7 +47,7 @@ def get_fit_params(model_file):
 		
 
 def print_usage():
-	print 'usage: {0} <model_file> <stimuli> <number-of-datasets>'.format(argv[0])
+	print 'usage: {0} <model_file> <stimuli> <number-of-datasets> <num-of_points>'.format(argv[0])
 	exit(-1)
 
 
@@ -38,9 +58,39 @@ def val_gen(u,v,step):
 		val+=step
 		yield round(val,round_dig)
 
+def create_points_sampling(parameters,point_limit):
+	sorted_params = sorted(parameters)
+	param_gens= dict((p, list(val_gen(parameters[p]['u'],parameters[p]['v'],parameters[p]['step']))) for p in sorted_params)
+	param_values={}
+	for p in sorted_params:
+		p_values_num = (parameters[p]['v']-parameters[p]['u'])/parameters[p]['step']
+		jump = p_values_num/point_limit
+		param_values[p]=[param_gens[p][int(jump*i)] for i in xrange(point_limit)]
+	for pnt_number in xrange(point_limit):
+		pnt=dict((p,param_values[p][pnt_number]) for p in sorted_params)
+		yield pnt
+	
+
+def create_points_sparse(parameters,point_limit):
+	sorted_params = sorted(parameters)
+	param_gens= dict((p, list(val_gen(parameters[p]['u'],parameters[p]['v'],parameters[p]['step']))) for p in sorted_params)
+	param_values={}
+	for p in sorted_params:
+		p_values_num = (parameters[p]['v']-parameters[p]['u'])/parameters[p]['step']
+		jump = p_values_num/point_limit
+		param_values[p]=[param_gens[p][int(jump*i)] for i in xrange(point_limit)]
+	for pnt_number in xrange(point_limit):
+		pnt=dict((p,param_values[p][pnt_number]) for p in sorted_params)
+		yield pnt
+	
+			
+
+			
+		
+		
 
 
-def create_points(parameters):
+def create_points(parameters,point_limit=float('inf')):
 	sorted_params = sorted(parameters)
 	param_list= [val_gen(parameters[p]['u'],parameters[p]['v'],parameters[p]['step']) for p in sorted_params]
 	for p_data in product(*param_list):
@@ -70,7 +120,7 @@ def execute_fake_data(stimuli,gen_model_file,point_ind,num_of_data_sets):
 		with open('generate_fake_data_.sh', 'a') as f:
 			f.write(line)
 
-def create_fitting_job_script(model_file,point_ind,num_of_ds):
+def create_fitting_job_script(model_file,point_ind,num_of_ds,num_of_points):
 	"""
 	Writes the job script
 	"""
@@ -80,7 +130,7 @@ def create_fitting_job_script(model_file,point_ind,num_of_ds):
 #PBS -l nodes=1:ppn=10
 #PBS -l walltime=26:00:00
 #PBS -l mem=4GB
-#PBS -t 1-9
+#PBS -t 1-@POINTS
 #PBS -M zb9@nyu.edu
 #PBS -m abe
 BASE_DIR=$HOME/mnk
@@ -95,8 +145,8 @@ export MATLABPATH=$DIREC:$SRCDIR/matlab
 export LD_PRELOAD=$GCC_LIB/libstdc++.so
 cp $SRCDIR/Gomoku_model.mexa64 $DIREC
 for DS in {0..@DS}; do 
-	DATA_FILE=$BASE_DIR'/data/agents'${AGENT}'___fake_'${POINT}'0000_DS'${DS}
-	RESULT_PATH=$DIREC/fake_${AGENT}_${POINT}0000_DS${DS}
+	DATA_FILE=$BASE_DIR'/data/agents'${AGENT}'___fake_'${POINT}'_DS'${DS}
+	RESULT_PATH=$DIREC/fake_${AGENT}_${POINT}_DS${DS}
 	mkdir -p ${RESULT_PATH}/Output
 	cd ${RESULT_PATH}
 	rm Output/out*
@@ -105,30 +155,30 @@ for DS in {0..@DS}; do
 done;
 '''
 	agent_desc=model_file.split('/')[-1].replace('.','')
-	content = content.replace('@AGENT',agent_desc).replace('@DS',str(num_of_ds))
+	content = content.replace('@AGENT',agent_desc).replace('@DS',str(num_of_ds-1)).replace('@POINTS',str(num_of_points))
 	job_name='Gomoku_fake_fitting_'+agent_desc+'.pbs'
 	print " Job name:" + job_name
 	with open(job_name, 'w') as f:
 		f.write(content)
 		
 
-
-
 try:
 	model_file=argv[1]
 	stimuli=argv[2]
 	num_of_data_sets=argv[3]
+	num_of_points=int(argv[4])
 except:
 	print_usage()
 
 otherlines,parameters=get_fit_params(model_file)  #e.g., p1=?1{u,v} p2=?2{u,v}
 point_ind=0
-for point in create_points(parameters):
-	print "Creates point:"+str(point)
+for point in create_points_sparse(parameters,num_of_points):
+	print "Creates point:"+str(point),
 	gen_model_file=create_generating_model_file(model_file,point,point_ind,otherlines) 
+	print " in file "+str(gen_model_file)
 	execute_fake_data(stimuli,gen_model_file,point_ind,num_of_data_sets)
 	point_ind+=1
 
-create_fitting_job_script(model_file,point_ind,num_of_data_sets) # for fitting this model with the relevant data_file[s]
+create_fitting_job_script(model_file,point_ind,num_of_data_sets,num_of_points) # for fitting this model with the relevant data_file[s]
 
 
