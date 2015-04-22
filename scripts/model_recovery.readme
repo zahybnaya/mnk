@@ -1,0 +1,36 @@
+
+Performing model/parameter recovery:
+======================================
+
+./scripts/model_recovery.py  <model_file> <stimulil> <num_of_data_sets> 
+
+This script finds the fitting parameters in a given model_file (e.g., lines like "par=?1{0,100,0.5}" ) 
+It creates "points" for each parameter, currently there is only one method implemented and that's a "grid".  A line like "par=?1{0,100,0.5}" means that par is a parameter 
+that can go from 0 to 100 with jumps of 0.5. 
+The grid will be n-dimensional (with n fitted parameters). 
+
+Phases:
+
+1) Generating the model files: 
+	For each point the script generates a model file under "../agents/<model_file>___fake_<point>"
+
+2) Fake data generation:
+	The script generates a fake-data running script called "generate_fake_data_.sh"
+	For each point the fake-data scripts executes '../src/states -a <generating-model-point> -s <stimuli> number of times (according to the <num_of_data_sets> parameter. 
+	The output goes to  ../data/<agent>_DS<DS#> (it may contain multiple subjects).
+
+	** The data-generation does not occur automatically, you need to run "generate_fake_data_.sh" **
+
+3) Fitting:
+	A fitting job is also generated and placed under the ../jobs folder.  Execute this job to perform fitting of the model to the generated data sets 
+
+4) Parameter recovery:
+	After submitting and completing the fitting job the ./scripts/parameter_recovery.sh generates the params.csv file with the actual and fitted data of the models
+
+5) Plotting:
+	You can generate scatter plots with the plotting script 'plot_param_recovery_scatter.py'
+
+
+#TODO: take care of subjects, currently -1 means that every data point is done on all subjects 
+
+
