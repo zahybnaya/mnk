@@ -32,8 +32,9 @@ int main(int argc, const char* argv[]){
 		std::cout<<subject<<"\t"<<compute_loglik_agent(ag,dat,false,subject,ALL,NULL,NULL)<<std::endl;
 		return 0;
 	}
-	for(unsigned int i=0;i<dat.Nplayers;i++)
-		std::cout<<i<<"\t"<<compute_loglik_agent(ag,dat,false,i,ALL,NULL,NULL)<<std::endl;
+	for (std::set<int>::iterator i = dat.distinct_players.begin(); i != dat.distinct_players.end();++i){
+		std::cout<<*i<<"\t"<<compute_loglik_agent(ag,dat,false,*i,ALL,NULL,NULL)<<std::endl;
+	}
 	return 0;
 }
 

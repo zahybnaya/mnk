@@ -1,24 +1,30 @@
-# A BFS implementation with 100 iterations
-## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v)}
+# A BFS implementation 
+## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v),step(v)}
 implementation=BFS
-action_select_method=0
-eval_function=1
-iterations=10
-# center-square, XX__. X_X_, XXX_<your move> , XXX_<his> , XXXX_<win>, ... [vertical],[diagonal], triangles. 
-weights={0.8, 1.0, 0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2}
-D0=?0{u,v,l1,l2,l3}
-K0=?1{x,x}
-gamma=?2{x,x}
-delta=?3{x,x}
-lapse_rate=?4{x,x}
-vert_scale=?5{x,x}
-diag_scale=?6{x,x}
-opp_scale=?7{x,x}
-weights_0=?8{x,x}
-weights_1=?9{x,x}
-weights_2=?10{x,x}
-weights_3=?11{x,x}
-weights_4=?12{x,x}
-weights_5=?13{x,x}
-triangle_weight=?14{x,x}
+D0=5
+K0=?0{2,8,1}
+gamma=?1{0.001,0.1,0.1}
+delta=?2{0.0,1.0,0.1}
+lapse_rate=?3{0.01,1.0,0.1}
+vert_scale=?4{0.25, 4.0, 0.25}
+diag_scale=?5{0.25, 4.0, 0.25}
+opp_scale=?6{0.25, 4.0, 0.25}
+weights_0=?7{-2.0, 2.0, 1}
+weights_1=?8{-2.0, 2.0, 1}
+weights_2=?9{-2.0, 2.0, 1}
+weights_3=?10{-2.0, 2.0, 1}
+weights_4=?11{-2.0, 2.0, 1}
+weights_5=?12{-2.0, 2.0, 1}
+triangle_weight=?13{-2.0, 2.0, 1}
 exploration_constant=0
+
+
+
+
+
+
+
+
+
+
+
