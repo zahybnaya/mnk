@@ -1,0 +1,7 @@
+This should be a general readme 
+
+cross_validate is done by executing the cross_validate.m script via the job. It's output is a file named testXX.dat where XX the subject number.
+
+The dat files contains 
+A matrix of (currently) 30 values for the log likelihood. Followed by the values selected for the model parameters the got the best fitting results. 
+Followed by the mean log likelihood as the last line of the file
