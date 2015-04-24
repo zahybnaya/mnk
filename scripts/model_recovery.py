@@ -1,24 +1,33 @@
 #!/bin/python
-#	
-# There are three modes of creating points in the parameter space. 
+#
+# There are four modes of creating points in the parameter space.
 #
 #  Method 1: exhaustive
-#  --------------------- 
+#  ---------------------
 #  Each parameter p is defined by  <u,v,step> where u is lower bound, v upper bound and step is a reasonable variance in that parameter.
 #  this method generates points for the Cartesian product of all possible parameters values.
 #
-#  Method 2: discrete-uniform-sampling (M). 
+#  Method 2: discrete-uniform-sampling (M).
 #  -------------------------------------
-#  This method restricts the sampling points to M. 
-#  each point x is assigned a value for each parameter p  according to a discrete uniform distribution 
+#  This method restricts the sampling points to M.
+#  each point x is assigned a value for each parameter p  according to a discrete uniform distribution
 #
 #  Method 3: sparse-sampling(M)
-#  --------------------------- 
+#  ---------------------------
 #  for each parameter p with range of values n we generate M points. If M>n we generate m/n points for each value
-#  If M<n we select values with equal distance from each other.  
-#  The M points are then achieved by combining values randomly. 
+#  If M<n we select values with equal distance from each other.
+#  The M points are then achieved by combining values randomly.
 #
-# if point_limit is less than inf the points should reflect a "good" sampling from the parameter space. 
+#  Method 4: previous-fitting
+#  ------------------------------
+#
+#
+# if point_limit is less than inf the points should reflect a "good" sampling from the parameter space.
+##   1) generate a cross-model-fitting jobs
+#   2) add a model_recovery.sh file that does the following:
+            # look for all mcsresult.mat files and calculate a GOF value so
+            # that our file looks like this:
+            # gen_model, fittind_model, gof_measurement, gof_value
 #
 #
 
@@ -28,7 +37,7 @@ from itertools import product
 from decimal import Decimal
 
 
-def get_fit_params(model_file):  
+def get_fit_params(model_file):
 	other_lines=[]
 	params = {}
 	with open(model_file) as f:
@@ -43,8 +52,8 @@ def get_fit_params(model_file):
 			else:
 				other_lines+=line
 	return other_lines,params
-		
-		
+
+
 
 def print_usage():
 	print 'usage: {0} <model_file> <stimuli> <number-of-datasets> <num-of_points>'.format(argv[0])
@@ -69,7 +78,7 @@ def create_points_sampling(parameters,point_limit):
 	for pnt_number in xrange(point_limit):
 		pnt=dict((p,param_values[p][pnt_number]) for p in sorted_params)
 		yield pnt
-	
+
 
 def create_points_sparse(parameters,point_limit):
 	sorted_params = sorted(parameters)
@@ -82,12 +91,14 @@ def create_points_sparse(parameters,point_limit):
 	for pnt_number in xrange(point_limit):
 		pnt=dict((p,param_values[p][pnt_number]) for p in sorted_params)
 		yield pnt
-	
-			
 
-			
-		
-		
+
+def create_points_previous(parameters,point_limit=float('inf')):
+	sorted_params = sorted(parameters)
+	# fitting_files_list =  #get here the list of files according to the model file or something .  # These are the cross_validation results.
+    for p_data in [ read_to_dict(sorted_params,f) for f in fitting_files_list]:
+        point = dict((sorted_params[i],p_data[i]) for i in range(len(sorted_params)))
+		yield point
 
 
 def create_points(parameters,point_limit=float('inf')):
@@ -112,7 +123,7 @@ def create_generating_model_file(model_file,point,point_ind, otherlines):
 def execute_fake_data(stimuli,gen_model_file,point_ind,num_of_data_sets):
 	"""
 	Execute the following:
-		./states -a gen_model_file -s stimuli > data_file_agent  
+		./states -a gen_model_file -s stimuli > data_file_agent
 	"""
 	agent_desc=gen_model_file.replace('/','').replace('.','')
 	for ds in range(int(num_of_data_sets)):
@@ -138,13 +149,13 @@ SRCDIR=$BASE_DIR/src
 DIREC=$SCRATCH/Gomoku
 AGENT=@AGENT
 POINT=${PBS_ARRAYID}
-AGENT_FILE=$BASE_DIR/agents/${AGENT}  
+AGENT_FILE=$BASE_DIR/agents/${AGENT}
 module purge
 module load matlab/2014a gcc/4.9.2
 export MATLABPATH=$DIREC:$SRCDIR/matlab
 export LD_PRELOAD=$GCC_LIB/libstdc++.so
 cp $SRCDIR/Gomoku_model.mexa64 $DIREC
-for DS in {0..@DS}; do 
+for DS in {0..@DS}; do
 	DATA_FILE=$BASE_DIR'/data/agents'${AGENT}'___fake_'${POINT}'_DS'${DS}
 	RESULT_PATH=$DIREC/fake_${AGENT}_${POINT}_DS${DS}
 	mkdir -p ${RESULT_PATH}/Output
@@ -160,7 +171,7 @@ done;
 	print " Job name:" + job_name
 	with open(job_name, 'w') as f:
 		f.write(content)
-		
+
 
 try:
 	model_file=argv[1]
@@ -174,11 +185,10 @@ otherlines,parameters=get_fit_params(model_file)  #e.g., p1=?1{u,v} p2=?2{u,v}
 point_ind=0
 for point in create_points_sparse(parameters,num_of_points):
 	print "Creates point:"+str(point),
-	gen_model_file=create_generating_model_file(model_file,point,point_ind,otherlines) 
+	gen_model_file=create_generating_model_file(model_file,point,point_ind,otherlines)
 	print " in file "+str(gen_model_file)
 	execute_fake_data(stimuli,gen_model_file,point_ind,num_of_data_sets)
 	point_ind+=1
 
 create_fitting_job_script(model_file,point_ind,num_of_data_sets,num_of_points) # for fitting this model with the relevant data_file[s]
-
 
