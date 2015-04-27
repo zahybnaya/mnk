@@ -14,7 +14,7 @@ double BFSAgent::evaulate(Node* /*lastNode*/, Node* parent, uint64 move_id){
 		}
 	}
 	h.restore_features();
-	return -1;
+	throw std::runtime_error("Can't evaluate state");
 }
 
 double BFSAgent::get_D0() {

@@ -41,34 +41,7 @@ int TreeAgent::build_tree(Node* n,int iterations){
 	}
 	return 0;
 }
-/**
- *  Distribution for the number of iterations 
- * */
-DISTRIBUTION get_iteration_distribution(){
-	return GEOMETRIC;
-}
 
-/**
- *  Parameter for the distribution 
- *  for the number of iterations TODO: Parse as language? e.g. iteration_distribution=G(0.4)/B(0.3)/Beta(0.3,0.4)
- * */
-double get_iteration_distribution_param(){
-	return 0;
-
-}
-
-
-/**
- * Addition to the uct exploitation measurement
- * */
-DISTRIBUTION get_exploitation_noise_distribution(){
-	return BERNOULLI;
-
-}
-
-double get_exploitation_noise_param(){
-	return 0;
-}
 
 
 /**
@@ -128,8 +101,21 @@ std::vector<zet> TreeAgent::move_estimates(Node* n){
  * */
 void TreeAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 	for (std::vector<Node*>::const_iterator i = nodes.begin(); i != nodes.end(); ++i) {
-		(*i)->val+=new_val;
-		(*i)->visits++;
+		Node* n = *i;
+		n->val+=new_val;
+		n->visits++;
+		if (n->solved){
+			continue;
+		}
+		bool mark_solved=true;
+		for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
+			if( (mark_solved=mark_solved && i->second->solved)==false){
+				break;
+			} 
+		}
+		if (mark_solved){
+			n->solved=true;
+		}
 	}
 }
 

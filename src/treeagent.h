@@ -17,6 +17,7 @@ struct Node {
 	int visits;
 	bool player;
 	bool new_node; //TODO:See if this can be avoided
+	bool solved; 
 };
 
 /**

@@ -53,13 +53,14 @@ struct uct_comparator_t {
 	UCTAgent* a;
 }; 
 
-
 /**
  * Shuffles a vector from children map
  * */
 std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
 	std::vector<pair<uint64,Node*>> v;
-	std::copy(c.begin(), c.end(), std::back_inserter(v));
+	std::copy_if(c.begin(), c.end(), std::back_inserter(v),[](const std::pair<uint64,Node*> &p){
+			return !p.second->solved;
+			});
 	std::random_shuffle(v.begin(),v.end());
 	return v;
 }
@@ -72,6 +73,7 @@ std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
 Node* UCTAgent::select_next_node(Node* n){
 	if(n->m_board.is_ended()){
 		n->new_node=true;
+		n->solved=true;
 		return n;
 	}
 	std::vector<zet> moves = unexpanded_moves(n);
