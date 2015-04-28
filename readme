@@ -1,4 +1,24 @@
-This should be a general readme 
+This is a general reame 
+======================
+
+folders--
+
+src:
+Contains model implementations 
+src/matlab - matlab scripts
+
+scripts: 
+	prof.sh - a poor man's profiler
+
+data:
+	Data sets
+
+jobs:
+	HPC jobs
+
+agents:
+	text description files of models
+
 
 cross_validate is done by executing the cross_validate.m script via the job. It's output is a file named testXX.dat where XX the subject number.
 
@@ -9,5 +29,6 @@ Followed by the mean log likelihood as the last line of the file
 
 Format for out.txt:
 ===================
-
 Trail_Id, N (guess that succeeded), \Sum(1/n), estimation , trails-remaining 
+
+
