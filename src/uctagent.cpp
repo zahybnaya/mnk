@@ -1,5 +1,6 @@
 #include "uctagent.h"
 #include <math.h>
+#include <assert.h>
 #include <algorithm>
 #include "randomplayout.h"
 
@@ -58,6 +59,7 @@ struct uct_comparator_t {
  * */
 std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
 	std::vector<pair<uint64,Node*>> v;
+	assert(c.size()>0);
 	std::copy_if(c.begin(), c.end(), std::back_inserter(v),[](const std::pair<uint64,Node*> &p){
 			return !p.second->solved;
 			});
@@ -68,19 +70,23 @@ std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
 /**
  * Returns either a new child node 
  * or an existing child node 
- * TODO: Don't go to solved variations
  */
 Node* UCTAgent::select_next_node(Node* n){
-	if(n->m_board.is_ended()){
-		n->new_node=true;
-		n->solved=true;
-		return n;
-	}
+	assert(!n->solved);
+	assert(!n->m_board.is_ended());
 	std::vector<zet> moves = unexpanded_moves(n);
 	if (!moves.empty()){
 		return expand(select_random_move(moves),n);
 	}
 	std::vector<pair<uint64,Node*>> v= get_shuffled_vector(n->children);
+//	if (v.size()==0){
+//		std::cout<<"is_solved:"<<n->solved<<"visits:"<<n->visits<<"board:"<<n->m_board.is_ended()<<std::endl;
+//		for (child_map::iterator i=n->children.begin() ; i!=n->children.end();++i){
+//			std::cout<<"  is_solved:"<<i->second->solved<<"visits:"<<i->second->visits<<"board:"<<i->second->m_board.is_ended()<<std::endl;
+//		} 
+//		mark_solved(n);
+//	}
+	assert(v.size()>0);
 	std::pair<uint64,Node*> argmax =
 	       	*std::max_element(v.begin(),v.end(),uct_comparator_t(this,n->visits));
 	return argmax.second;

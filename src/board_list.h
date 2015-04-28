@@ -9,7 +9,7 @@
 #ifndef _WIN64
 #define NTHREADS 8
 #else
-#define NTHREADS 8
+#define NTHREADS 20
 #endif
 
 struct task{
@@ -65,7 +65,7 @@ struct todolist{
       add_task(i);
     }
   }
-  todolist(const int N_val,char* filename): N(N_val), Nunsolved(N),
+  todolist(const int N_val,const char* filename): N(N_val), Nunsolved(N),
            iterations(0), Lexpt(N*expt_factor), talk(false){
     ifstream input(filename,ios::in);
     unsigned int temp;
@@ -76,7 +76,7 @@ struct todolist{
     }
     input.close();
   }
-  todolist(const vector<unsigned int>& alltasks, char* filename): N(alltasks.size()), Nunsolved(N),
+  todolist(const vector<unsigned int>& alltasks, const char* filename): N(alltasks.size()), Nunsolved(N),
            iterations(0), Lexpt(N*expt_factor), talk(false){
     ifstream input(filename,ios::in);
     unsigned int temp;

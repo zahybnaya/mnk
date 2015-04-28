@@ -1,0 +1,42 @@
+#!/bin/bash
+#PBS -N generate_times
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=02:30:00
+#PBS -l mem=2GB 
+#PBS -t 1-37
+#PBS -j oe
+#PBS -M zb9@nyu.edu
+#PBS -m abe
+
+rep=30
+direc=$SCRATCH/Gomoku
+BASE_DIR=$HOME/mnk
+SRCDIR=$BASE_DIR/src
+player=${PBS_ARRAYID}
+agent=bfsagent_default
+data=37subjects.csv
+agent_file=$BASE_DIR/agents/$agent
+test_data_file=$BASE_DIR/data/${data}SUB${player}test.csv
+train_data_file=$BASE_DIR/data/${data}SUB${player}train.csv
+
+module purge
+module load matlab/2014a gcc/4.9.2
+export MATLABPATH=$MATLABPATH:$SRCDIR/matlab:$direc
+export LD_PRELOAD=$GCC_LIB/libstdc++.so
+
+cd $direc 
+cp $SRCDIR/generate_times . 
+tmp_file=.${data}${player}test
+./generate_times -a $agent_file -d $test_data_file -rep $rep > $tmp_file 
+echo "generate_times('${tmp_file}'); exit;" | matlab -nodisplay
+#rm ${tmp_file}
+# cp output_file ${test_data_file}.times
+
+tmp_file=.${data}${player}train
+./generate_times -a $agent_file -d $train_data_file -rep $rep > $tmp_file 
+echo "generate_times('${tmp_file}'); exit;" | matlab -nodisplay
+#rm ${tmp_file}
+# cp output_file ${train_data_file}.times
+
+echo "Done"
+

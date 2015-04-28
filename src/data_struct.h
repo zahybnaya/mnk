@@ -1,7 +1,6 @@
 #ifndef DATA_STRUCT_H_INCLUDED
 #define DATA_STRUCT_H_INCLUDED
 #define NO_DATA
-
 #include "board.h"
 #include <random>
 #include <vector>
@@ -10,6 +9,7 @@
 #define TEST 1
 #define TRAIN 2
 #define ALL 0
+#define TIMES_EXT  ".times"
 
 struct data_struct{
   unsigned int Nplayers; 
@@ -24,8 +24,10 @@ struct data_struct{
   vector<int> test;
   vector<int> train;
   set<int> distinct_players;
+  bool times_file;
   data_struct();
   
+  const char* get_times_file(std::string);
   int count_distinct_players();
   void add(board, zet, int, int);
   void print(bool);

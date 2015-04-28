@@ -20,6 +20,7 @@ int main(int argc, const char* argv[]){
 	superheuristic s;
 	data_struct dat; 
        	dat = load_data(dat,src.state_file);
+	const char* times_file =  dat.get_times_file(src.state_file);
 	unsigned int seed=unsigned(time(0));
 	mt19937_64 global_generator;
 	board b;
@@ -29,11 +30,11 @@ int main(int argc, const char* argv[]){
 	h.seed_generator(global_generator);
 	Agent_params ag = read_agent_params(src.agent_description_file);
 	if(subject!=-1){
-		std::cout<<subject<<"\t"<<compute_loglik_agent(ag,dat,false,subject,ALL,NULL,NULL)<<std::endl;
+		std::cout<<subject<<"\t"<<compute_loglik_agent(ag,dat,false,subject,ALL,times_file,NULL)<<std::endl;
 		return 0;
 	}
 	for (std::set<int>::iterator i = dat.distinct_players.begin(); i != dat.distinct_players.end();++i){
-		std::cout<<*i<<"\t"<<compute_loglik_agent(ag,dat,false,*i,ALL,NULL,NULL)<<std::endl;
+		std::cout<<*i<<"\t"<<compute_loglik_agent(ag,dat,false,*i,ALL,times_file,NULL)<<std::endl;
 	}
 	return 0;
 }

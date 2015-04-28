@@ -10,7 +10,7 @@ typedef std::map<uint64,Node*> child_map;
  * */
 struct Node {
 	Node(board m_board,bool player):m_board(m_board),val(0.0),
-		visits(0),player(player),new_node(true){}
+		visits(0),player(player),new_node(true),solved(false){}
 	board m_board;
 	child_map children; 
 	double val;
@@ -140,7 +140,10 @@ protected:
 	 *
 	 **/
 	virtual void back_propagatate(double new_val, std::vector<Node*> nodes);
-
+	/**
+	 *  marks solved nodes
+	 * */
+	virtual void mark_solved(Node* n);
 
 private:
 	/**

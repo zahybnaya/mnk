@@ -5,3 +5,9 @@ cross_validate is done by executing the cross_validate.m script via the job. It'
 The dat files contains 
 A matrix of (currently) 30 values for the log likelihood. Followed by the values selected for the model parameters the got the best fitting results. 
 Followed by the mean log likelihood as the last line of the file
+
+
+Format for out.txt:
+===================
+
+Trail_Id, N (guess that succeeded), \Sum(1/n), estimation , trails-remaining 

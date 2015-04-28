@@ -1,6 +1,7 @@
 #include "treeagent.h"
 #include "heuristic.h"
 #include "board.h"
+#include <assert.h>
 #include <random>
 
 /**
@@ -26,7 +27,9 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
  * Creates the initial state 
  * */
 Node* TreeAgent::create_initial_state(board b){
-	return new Node(b,b.active_player());
+	Node* n =new Node(b,b.active_player()); 
+	n->new_node=false;
+	return n ;
 }	
 
 
@@ -45,10 +48,11 @@ int TreeAgent::build_tree(Node* n,int iterations){
 
 
 /**
- *
  * A single iteraton of building the tree
  * */
 void TreeAgent::iterate(Node* n){
+	assert(!n->m_board.is_ended());
+	if (n->solved) return;
 	std::vector<Node*> nodes = select_variation(n);	
 	Node* lastNode = nodes.back();
 	Node* parent = nodes[nodes.size()-2];
@@ -59,6 +63,7 @@ void TreeAgent::iterate(Node* n){
 		}
 	}
 	double new_val = evaulate(lastNode, parent, move_id);
+	for(vector<Node*>::iterator i = nodes.begin() ; i!=nodes.end() ; ++i){ assert(!(*i)->new_node); }
 	back_propagatate(new_val,nodes);
 }
 
@@ -70,11 +75,13 @@ void TreeAgent::iterate(Node* n){
 std::vector<Node*> TreeAgent::select_variation(Node* n){
 	std::vector<Node*> ret;
 	ret.push_back(n);
+	assert(!n->new_node);
 	do{
 		n = select_next_node(n); 
 		ret.push_back(n);
 	} while (!n->new_node);
 	n->new_node=false;
+	for(vector<Node*>::iterator i = ret.begin() ; i!=ret.end() ; ++i){ assert(!(*i)->new_node); }
 	return ret;
 }
 
@@ -95,27 +102,40 @@ std::vector<zet> TreeAgent::move_estimates(Node* n){
 	return ret;
 }
 
+void TreeAgent::mark_solved(Node* n){
+	if (n->solved || n->new_node){
+		//std::cout<<" moving-on because n.solved:"<<n->solved<<" and n->new_node:"<< n->new_node<<std::endl;
+		return;
+	} 
+	if (!unexpanded_moves(n).empty()){
+		//std::cout<<" moving-on because there are unexpaned_moves"<<std::endl;
+		return;
+	}
+	bool mark_solved=true;
+	assert(n->children.size()>0);
+	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
+		//std::cout<<" child.solved:  " << i->second->solved ;
+		if( (mark_solved=(mark_solved && i->second->solved))==false){
+			//std::cout<<" breaking  because of: " << i->second->solved <<" mark_solved:"<<mark_solved ;
+			return;
+		} 
+	}
+	if (mark_solved){
+		n->solved=true;
+		//std::cout<<" assiging solved on n ";
+	}
+}
 
 /**
  * An average back_propagation
  * */
 void TreeAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
-	for (std::vector<Node*>::const_iterator i = nodes.begin(); i != nodes.end(); ++i) {
+	for (std::vector<Node*>::const_reverse_iterator i = nodes.rbegin(); i != nodes.rend(); ++i) {
 		Node* n = *i;
+		assert(!n->new_node);
 		n->val+=new_val;
 		n->visits++;
-		if (n->solved){
-			continue;
-		}
-		bool mark_solved=true;
-		for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
-			if( (mark_solved=mark_solved && i->second->solved)==false){
-				break;
-			} 
-		}
-		if (mark_solved){
-			n->solved=true;
-		}
+		mark_solved(n);
 	}
 }
 
@@ -137,6 +157,9 @@ void TreeAgent::delete_tree(Node* root){
 Node* TreeAgent::expand(uint64 move,Node* parent){
 	zet z = zet(move,0.0,parent->player);
 	Node* new_node = new Node(parent->m_board+z,!parent->player);
+	if (new_node->m_board.is_ended()){
+		new_node->solved=true;
+	}
 	parent->children[move]=new_node; 
 	return new_node;
 }

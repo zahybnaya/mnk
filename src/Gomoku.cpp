@@ -154,7 +154,7 @@ double compute_loglik_threads_super(superheuristic& s,data_struct* dat,todolist*
  * Model fitting should already initialized this
  * */
 double compute_loglik_agent(Agent_params ap , data_struct& dat, bool talk, int subject,
-		int data_type, char* times_file, char* output_file){
+		int data_type, const char* times_file, char* output_file){
 	todolist* board_list;
 	double res;
 	if(subject==-1){

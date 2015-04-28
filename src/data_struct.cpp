@@ -308,6 +308,15 @@ int data_struct::count_distinct_players(){
 }
 
 /**
+ * Returns a times file based on the data_file name
+ * */
+const char* data_struct::get_times_file(std::string data_file){
+	 return times_file?(data_file+TIMES_EXT).c_str():NULL; 
+}
+
+
+
+/**
  * load a file
  * */
 void data_struct::load_file(std::string filename){
@@ -318,6 +327,14 @@ void data_struct::load_file(std::string filename){
 	}
 	Nplayers = count_distinct_players();
 	Nboards = allboards.size();
+	std::ifstream f((filename+TIMES_EXT).c_str());
+	if (f.good()) {
+		f.close();
+		times_file=true;
+	} else {
+		f.close();
+		times_file= false;
+	}  
 }
 
 
