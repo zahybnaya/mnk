@@ -1,7 +1,6 @@
 # A BFS implementation 
 ## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v),step(v)}
 implementation=BFS
-D0=5
 K0=?0{2,8,1}
 gamma=?1{0.001,0.1,0.1}
 delta=?2{0.0,1.0,0.1}
