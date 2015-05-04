@@ -39,7 +39,7 @@ class Agent {
 		/**
 		 * A string describing this agent
 		 * */
-		const virtual std::string get_name()=0;
+		virtual std::string get_name() const =0;
 		const std::string get_agent_file();
 		inline void set_properties(properties p){
 			this->m_properties=p;

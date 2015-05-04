@@ -1,8 +1,10 @@
 #include "heuristic.h"
+#include "log.h"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <map>
+#include <assert.h>
 #include <iomanip>
 
 pattern::pattern(uint64 p,uint64 pe,int n_val,double* w,int i,int j){
@@ -122,7 +124,6 @@ void heuristic::addfeature(uint64 config, uint64 confempty, int i, int j, int n)
 
 void heuristic::update(){
   iter_dist=geometric_distribution<int>(gamma);
-  K_dist=bernoulli_distribution(fmod(K0,1.0));
   D_dist=bernoulli_distribution(fmod(D0,1.0));
   noise=normal_distribution<double>(0.0,1.0);
   lapse=bernoulli_distribution(lapse_rate);
@@ -318,27 +319,37 @@ vector<zet> heuristic::get_moves(board& b, bool player, bool nosort=false){
     }
   for(i=1,m=1;m!=boardend;m<<=1){
 	  if(b.isempty(m)){
-		  if(m & center)
+		  if(m & center){
 			  candidate.push_back(zet(m,deltaL+c_pass*weight[0]+noise(engine),player));
-		  else candidate.push_back(zet(m,deltaL+noise(engine),player));
+		  }
+		  else {
+			  candidate.push_back(zet(m,deltaL+noise(engine),player));
+		  }
 		  lookup[m]=i;
 		  i++;
 	  }
   }
+  int cs = candidate.size();
   for(i=0;i<Nfeatures;i++)
     if(feature[i].is_active(b)){
       m1=feature[i].missing_pieces(b,player);
       m2=feature[i].missing_pieces(b,!player);
-      if((m1 & m2) && has_one_bit(m1))
+      if((m1 & m2) && has_one_bit(m1)){
         candidate[lookup[m1]-1].val+=c_pass*feature[i].weight_pass;
+	assert(lookup[m1]-1<cs);
+      }
       if(m1==0 && feature[i].just_active(b))
         for(m=1;m!=boardend;m<<=1)
-          if(b.isempty(m) && feature[i].isempty(m))
+          if(b.isempty(m) && feature[i].isempty(m)){
             candidate[lookup[m]-1].val-=c_pass*feature[i].weight_pass;
+	    assert(lookup[m]-1<cs);
+	  }
       if(m2==0 && feature[i].just_active(b))
         for(m=1;m!=boardend;m<<=1)
-          if(b.isempty(m) && feature[i].isempty(m))
+          if(b.isempty(m) && feature[i].isempty(m)){
             candidate[lookup[m]-1].val+=c_act*feature[i].weight_act;
+	    assert(lookup[m]-1<cs);
+	  }
     }
   if(nosort)
     return candidate;

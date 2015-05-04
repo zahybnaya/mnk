@@ -62,6 +62,7 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 	int iteration  = 0;
 	Agent_builder b;
 	Agent* agent = b.build(ap);
+	FILE_LOG(logDEBUG) << "Building agent accodring to "<<ap.agent_file<<std::endl;
 	while(board_list->get_next(i,success)){
 		iteration++;
 		board_list_mutex.unlock();
@@ -153,17 +154,16 @@ double compute_loglik_threads_super(superheuristic& s,data_struct* dat,todolist*
  * prepeares data and submits to threads 
  * Model fitting should already initialized this
  * */
-double compute_loglik_agent(Agent_params ap , data_struct& dat, bool talk, int subject,
-		int data_type, const char* times_file, char* output_file){
+double compute_loglik_agent(Agent_params ap , data_struct& dat, bool talk, int subject, int data_type,  std::string times_file, char* output_file){
 	todolist* board_list;
 	double res;
 	if(subject==-1){
-		if(times_file==NULL)
+		if(times_file=="")
 			board_list=new todolist(dat.Nboards);
 		else board_list=new todolist(dat.Nboards,times_file);
 	}
 	else{
-		if(times_file==NULL)
+		if(times_file=="")
 			board_list=new todolist(dat.select_boards(subject,data_type));
 		else board_list=new todolist(dat.select_boards(subject,data_type),times_file);
 	}
@@ -401,9 +401,6 @@ Source prepeare_source(int argc, const char* argv[]){
 }
 
 data_struct& load_data(data_struct& dat,std::string filename){
-	unsigned int seed=unsigned(time(0));
-	mt19937_64 global_generator;
-	global_generator.seed(seed);
 	dat.load_file(filename);
 	FILE_LOG(logDEBUG) <<dat<< std::endl;
 	return dat;

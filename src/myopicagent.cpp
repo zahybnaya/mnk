@@ -5,6 +5,7 @@
 
 
 std::vector<zet> MyopicAgent::solve(board& b,bool player){
+	this->playing_color = player;
 	std::vector<zet> moves = h.get_moves(b,player,false); 
 	return moves;
 }
@@ -46,7 +47,6 @@ double MyopicAgent::get_weight(int i){
 void MyopicAgent::init(){
 	Agent::init();
 	h.D0 = get_D0();
-	h.K0 = get_K0();
 	h.gamma  = get_gamma();
 	h.delta   = get_delta();
 	h.vert_scale   = get_vert_scale();

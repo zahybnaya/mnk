@@ -22,8 +22,6 @@ int main(int argc, const char* argv[]){
        	dat = load_data(dat,src.state_file);
 	unsigned int seed=unsigned(time(0));
 	mt19937_64 global_generator;
-	board b;
-	zet m;
 	global_generator.seed(seed);
 	h.seed_generator(global_generator);
 	Agent_params ag = read_agent_params(src.agent_description_file);

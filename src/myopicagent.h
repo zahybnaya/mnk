@@ -10,7 +10,7 @@ public:
 	MyopicAgent(){};
 	~MyopicAgent(){};
 	void init();
-	const std::string get_name(){return "Myopic";}
+	std::string get_name()const {return "Myopic";}
 	std::vector<zet> solve(board& b,bool player);
 	double get_triangle_weight();
 	double get_weight(int i);

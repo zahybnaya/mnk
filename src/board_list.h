@@ -4,12 +4,13 @@
 #include <vector>
 #include <queue>
 #include <map>
+#include <assert.h>
 #include <fstream>
 
 #ifndef _WIN64
-#define NTHREADS 8
+#define NTHREADS 1 /*8*/
 #else
-#define NTHREADS 20
+#define NTHREADS 1 /*20*/
 #endif
 
 struct task{
@@ -65,9 +66,10 @@ struct todolist{
       add_task(i);
     }
   }
-  todolist(const int N_val,const char* filename): N(N_val), Nunsolved(N),
+  todolist(const int N_val,std::string times_file): N(N_val), Nunsolved(N),
            iterations(0), Lexpt(N*expt_factor), talk(false){
-    ifstream input(filename,ios::in);
+    ifstream input(times_file,ios::in);
+    assert(input.good());
     unsigned int temp;
     for(unsigned int i=0;i<N;i++){
       input>>temp;
@@ -76,9 +78,10 @@ struct todolist{
     }
     input.close();
   }
-  todolist(const vector<unsigned int>& alltasks, const char* filename): N(alltasks.size()), Nunsolved(N),
+  todolist(const vector<unsigned int>& alltasks, std::string times_file): N(alltasks.size()), Nunsolved(N),
            iterations(0), Lexpt(N*expt_factor), talk(false){
-    ifstream input(filename,ios::in);
+    ifstream input(times_file,ios::in);
+    assert(input.good());
     unsigned int temp;
     unsigned int j=0;
     for(unsigned int i=0;i<N;i++){

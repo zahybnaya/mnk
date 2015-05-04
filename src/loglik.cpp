@@ -20,12 +20,12 @@ int main(int argc, const char* argv[]){
 	superheuristic s;
 	data_struct dat; 
        	dat = load_data(dat,src.state_file);
-	const char* times_file =  dat.get_times_file(src.state_file);
-	unsigned int seed=unsigned(time(0));
-	mt19937_64 global_generator;
-	board b;
-	zet m;
+	std::string times_file=dat.get_times_file(src.state_file);
+	std::cout<<"times_file:"<<times_file<<std::endl;
+	//unsigned int seed=unsigned(time(0));
+	unsigned int seed=0;
 	std::cout<<"seed = "<<seed<<std::endl;
+	mt19937_64 global_generator;
 	global_generator.seed(seed);
 	h.seed_generator(global_generator);
 	Agent_params ag = read_agent_params(src.agent_description_file);

@@ -28,7 +28,8 @@ class AgentParamsException: public std::exception {
  * */
 void Agent::init(){
 	mt19937_64 g;
-	g.seed(time(NULL));
+	FILE_LOG(logWARNING)<<" Setting fixed seed"<<std::endl;;
+	g.seed(0); 
 	generator.seed(g());
 	lapse = std::bernoulli_distribution(get_lapse_rate()); 
 }
@@ -38,9 +39,10 @@ void Agent::init(){
  * */
 zet Agent::play(board& b,bool player){
 	this->playing_color = player;
-	std::vector<zet> s = solve(b,player);
+	std::vector<zet> s = solve(b,player); //TODO MAKE SURE THIS SETS playing_color too
 	FILE_LOG(logDEBUG)<<"Playing for player "<<((player==BLACK)?"BLACK":"WHITE")<< " there are "<< s.size() <<" moves" << std::endl;
 	FILE_LOG(logDEBUG)<<" board is :" <<b<<std::endl;
+	assert(!s.empty());
 	if(b.active_player()!=player){
 		FILE_LOG(logERROR)<<"Player  "<<((player==BLACK)?"BLACK":"WHITE")<< " is not the same as board::active_player()" << std::endl;
 	}

@@ -9,14 +9,13 @@ typedef std::map<uint64,Node*> child_map;
  *  Tree node 
  * */
 struct Node {
-	Node(board m_board,bool player):m_board(m_board),val(0.0),
-		visits(0),player(player),new_node(true),solved(false){}
+	Node(board m_board,bool player,double val=0.0, int visits=0):m_board(m_board),val(val),
+		visits(visits),player(player),solved(false){}
 	board m_board;
 	child_map children; 
 	double val;
 	int visits;
 	bool player;
-	bool new_node; //TODO:See if this can be avoided
 	bool solved; 
 };
 
@@ -26,7 +25,7 @@ struct Node {
 inline
 std::ostream& operator<<(std::ostream& o, Node& n)
 {
-	o<<"B["<<n.m_board.pieces[BLACK]<<"]W["<<n.m_board.pieces[WHITE]<<"]"<<std::endl;
+	o<<"SOLVED:"<<n.solved<<" B{"<<n.m_board.pieces[BLACK]<<"}W{"<<n.m_board.pieces[WHITE]<<"}"<<std::endl;
 	return o;
 }
 /**
@@ -48,6 +47,11 @@ inline void print_tree(Node* root){
 }
 
 /**
+ * Get the 
+ * */
+std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c);
+
+/**
  *  An agent that builds a tree to 
  *  solve a board
  * */
@@ -63,29 +67,26 @@ public:
 	int get_iterations();
 
 
+	/**
+	 *  returns a vector of estimated moves 
+	 * */
 	std::vector<zet> solve(board& b,bool player);
 protected:
 
-	/**
-	 *  Distribution for the number of iterations 
+	/***
+	 * Procedure for anything that should be done before 
+	 * any solution
 	 * */
-	DISTRIBUTION get_iteration_distribution();
+	virtual void pre_solution(){}
 
-	/**
-	 *  Parameter for the distribution 
-	 *  for the number of iterations TODO: Parse as language? e.g. iteration_distribution=G(0.4)/B(0.3)/Beta(0.3,0.4)
+	/***
+	 * Procedure for anything that should be done after 
+	 * any solution
 	 * */
-	double get_iteration_distribution_param();
-
-
-	/**
-	 * Addition to the uct exploitation measurement
-	 * */
-	double get_exploitation_noise_distribution();
-	double get_exploitation_noise_param();
+	virtual void post_solution(){}
 
 	/**
-	 *
+	 * The gamma parameter for the iteration dist
 	 * */
 	double get_iter_gamma();
 	/**
@@ -95,10 +96,9 @@ protected:
 	virtual std::vector<zet> unexpanded_moves(Node* n);
 	/**
 	 *  Generates a new node by applying move 
-	 *  and connecting it to parent
+	 *  and connecting it to parent. value and visits are also optional params
 	 * */
-	virtual Node* expand(uint64 move,Node* parent);
-
+	virtual Node* connect(uint64 move,Node* parent,double value=0.0,int visits=0);
 	/**
 	 * Returns a random move from the list of moves  
 	 * which does not have a node yet
@@ -136,8 +136,13 @@ protected:
 	virtual double evaulate(Node* lastNode, Node* parent, uint64 move_id)=0;
 
 	/**
+	 * Expand a node in the tree
+	 * */
+	virtual double expand(Node* parent) = 0;
+
+
+	/**
 	 * Propagate the new_val through out the nodes variation
-	 *
 	 **/
 	virtual void back_propagatate(double new_val, std::vector<Node*> nodes);
 	/**

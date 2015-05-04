@@ -11,7 +11,7 @@
 # model-fitting: calculates model parameters
 #
 #####
-FLAGS=-g -std=c++11 -pthread  -Wall -O3 
+FLAGS=-g -fsanitize=memory -std=c++11 -pthread  -Wall -O3 
 
 load-modules:
 	module load gcc/4.9.2

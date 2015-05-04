@@ -26,8 +26,7 @@ struct data_struct{
   set<int> distinct_players;
   bool times_file;
   data_struct();
-  
-  const char* get_times_file(std::string);
+  std::string get_times_file(std::string);
   int count_distinct_players();
   void add(board, zet, int, int);
   void print(bool);
