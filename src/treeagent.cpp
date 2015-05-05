@@ -47,7 +47,8 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
  * Creates a new node to represent node and adds it as a child to parent
  */
 Node* TreeAgent::connect(uint64 move,Node* parent,double value,int visits){
-	zet z = zet(move,value,parent->player); // move is not initialized 
+	assert(parent);
+	zet z = zet(move,value,parent->player); 
 	board b = parent->m_board+z;
 	Node* new_node = new Node(b,!parent->player,value,visits);
 	if (new_node->m_board.is_ended()){

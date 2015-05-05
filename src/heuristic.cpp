@@ -295,7 +295,67 @@ double heuristic::evaluate(board b){
 }
 
 
-vector<zet> heuristic::get_moves(board& b, bool player, bool nosort=false){
+void heuristic::get_moves(board& b, bool player, bool nosort, std::vector<zet> &candidate ){
+  unsigned int i;
+  uint64 m,m1,m2;
+  map<uint64,int> lookup;
+  double deltaL=0.0;
+  double c_act,c_pass;
+  if(player==self){
+    c_act=2.0*opp_scale/(1.0+opp_scale);
+    c_pass=2.0/(1.0+opp_scale);
+  }
+  else{
+    c_act=2.0/(1.0+opp_scale);
+    c_pass=2.0*opp_scale/(1.0+opp_scale);
+  }
+  for(i=0;i<Nfeatures;i++)
+    if(feature[i].is_active(b)){
+      if(feature[i].contained(b,player))
+        deltaL-=c_pass*feature[i].diff_act_pass();
+      else if(feature[i].contained(b,!player))
+        deltaL-=c_act*feature[i].diff_act_pass();
+    }
+  for(i=1,m=1;m!=boardend;m<<=1){
+	  if(b.isempty(m)){
+		  if(m & center){
+			  candidate.push_back(zet(m,deltaL+c_pass*weight[0]+noise(engine),player));
+		  }
+		  else {
+			  candidate.push_back(zet(m,deltaL+noise(engine),player));
+		  }
+		  lookup[m]=i;
+		  i++;
+	  }
+  }
+  int cs = candidate.size();
+  for(i=0;i<Nfeatures;i++)
+    if(feature[i].is_active(b)){
+      m1=feature[i].missing_pieces(b,player);
+      m2=feature[i].missing_pieces(b,!player);
+      if((m1 & m2) && has_one_bit(m1)){
+        candidate[lookup[m1]-1].val+=c_pass*feature[i].weight_pass;
+	assert(lookup[m1]-1<cs);
+      }
+      if(m1==0 && feature[i].just_active(b))
+        for(m=1;m!=boardend;m<<=1)
+          if(b.isempty(m) && feature[i].isempty(m)){
+            candidate[lookup[m]-1].val-=c_pass*feature[i].weight_pass;
+	    assert(lookup[m]-1<cs);
+	  }
+      if(m2==0 && feature[i].just_active(b))
+        for(m=1;m!=boardend;m<<=1)
+          if(b.isempty(m) && feature[i].isempty(m)){
+            candidate[lookup[m]-1].val+=c_act*feature[i].weight_act;
+	    assert(lookup[m]-1<cs);
+	  }
+    }
+  if(!nosort)
+	  sort(candidate.begin(),candidate.end(),compare);
+}
+
+
+vector<zet> heuristic::get_moves(board& b, bool player, bool nosort=false ){
   vector<zet> candidate;
   unsigned int i;
   uint64 m,m1,m2;

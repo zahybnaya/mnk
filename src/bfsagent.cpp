@@ -87,13 +87,18 @@ double BFSAgent::expand(Node* n){
 	int k = int(get_K0()) + branching_factor(get_generator());
 	FILE_LOG(logDEBUG) << "Expending Node "<<*n<<std::endl;
 	FILE_LOG(logDEBUG) << "selected branching factor of "<<k<<std::endl;
-	std::vector<zet> ordered_moves = h.get_moves(n->m_board,n->player,false);
-	for (int i=0;i<k;i++){
-		zet z = ordered_moves[i];
+	std::vector<zet> zets;
+	h.get_moves(n->m_board,n->player,false,zets);
+	double ret_val=0;
+	int actual_branching_factor = k<zets.size()?k:zets.size();
+	assert(actual_branching_factor<=zets.size());
+	for (int i=0;i<actual_branching_factor;++i){
+		zet z = zets[i]; 
+		if (i==0){ret_val=z.val;}
 		connect(z.zet_id,n,z.val,1);
 	}
-	FILE_LOG(logDEBUG) << " expansion returned the value "<<ordered_moves[0].val<<std::endl;
-	return ordered_moves[0].val;
+	FILE_LOG(logDEBUG) << " expansion returned the value "<<ret_val<<std::endl;
+	return ret_val;
 }
 
 

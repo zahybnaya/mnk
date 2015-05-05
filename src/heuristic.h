@@ -67,6 +67,7 @@ class heuristic{
     vector<zet> enumerate_moves(board& b, bool player);
     double value(board& b,bool player);
     vector<zet> get_moves(board&, bool, bool);
+    void get_moves(board& b, bool player, bool nosort, std::vector<zet> &candidate);
     void check_moves(vector<zet>,board);
     double likelihood(board, zet);
     zet makerandommove(board,bool);
