@@ -17,6 +17,10 @@ public:
 	 * */
 	virtual double evaulate(Node* lastNode, Node* p, uint64 m_id);
 	std::string get_name() const;
+	/**
+	 *  if there are unexpected moves it's not solved
+	 **/
+	void mark_solved(Node* n);
 private:
 	/* uct funtions */
 	virtual double get_exploration_constant(); 

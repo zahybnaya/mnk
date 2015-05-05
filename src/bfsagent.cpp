@@ -1,6 +1,7 @@
 #include "bfsagent.h"
 #include <math.h>
 #include <random>
+#include <algorithm>
 #include <assert.h>
 
 /**
@@ -42,7 +43,9 @@ bool better(pair<uint64,Node*> n1p, pair<uint64,Node*> n2p) {
 Node* BFSAgent::select_next_node(Node* n) {
 	assert(!n->solved);
 	assert(!n->m_board.is_ended());
+	FILE_LOG(logDEBUG)<< "selecting next node from " <<*n <<std::endl;
 	if (n->children.empty()){
+		FILE_LOG(logDEBUG)<< " empty children - returning null " <<std::endl;
 		return NULL;
 	}
 	std::vector<pair<uint64,Node*>> v= get_shuffled_vector(n->children);
@@ -50,8 +53,7 @@ Node* BFSAgent::select_next_node(Node* n) {
 		for ( child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
 			FILE_LOG(logERROR) << *(i->second);
 		}
-
-			FILE_LOG(logERROR)<< "Total of "<< n->children.size() <<" children" <<std::endl;
+		FILE_LOG(logERROR)<< "Total of "<< n->children.size() <<" children" <<std::endl;
 	}
 	assert(v.size()>0);
 	std::pair<uint64,Node*> argmax =
@@ -83,7 +85,8 @@ void BFSAgent::post_solution(){
  * */
 double BFSAgent::expand(Node* n){
 	int k = int(get_K0()) + branching_factor(get_generator());
-	FILE_LOG(logDEBUG) << "EXPAND: selected branching factor of "<<k<<std::endl;
+	FILE_LOG(logDEBUG) << "Expending Node "<<*n<<std::endl;
+	FILE_LOG(logDEBUG) << "selected branching factor of "<<k<<std::endl;
 	std::vector<zet> ordered_moves = h.get_moves(n->m_board,n->player,false);
 	for (int i=0;i<k;i++){
 		zet z = ordered_moves[i];

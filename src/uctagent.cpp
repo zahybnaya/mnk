@@ -63,13 +63,20 @@ Node* UCTAgent::select_next_node(Node* n){
 	assert(!n->m_board.is_ended());
 	std::vector<zet> moves = unexpanded_moves(n);
 	if (!moves.empty()){
-		NULL;
+		return NULL;
 	}
 	std::vector<pair<uint64,Node*>> v= get_shuffled_vector(n->children);
 	assert(v.size()>0);
 	std::pair<uint64,Node*> argmax =
 	       	*std::max_element(v.begin(),v.end(),uct_comparator_t(this,n->visits));
 	return argmax.second;
+}
+
+void UCTAgent::mark_solved(Node* n){
+	if (!unexpanded_moves(n).empty()){
+		return;
+	}
+	TreeAgent::mark_solved(n);
 }
 
 /**

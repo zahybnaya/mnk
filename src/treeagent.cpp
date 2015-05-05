@@ -3,6 +3,7 @@
 #include "board.h"
 #include <assert.h>
 #include <random>
+#include <algorithm>
 
 /**
  * Shuffles a vector from children map
@@ -48,8 +49,6 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 Node* TreeAgent::connect(uint64 move,Node* parent,double value,int visits){
 	zet z = zet(move,value,parent->player); // move is not initialized 
 	board b = parent->m_board+z;
-	b.pieces[BLACK]; //read to debug
-	b.pieces[WHITE];//read to debug
 	Node* new_node = new Node(b,!parent->player,value,visits);
 	if (new_node->m_board.is_ended()){
 		new_node->solved=true;
@@ -132,13 +131,11 @@ std::vector<zet> TreeAgent::move_estimates(Node* n){
 	return ret;
 }
 
-void TreeAgent::mark_solved(Node* n){
+
+void TreeAgent::mark_solved_if_all_children_solved(Node* n){
 	if (n->solved){
 		return;
 	} 
-	if (!unexpanded_moves(n).empty()){
-		return;
-	}
 	bool mark_solved=true;
 	assert(n->children.size()>0);
 	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
@@ -149,6 +146,14 @@ void TreeAgent::mark_solved(Node* n){
 	if (mark_solved){
 		n->solved=true;
 	}
+
+}
+
+/**
+ * Mark node solved 
+ * */
+void TreeAgent::mark_solved(Node* n){
+	mark_solved_if_all_children_solved(n);
 }
 
 /**
@@ -160,6 +165,7 @@ void TreeAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 		n->val+=new_val;
 		n->visits++;
 		mark_solved(n);
+		FILE_LOG(logDEBUG) << "after back-propagating "<< *n << std::endl ;
 	}
 }
 

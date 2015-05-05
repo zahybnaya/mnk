@@ -160,6 +160,11 @@ private:
 	 * Next node to be selected when on node n in the tree
 	 * */
 	virtual Node* select_next_node(Node* n) = 0;
+
+	/**
+	 * 
+	 * */
+	void mark_solved_if_all_children_solved(Node* n);
 };
 
 
