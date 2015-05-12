@@ -1,0 +1,16 @@
+implementation=BFS
+D0=5
+K0=2
+gamma=0.0067405
+delta=0.20711
+lapse_rate=0.019727
+vert_scale=1.9813
+diag_scale=2.0187
+opp_scale=2.0187
+weights_0=0.78773
+weights_1=1.164
+weights_2=0.2527
+weights_3=4.9591
+weights_4=2.5238
+weights_5=14.891
+triangle_weight=-1.0357

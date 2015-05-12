@@ -1,0 +1,19 @@
+# A BFS implementation with 100 iterations
+## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v)}
+implementation=BFS
+D0=5
+K0=4
+gamma=0.01
+delta=0.2
+lapse_rate=0.02
+vert_scale=1
+diag_scale=1
+opp_scale=1.5
+weights_0=0.6
+weights_1=1.0
+weights_2=0.3
+weights_3=5.0
+weights_4=2.5
+weights_5=10.0
+triangle_weight=1.2
+exploration_constant=0

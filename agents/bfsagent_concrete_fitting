@@ -1,0 +1,40 @@
+# A BFS implementation with 100 iterations
+## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v)}
+implementation=BFS
+action_select_method=0
+eval_function=1
+iterations=10
+# center-square, XX__. X_X_, XXX_<your move> , XXX_<his> , XXXX_<win>, ... [vertical],[diagonal], triangles. 
+weights={0.8, 1.0, 0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.0,0.3,6.0,2.5,10.0,1.2}
+exploration_constant=0
+D0=5.0
+K0=3.0
+gamma=0.01
+delta=0.2
+lapse_rate=0.02
+vert_scale=1.0
+diag_scale=1.0
+opp_scale=1.0
+weights_0=0.8
+weights_1=1.0
+weights_2=0.5
+weights_3=6.0
+weights_4=2.6296
+weights_5=30.0
+triangle_weight=1.0
+
+#3.0000
+#    0.0100
+#    0.2000
+#    0.0200
+#    1.0000
+#    1.0000
+#    1.0000
+#    0.8000
+#    1.0000
+#    0.5000
+#    6.0000
+#    2.6296
+#   30.0000
+#    1.0000
+
