@@ -276,7 +276,7 @@ bool is_board_full(std::string black_pieces, std::string white_pieces){
 
 
 bool is_playing_position(std::string description){
-	return (description == "playing" || description == "AFC");
+	return (description == "playing" || description == "AFC" || description == "win");
 }
 
 

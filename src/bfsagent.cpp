@@ -84,15 +84,15 @@ void BFSAgent::post_solution(){
  * Changes from implementation to another
  * */
 double BFSAgent::expand(Node* n){
-	int k = int(get_K0()) + branching_factor(get_generator());
+	unsigned int k = int(get_K0()) + branching_factor(get_generator());
 	FILE_LOG(logDEBUG) << "Expending Node "<<*n<<std::endl;
 	FILE_LOG(logDEBUG) << "selected branching factor of "<<k<<std::endl;
 	std::vector<zet> zets;
 	h.get_moves(n->m_board,n->player,false,zets);
 	double ret_val=0;
-	int actual_branching_factor = k<zets.size()?k:zets.size();
+	unsigned int actual_branching_factor = k<zets.size()?k:zets.size();
 	assert(actual_branching_factor<=zets.size());
-	for (int i=0;i<actual_branching_factor;++i){
+	for (unsigned int i=0;i<actual_branching_factor;++i){
 		zet z = zets[i]; 
 		if (i==0){ret_val=z.val;}
 		connect(z.zet_id,n,z.val,1);

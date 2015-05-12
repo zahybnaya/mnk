@@ -26,7 +26,7 @@ int main(int argc, const char* argv[]){
 	h.seed_generator(global_generator);
 	Agent_params ag = read_agent_params(src.agent_description_file);
 	for (int i = 0; i <reps; i++) {
-		compute_loglik_agent(ag,dat,true,-1,ALL,NULL,NULL);
+		compute_loglik_agent(ag,dat,true,-1,ALL,"",NULL);
 	}
 	return 0;
 }

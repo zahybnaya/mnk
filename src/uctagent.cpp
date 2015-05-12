@@ -72,6 +72,9 @@ Node* UCTAgent::select_next_node(Node* n){
 	return argmax.second;
 }
 
+/**
+ * A solved node is one that has all children expanded
+ * */
 void UCTAgent::mark_solved(Node* n){
 	if (!unexpanded_moves(n).empty()){
 		return;

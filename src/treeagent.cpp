@@ -77,7 +77,7 @@ int TreeAgent::build_tree(Node* n,int iterations){
 	int iterNum=0;
 	while (iterNum <= iterations){
 		FILE_LOG(logDEBUG) << " Starting iteration "<< iterNum<< std::endl;
-	;	iterate(n);
+		iterate(n);
 		iterNum++;
 	}
 	return 0;

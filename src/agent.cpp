@@ -28,8 +28,7 @@ class AgentParamsException: public std::exception {
  * */
 void Agent::init(){
 	mt19937_64 g;
-	FILE_LOG(logWARNING)<<" Setting fixed seed"<<std::endl;;
-	g.seed(0); 
+	g.seed(time(NULL)); 
 	generator.seed(g());
 	lapse = std::bernoulli_distribution(get_lapse_rate()); 
 }
@@ -39,13 +38,18 @@ void Agent::init(){
  * */
 zet Agent::play(board& b,bool player){
 	this->playing_color = player;
-	std::vector<zet> s = solve(b,player); //TODO MAKE SURE THIS SETS playing_color too
+	std::vector<zet> s = enumerate_moves(b,player); 
+	if (lapse(get_generator())){
+		int rn_n = std::uniform_int_distribution<int>(0,s.size()-1)(get_generator());
+		return s[rn_n];
+	}
+	s = solve(b,player); //TODO MAKE SURE THIS SETS playing_color too
 	FILE_LOG(logDEBUG)<<"Playing for player "<<((player==BLACK)?"BLACK":"WHITE")<< " there are "<< s.size() <<" moves" << std::endl;
 	FILE_LOG(logDEBUG)<<" board is :" <<b<<std::endl;
 	assert(!s.empty());
-	if(b.active_player()!=player){
-		FILE_LOG(logERROR)<<"Player  "<<((player==BLACK)?"BLACK":"WHITE")<< " is not the same as board::active_player()" << std::endl;
-	}
+	//if(b.active_player()!=player){
+	//	FILE_LOG(logERROR)<<"Player  "<<((player==BLACK)?"BLACK":"WHITE")<< " is not the same as board::active_player()" << std::endl;
+	//}
 	if (lapse(get_generator())){
 		int rn_n = std::uniform_int_distribution<int>(0,s.size()-1)(get_generator());
 		return s[rn_n];
