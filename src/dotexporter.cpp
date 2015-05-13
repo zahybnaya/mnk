@@ -13,7 +13,7 @@ void todot(Node* n , std::ostream& out){
 }
 
 static void print_node(Node* n, std::ostream& out) {
-	std::string shape=n->player?"box":"circle";
+	std::string shape=(n->player==BLACK)?"box":"circle";
 	out<<"\"" << n << "\"" <<"[label=\""<<n->val/n->visits <<"\"" <<" shape="<<shape <<"];"<<std::endl;
 	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
 		print_node(i->second, out);

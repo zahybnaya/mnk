@@ -14,6 +14,7 @@ int get_subject(int argc, const char* argv[]){
 
 int main(int argc, const char* argv[]){
 	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
+	//FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
 	Source src=prepeare_source(argc, argv);
 	int subject = get_subject(argc,argv);
 	heuristic h;

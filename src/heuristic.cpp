@@ -295,6 +295,9 @@ double heuristic::evaluate(board b){
 }
 
 
+/**
+ * Always from the active player perspective
+ * */
 void heuristic::get_moves(board& b, bool player, bool nosort, std::vector<zet> &candidate ){
   unsigned int i;
   uint64 m,m1,m2;

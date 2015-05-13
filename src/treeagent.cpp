@@ -83,7 +83,6 @@ int TreeAgent::build_tree(Node* n,int iterations){
 		iterate(n);
 		iterNum++;
 	}
-	//todot(n,std::cout);
 	return 0;
 }
 
@@ -98,8 +97,8 @@ void TreeAgent::iterate(Node* n){
 	}
 	std::vector<Node*> nodes = select_variation(n);	
 	double new_val = expand(nodes.back());
-	//double new_val = evaluate_last_node(nodes);
 	back_propagatate(new_val,nodes);
+	//todot(n,std::cout);
 }
 
 

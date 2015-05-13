@@ -32,7 +32,8 @@ bool better_for_black(pair<uint64,Node*> n1p, pair<uint64,Node*> n2p) {
 	assert(n1->player==n2->player);
 	double n1_val = n1->val/n1->visits;
 	double n2_val = n2->val/n2->visits;
-	return  (n1->player == BLACK) ? (n1_val < n2_val):(n1_val > n2_val);
+	// parent is the opposite color
+	return  (n1->player == BLACK) ? (n1_val > n2_val):(n1_val < n2_val);
 } 
 
 /**
@@ -121,13 +122,17 @@ void BFSAgent::post_solution(){
 }
 
 double value_for_new_node(Node* parent, zet z){
-	return (parent->val/parent->visits)+((parent->player==BLACK)?1:-1)*z.val;
+	return (parent->val/parent->visits)+(((parent->player==BLACK)?1:-1)*z.val);
 }
 
 /**
  * Changes from implementation to another
  * */
 double BFSAgent::expand(Node* n){
+	if (n->visits==0/*root*/) {
+                n->val=h.evaluate(n->m_board);
+                n->visits=1;
+        }
 	unsigned int k = int(get_K0()) + branching_factor(get_generator());
 	FILE_LOG(logDEBUG) << "Expending Node "<<*n<<std::endl;
 	FILE_LOG(logDEBUG) << "selected branching factor of "<<k<<std::endl;

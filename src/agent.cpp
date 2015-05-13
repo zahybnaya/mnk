@@ -38,30 +38,31 @@ void Agent::init(){
  * */
 zet Agent::play(board& b,bool player){
 	this->playing_color = player;
-	std::vector<zet> s = enumerate_moves(b,player); 
 	if (lapse(get_generator())){
+		std::vector<zet> s = enumerate_moves(b,player); 
 		int rn_n = std::uniform_int_distribution<int>(0,s.size()-1)(get_generator());
+		FILE_LOG(logDEBUG)<<" * lapsing - returning random move" <<std::endl;
 		return s[rn_n];
 	}
-	s = solve(b,player); //TODO MAKE SURE THIS SETS playing_color too
+	std::vector<zet> s = solve(b,player); //TODO MAKE SURE THIS SETS playing_color too
 	FILE_LOG(logDEBUG)<<"Playing for player "<<((player==BLACK)?"BLACK":"WHITE")<< " there are "<< s.size() <<" moves" << std::endl;
 	FILE_LOG(logDEBUG)<<" board is :" <<b<<std::endl;
 	assert(!s.empty());
 	//if(b.active_player()!=player){
 	//	FILE_LOG(logERROR)<<"Player  "<<((player==BLACK)?"BLACK":"WHITE")<< " is not the same as board::active_player()" << std::endl;
 	//}
-	if (lapse(get_generator())){
-		int rn_n = std::uniform_int_distribution<int>(0,s.size()-1)(get_generator());
-		return s[rn_n];
-	}
 	zet r;
 	std::random_shuffle(s.begin(),s.end());
-	if (player == BLACK || !is_negamax()){
-		r=*std::min_element(s.begin(),s.end(),compare);
-	} else{
-		r=*std::max_element(s.begin(),s.end(),compare);
+	for (std::vector<zet>::const_iterator i = s.begin(); i != s.end(); ++i) {
+		FILE_LOG(logDEBUG)<<"    "<<i->zet_id<<" with value:"<<i->val<<std::endl;
 	}
-	FILE_LOG(logDEBUG)<<((player==BLACK)?"BLACK":"WHITE")<<" playes move "<<r.zet_id<<std::endl;
+
+	if (player == BLACK || is_negamax()){
+		r=*std::max_element(s.begin(),s.end(),[](const zet& z1, const zet& z2 ){ return z1.val < z2.val;});
+	} else{
+		r=*std::min_element(s.begin(),s.end(),[](const zet& z1, const zet& z2 ){ return z1.val < z2.val;});
+	}
+	FILE_LOG(logDEBUG)<<((player==BLACK)?"BLACK":"WHITE")<<" playes move "<<r.zet_id<<" with value:"<<r.val <<std::endl;
 	return r;
 }
 
