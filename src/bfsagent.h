@@ -14,8 +14,9 @@ class BFSAgent: public TreeAgent{
 		void init();
 		std::string get_name() const {return "BFS";}
 		Node* select_next_node(Node* n);
+		void back_propagatate(double new_val, std::vector<Node*> nodes);
 		double expand(Node* n);
-		double evaulate(Node* lastNode,Node*, uint64);
+		//double evaulate(Node* lastNode,Node*, uint64);
 		double get_triangle_weight();
 		double get_weight(int i);
 		double get_D0();

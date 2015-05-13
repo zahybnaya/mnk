@@ -10,13 +10,14 @@ typedef std::map<uint64,Node*> child_map;
  * */
 struct Node {
 	Node(board m_board,bool player,double val=0.0, int visits=0):m_board(m_board),val(val),
-		visits(visits),player(player),solved(false){}
+		visits(visits),player(player),solved(false), playing_color_won(false){}
 	board m_board;
 	child_map children; 
 	double val;
 	int visits;
 	bool player;
 	bool solved; 
+	bool playing_color_won; 
 };
 
 /**
@@ -133,7 +134,7 @@ protected:
 	/**
 	 * Given an addition node lastNode, return an evaluation
 	 **/
-	virtual double evaulate(Node* lastNode, Node* parent, uint64 move_id)=0;
+	//virtual double evaulate(Node* lastNode, Node* parent, uint64 move_id);
 
 	/**
 	 * Expand a node in the tree
@@ -149,6 +150,11 @@ protected:
 	 *  marks solved nodes
 	 * */
 	virtual void mark_solved(Node* n);
+	/**
+	 *  marks that the playing agent has won from this node
+	 * */
+	virtual void mark_playing_color_won(Node* n);
+
 
 private:
 	/**

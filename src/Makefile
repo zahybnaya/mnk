@@ -26,8 +26,8 @@ generate_times: generate_times.cpp Gomoku.cpp board_list.h agent_builder.cpp age
 	g++ $(FLAGS) generate_times.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ogenerate_times
 
 
-loglik: loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
-	g++ $(FLAGS) loglik.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ologlik
+loglik: dotexporter.cpp dotexporter.h loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
+	g++ $(FLAGS) dotexporter.cpp loglik.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ologlik
 
 mexfunction: mexfunction.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
 	g++ $(FLAGS) mexfunction.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -omexfunction

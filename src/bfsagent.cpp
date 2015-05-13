@@ -24,6 +24,18 @@ void BFSAgent::init(){
 }
 
 /**
+ * 
+ * */
+bool better_for_black(pair<uint64,Node*> n1p, pair<uint64,Node*> n2p) {
+	Node* n1 = n1p.second;
+	Node* n2 = n2p.second;
+	assert(n1->player==n2->player);
+	double n1_val = n1->val/n1->visits;
+	double n2_val = n2->val/n2->visits;
+	return  (n1->player == BLACK) ? (n1_val < n2_val):(n1_val > n2_val);
+} 
+
+/**
  * The comparator TODO:test this
  * */
 bool better(pair<uint64,Node*> n1p, pair<uint64,Node*> n2p) {
@@ -32,9 +44,38 @@ bool better(pair<uint64,Node*> n1p, pair<uint64,Node*> n2p) {
 	assert(n1->player==n2->player);
 	double n1_val = n1->val/n1->visits;
 	double n2_val = n2->val/n2->visits;
-	return n2_val > n1_val;
+	return n2_val < n1_val;
 } 
 
+/**
+ * A minimax back_propagation
+ * */
+void BFSAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
+	for (std::vector<Node*>::const_reverse_iterator i = nodes.rbegin(); i != nodes.rend(); ++i) {
+		Node* n = *i;
+		n->visits++;
+		if (n->visits==1){
+			n->val=new_val*n->visits;
+		} else {
+			Node* argmax = std::max_element(n->children.begin(),n->children.end(),better_for_black)->second;
+			n->val=(argmax->val/argmax->visits)*n->visits;
+		}
+		mark_solved(n);
+		mark_playing_color_won(n);
+		FILE_LOG(logDEBUG) << "after back-propagating "<< *n << std::endl ;
+	}
+}
+
+//Node* tie_break(std::vector<pair<uint64,Node*>> v, double val){
+//
+//	std::vector<pair<uint64,Node*>> maxs;
+//	std::copy_if(v.begin(), v.end(), std::back_inserter(maxs),[](const std::pair<uint64,Node*> &p){
+//			return (p.second->val/p.second->visits==val);
+//			});
+//	std::random_shuffle(maxs.begin(),maxs.end()); //TODO use std::advance
+//	return maxs.begin()->second;
+//}
+//
 
 
 /***
@@ -57,10 +98,10 @@ Node* BFSAgent::select_next_node(Node* n) {
 	}
 	assert(v.size()>0);
 	std::pair<uint64,Node*> argmax =
-		*std::max_element(v.begin(),v.end(),better);
+		*std::max_element(v.begin(),v.end(),better_for_black);
 	FILE_LOG(logDEBUG) << " returning node "<< *argmax.second<< std::endl;
 	return argmax.second;
-
+	//return tie_break(v, (argmax.second->val/argmax.second->visits));
 }
 
 /**
@@ -79,6 +120,9 @@ void BFSAgent::post_solution(){
 	h.restore_features();
 }
 
+double value_for_new_node(Node* parent, zet z){
+	return (parent->val/parent->visits)+((parent->player==BLACK)?1:-1)*z.val;
+}
 
 /**
  * Changes from implementation to another
@@ -94,28 +138,28 @@ double BFSAgent::expand(Node* n){
 	assert(actual_branching_factor<=zets.size());
 	for (unsigned int i=0;i<actual_branching_factor;++i){
 		zet z = zets[i]; 
-		if (i==0){ret_val=z.val;}
-		connect(z.zet_id,n,z.val,1);
+		if (i==0){ret_val=value_for_new_node(n,z);}
+		connect(z.zet_id,n,value_for_new_node(n,z),1);
 	}
 	FILE_LOG(logDEBUG) << " expansion returned the value "<<ret_val<<std::endl;
 	return ret_val;
 }
 
 
-/**
- * Evaluaties a new node
- **/
-double BFSAgent::evaulate(Node* /*lastNode*/, Node* parent, uint64 move_id){
-	h.self = get_playing_color();
-	std::vector<zet> moves = h.get_moves(parent->m_board/*parent*/,parent->player /*parent*/,false); 
-	for ( std::vector<zet>::const_iterator i = moves.begin(); i != moves.end(); ++i) {
-		if (i->zet_id == move_id){
-			return i->val;
-		}
-	}
-	throw std::runtime_error("Can't evaluate state");
-}
-
+///**
+// * Evaluaties a new node
+// **/
+//double BFSAgent::evaulate(Node* /*lastNode*/, Node* parent, uint64 move_id){
+//	h.self = get_playing_color();
+//	std::vector<zet> moves = h.get_moves(parent->m_board/*parent*/,parent->player /*parent*/,false); 
+//	for ( std::vector<zet>::const_iterator i = moves.begin(); i != moves.end(); ++i) {
+//		if (i->zet_id == move_id){
+//			return i->val;
+//		}
+//	}
+//	throw std::runtime_error("Can't evaluate state");
+//}
+//
 double BFSAgent::get_D0() {
 	return get_double_property("D0");
 }

@@ -1,6 +1,7 @@
 #include "treeagent.h"
 #include "heuristic.h"
 #include "board.h"
+#include "dotexporter.h"
 #include <assert.h>
 #include <random>
 #include <algorithm>
@@ -12,7 +13,7 @@ std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
 	std::vector<pair<uint64,Node*>> v;
 	assert(c.size()>0);
 	std::copy_if(c.begin(), c.end(), std::back_inserter(v),[](const std::pair<uint64,Node*> &p){
-			return !p.second->solved;
+			return !p.second->solved && !p.second->playing_color_won;
 			});
 	std::random_shuffle(v.begin(),v.end());
 	return v;
@@ -33,7 +34,7 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 	this->playing_color=player;
 	double gamma = get_iter_gamma();
 	std::geometric_distribution<int> iter_dist(gamma);
-	int num_iterations= iter_dist(get_generator());
+	int num_iterations= iter_dist(get_generator())+1;
 	FILE_LOG(logDEBUG) << " Number of iterations  "<< num_iterations<< std::endl;
 	Node* n = create_initial_state(b);
 	build_tree(n,num_iterations);	
@@ -49,12 +50,14 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 Node* TreeAgent::connect(uint64 move,Node* parent,double value,int visits){
 	assert(parent);
 	zet z = zet(move,value,parent->player); 
-	board b = parent->m_board+z;
-	Node* new_node = new Node(b,!parent->player,value,visits);
+	Node* new_node = new Node(parent->m_board+z,!parent->player,value,visits);
 	if (new_node->m_board.is_ended()){
 		new_node->solved=true;
-	}
-	parent->children[move]=new_node; 
+		if ((new_node->player == this->playing_color) && new_node->m_board.player_has_won(new_node->player)){
+			new_node->playing_color_won=true;
+		}
+	} 
+ 	parent->children[move]=new_node; 
 	FILE_LOG(logDEBUG) << " connecting move:"<<move << " with value:"<< value<< " is_solved:"<<new_node->solved<<std::endl;
 	return new_node;
 }
@@ -80,6 +83,7 @@ int TreeAgent::build_tree(Node* n,int iterations){
 		iterate(n);
 		iterNum++;
 	}
+	//todot(n,std::cout);
 	return 0;
 }
 
@@ -88,7 +92,7 @@ int TreeAgent::build_tree(Node* n,int iterations){
  * */
 void TreeAgent::iterate(Node* n){
 	assert(!n->m_board.is_ended());
-	if (n->solved){
+	if (n->solved || n->playing_color_won){
 		FILE_LOG(logDEBUG) << " Node is solved, returning "<< std::endl;
 		return;
 	}
@@ -133,6 +137,31 @@ std::vector<zet> TreeAgent::move_estimates(Node* n){
 }
 
 
+/**
+ * Marks if the playing color had won : either by AND for the negative color or OR for the playing ccolor
+ * */
+void TreeAgent::mark_playing_color_won(Node* n){
+	if(n->children.empty()) 
+		return;
+	bool use_or = (n->player == this->playing_color);
+	bool mark_play = true;
+	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
+		if(use_or){
+			if (i->second->playing_color_won) break;
+			mark_play=false;
+		} else if( (mark_play=(mark_play && i->second->playing_color_won))==false){
+			return;
+		} 
+	}
+	if (mark_play){
+		n->playing_color_won = true;
+	}
+}
+
+/**
+ * A solved node is one that either all children are solved or 
+ * that there is a winning variation from it. 
+ * */
 void TreeAgent::mark_solved_if_all_children_solved(Node* n){
 	if (n->solved){
 		return;
@@ -166,6 +195,7 @@ void TreeAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 		n->val+=new_val;
 		n->visits++;
 		mark_solved(n);
+		mark_playing_color_won(n);
 		FILE_LOG(logDEBUG) << "after back-propagating "<< *n << std::endl ;
 	}
 }
