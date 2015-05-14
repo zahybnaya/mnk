@@ -3,7 +3,7 @@
 #PBS -l nodes=2:ppn=20
 #PBS -l walltime=02:30:00
 #PBS -l mem=2GB 
-#PBS -t 11,18
+#PBS -t 0-37
 #PBS -j oe
 #PBS -M zb9@nyu.edu
 #PBS -m abe

@@ -67,16 +67,15 @@ void BFSAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 	}
 }
 
-//Node* tie_break(std::vector<pair<uint64,Node*>> v, double val){
-//
-//	std::vector<pair<uint64,Node*>> maxs;
-//	std::copy_if(v.begin(), v.end(), std::back_inserter(maxs),[](const std::pair<uint64,Node*> &p){
-//			return (p.second->val/p.second->visits==val);
-//			});
-//	std::random_shuffle(maxs.begin(),maxs.end()); //TODO use std::advance
-//	return maxs.begin()->second;
-//}
-//
+Node* tie_break(std::vector<pair<uint64,Node*>> v, double val){
+	std::vector<pair<uint64,Node*>> maxs;
+	std::copy_if(v.begin(), v.end(), std::back_inserter(maxs),[val](const std::pair<uint64,Node*> &p){
+			return (p.second->val/p.second->visits==val);
+			});
+	std::random_shuffle(maxs.begin(),maxs.end()); //TODO use std::advance
+	return maxs.begin()->second;
+}
+
 
 
 /***
@@ -101,8 +100,8 @@ Node* BFSAgent::select_next_node(Node* n) {
 	std::pair<uint64,Node*> argmax =
 		*std::max_element(v.begin(),v.end(),better_for_black);
 	FILE_LOG(logDEBUG) << " returning node "<< *argmax.second<< std::endl;
-	return argmax.second;
-	//return tie_break(v, (argmax.second->val/argmax.second->visits));
+	//return argmax.second;
+	return tie_break(v, (argmax.second->val/argmax.second->visits));
 }
 
 /**
