@@ -98,8 +98,9 @@ int main(int argc, const char *argv[])
 	Agent_params p = read_agent_params(s.agent_description_file); 
 	Agent_builder b;
 	Agent* agent = b.build(p);
-	for (int player_number=0;player_number<dat.Nplayers;++player_number){
-		execute_agent(agent, player_number, dat);	
+
+	for (std::set<int>::iterator i = dat.distinct_players.begin(); i != dat.distinct_players.end();++i){
+		execute_agent(agent, *i, dat);	
 	}
 	delete agent;
 	return 0;

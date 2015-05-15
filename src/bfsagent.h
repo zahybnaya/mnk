@@ -19,7 +19,6 @@ class BFSAgent: public TreeAgent{
 		//double evaulate(Node* lastNode,Node*, uint64);
 		double get_triangle_weight();
 		double get_weight(int i);
-		double get_D0();
 		double get_K0();
 		double get_gamma(); 
 		double get_delta();

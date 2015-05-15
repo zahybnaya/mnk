@@ -19,7 +19,7 @@ void BFSAgent::init(){
 		h.weight[i]=get_weight(i);
 	h.weight[16]=get_triangle_weight();
 	h.update();
-	FILE_LOG(logDEBUG) << "Init an agent with the following properties- " << " D0:" << get_D0() <<" K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
+	FILE_LOG(logDEBUG) << "Init an agent with the following properties- " <<" K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
 
 }
 
@@ -164,9 +164,6 @@ double BFSAgent::expand(Node* n){
 //	throw std::runtime_error("Can't evaluate state");
 //}
 //
-double BFSAgent::get_D0() {
-	return get_double_property("D0");
-}
 double BFSAgent::get_K0() {
 	return get_double_property("K0");
 }

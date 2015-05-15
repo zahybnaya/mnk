@@ -12,7 +12,7 @@ The grid will be n-dimensional (with n fitted parameters).
 Phases:
 
 1) Generating the model files: 
-	For each point the script generates a model file under "../agents/<model_file>___fake_<point>"
+	For each point the script model_recovery.py generates a model file under "../agents/<model_file>___fake_<point>"
 
 2) Fake data generation:
 	The script generates a fake-data running script called "generate_fake_data_.sh"
@@ -29,6 +29,9 @@ Phases:
 
 5) Plotting:
 	You can generate scatter plots with the plotting script 'plot_param_recovery_scatter.py'
+
+6) Model Recovery:
+	Generates the following data file: Generating_model, Point, DS, Fitting_model, Measurement(AIC/BIC/etc), value 
 
 
 #TODO: take care of subjects, currently -1 means that every data point is done on all subjects 

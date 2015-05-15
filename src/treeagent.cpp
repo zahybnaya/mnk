@@ -35,6 +35,7 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 	double gamma = get_iter_gamma();
 	std::geometric_distribution<int> iter_dist(gamma);
 	int num_iterations= iter_dist(get_generator())+1;
+	assert(num_iterations>0);
 	FILE_LOG(logDEBUG) << " Number of iterations  "<< num_iterations<< std::endl;
 	Node* n = create_initial_state(b);
 	build_tree(n,num_iterations);	

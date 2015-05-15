@@ -6,7 +6,6 @@
 
 
 void States::read(const char* filename){
-
 	std::ifstream state_file;
 	state_file.open(filename);
 	char cstr_rep[BOARD_WIDTH * 2 * 4+1];

@@ -18,7 +18,7 @@
 #  If M<n we select values with equal distance from each other.
 #  The M points are then achieved by combining values randomly.
 #
-#  Method 4: previous-fitting
+#  Method 4: existing models
 #  ------------------------------
 #
 #
