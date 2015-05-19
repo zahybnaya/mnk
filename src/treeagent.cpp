@@ -39,10 +39,16 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 	FILE_LOG(logDEBUG) << " Number of iterations  "<< num_iterations<< std::endl;
 	Node* n = create_initial_state(b);
 	build_tree(n,num_iterations);	
+	std::cout<<this->num_switches<<std::endl; 
 	std::vector<zet> ret= move_estimates(n);
 	delete_tree(n);
 	post_solution();
 	return ret;
+}
+
+void TreeAgent::pre_solution(){
+	this->last_move_searched = -1;
+	this->num_switches = 0;
 }
 
 /**
@@ -87,6 +93,33 @@ int TreeAgent::build_tree(Node* n,int iterations){
 	return 0;
 }
 
+
+uint64 TreeAgent::get_first_move_id(const std::vector<Node*> &nodes){
+	std::vector<Node*>::const_iterator it =  nodes.begin();
+	Node* root = *it;
+	Node* branch = *(++it);
+	FILE_LOG(logDEBUG) << " Root:  "<<root << "  branch:"<<branch<< std::endl;
+	for (child_map::const_iterator it = root->children.begin(); it!= root->children.end() ; ++it) {
+		FILE_LOG(logDEBUG) << " Checking:  "<<it->second << std::endl;
+		if (it->second == branch)
+			return it->first;
+	}
+	throw runtime_error("cannot find child in children map ");
+}
+
+/**
+ *
+ * */
+void TreeAgent::count_switches(const std::vector<Node*> &nodes){
+	if (nodes.size() <= 1 ) {return ;} 
+	uint64 branch_move =  get_first_move_id(nodes);
+	if (branch_move == last_move_searched) {
+		this->num_switches++; 
+		last_move_searched = branch_move;
+	}
+}
+
+
 /**
  * A single iteraton of building the tree
  * */
@@ -97,6 +130,7 @@ void TreeAgent::iterate(Node* n){
 		return;
 	}
 	std::vector<Node*> nodes = select_variation(n);	
+	count_switches(nodes);
 	double new_val = expand(nodes.back());
 	back_propagatate(new_val,nodes);
 	//todot(n,std::cout);
@@ -110,12 +144,11 @@ void TreeAgent::iterate(Node* n){
 std::vector<Node*> TreeAgent::select_variation(Node* n){
 	FILE_LOG(logDEBUG) << " Selecting variation ";
 	std::vector<Node*> ret;
-	ret.push_back(n);
 	while (n){
 		ret.push_back(n);
 		n = select_next_node(n); 
 	} 
-	FILE_LOG(logDEBUG) << " of size "<< ret.size()<<std::endl;
+	FILE_LOG(logDEBUG) << " variation path size: "<< ret.size()<<std::endl;
 	return ret;
 }
 

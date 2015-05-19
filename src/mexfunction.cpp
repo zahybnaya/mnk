@@ -17,6 +17,8 @@ void mexFunction(int /*nlhs*/, mxArray *plhs[],int /*nrhs*/, const mxArray *prhs
 	double* paramptr=mxGetPr(prhs[3]);
 	Agent_params ap = read_agent_params(std::string(agent_file));
 	FILE_LOG(logDEBUG) << " Starting concrete process for "<<agent_file << std::endl;
+	mxFree(agent_file);
+	mxFree(data_file);
 	concrete(ap,paramptr);
 	for (properties::iterator i = ap.m_properties.begin(); i != ap.m_properties.end(); ++i) {
 		assert(!is_concrete_param(i->second));

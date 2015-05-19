@@ -48,7 +48,7 @@ inline void print_tree(Node* root){
 }
 
 /**
- * Get the 
+ * 
  * */
 std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c);
 
@@ -78,7 +78,7 @@ protected:
 	 * Procedure for anything that should be done before 
 	 * any solution
 	 * */
-	virtual void pre_solution(){}
+	virtual void pre_solution();
 
 	/***
 	 * Procedure for anything that should be done after 
@@ -166,11 +166,22 @@ private:
 	 * Next node to be selected when on node n in the tree
 	 * */
 	virtual Node* select_next_node(Node* n) = 0;
-
 	/**
 	 * 
 	 * */
 	void mark_solved_if_all_children_solved(Node* n);
+	/**
+	 * last branch of the tree that was searched 
+	 * */
+	uint64 last_move_searched;
+
+	/**
+	 *  Counter of the number of switches 
+	 * */
+	int num_switches;
+
+	void count_switches(const std::vector<Node*> &nodes);
+	uint64 get_first_move_id(const std::vector<Node*> &nodes);
 };
 
 
