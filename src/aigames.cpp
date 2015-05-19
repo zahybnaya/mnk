@@ -30,6 +30,26 @@ void print_agent(bool color,std::ostream& o,Agent* a, board b, zet m, int player
 		       	<<uint64totile(m.zet_id)<<","<<"0"<<std::endl;
 }
 
+/**
+ * Executes the agen on a data_struct
+ * */
+void execute_agent_diffs(Agent* a, int player_num, data_struct &dat )
+{
+	std::vector<unsigned int> boards= dat.select_boards(player_num,ALL);
+	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
+	std::cout<<"board,player,zet,value,rt"<<std::endl;
+	for (std::vector<unsigned int>::const_iterator it = boards.begin(); it!=boards.end();++it){
+		board b = dat.allboards[*it];
+		bool color = dat.allmoves[*it].player;
+		double rt =  dat.thinking_times[*it];
+		std::vector<zet> zets = a->solve(b,color);
+		for (std::vector<zet>::const_iterator i = zets.begin(); i != zets.end(); ++i) {
+			std::cout<<uint64tobinstring(b.pieces[BLACK])<<"," <<uint64tobinstring(b.pieces[WHITE])<<","<< color <<","<<i->zet_id<<","<<i->val<<std::endl;
+		}
+	} 
+}
+
+
 
 /**
  * Executes the agen on a data_struct
@@ -100,7 +120,7 @@ int main(int argc, const char *argv[])
 	Agent* agent = b.build(p);
 
 	for (std::set<int>::iterator i = dat.distinct_players.begin(); i != dat.distinct_players.end();++i){
-		execute_agent(agent, *i, dat);	
+		execute_agent_diffs(agent, *i, dat);	
 	}
 	delete agent;
 	return 0;
