@@ -91,7 +91,7 @@ double Agent::get_double_property(std::string prop) {
 	return std::stof(m_properties[prop]);
 	} catch (std::invalid_argument e){
 		FILE_LOG(logERROR)<<" Wrong value for property  "<< prop <<":" << m_properties[prop]<<std::endl;
-		exit(-1);
+		throw std::runtime_error(" Wrong value for property  ");
 	}
 }
 
