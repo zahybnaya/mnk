@@ -39,7 +39,6 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 	FILE_LOG(logDEBUG) << " Number of iterations  "<< num_iterations<< std::endl;
 	Node* n = create_initial_state(b);
 	build_tree(n,num_iterations);	
-	std::cout<<this->num_switches<<std::endl; 
 	std::vector<zet> ret= move_estimates(n);
 	delete_tree(n);
 	post_solution();

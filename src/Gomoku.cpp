@@ -70,8 +70,8 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 		success=(m.zet_id==dat->allmoves[i].zet_id);
 		board_list_mutex.lock();
 	}
-	board_list_mutex.unlock();
 	delete agent;
+	board_list_mutex.unlock();
 }
 
 void worker_thread_notree(heuristic h,data_struct* dat,todolist* board_list){

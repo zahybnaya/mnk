@@ -20,5 +20,5 @@ function generate_times(filename)
     %lagrange multiplier to enforce computational time 
     n=lambda*interp1(x,sqrt(x.*dilog),p,'spline','extrap');
     %times for each trial
-    dlmwrite([filename '_times'],max(1,uint8(n)),'\n')
+    dlmwrite([filename '.times'],max(1,uint8(n)),'\n')
 end
