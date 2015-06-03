@@ -33,16 +33,36 @@ void print_agent(bool color,std::ostream& o,Agent* a, board b, zet m, int player
 /**
  * Executes the agen on a data_struct
  * */
+void execute_agent_for_time_predictions(Agent* a, int player_num, data_struct &dat )
+{
+	std::vector<unsigned int> boards= dat.select_boards(player_num,ALL);
+	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
+	std::cout<<uint64tobinstring(b.pieces[BLACK])<<","<<uint64tobinstring(b.pieces[WHITE])<<","<< this->playing_color <<","<<best_diff<<","<<entropy<<","<<this->num_switches<<","<<count_evals << ","<< best_val <<","<< normalized_best_diff <<","<< num_consecutive<<","<< num_nodes << ","<<num_pieces <<","<< num_patterns  << std::endl; 
+	std::cout<<"black,white,player,best_diff,entropy,tree_switch,count_evals,max_val,normalized_best_diff,num_consecutive,num_nodes,num_pieces, num_patterns "<<std::endl;
+	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();++it){
+		board b = dat.allboards[*it];
+		bool color = dat.allmoves[*it].player;
+		zet m=a->play(b,color);
+		assert(!b.contains(m.zet_id,m.player));
+		assert(!b.contains(m.zet_id,color));
+	} 
+}
+
+
+
+/**
+ * Executes the agen on a data_struct
+ * */
 void execute_agent_diffs(Agent* a, int player_num, data_struct &dat )
 {
 	std::vector<unsigned int> boards= dat.select_boards(player_num,ALL);
 	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
-	std::cout<<"board,player,zet,value,rt"<<std::endl;
+	std::cout<<"black,white,player,best_diff,entropy,tree_switch,count_evals,max_val"<<std::endl;
 	for (std::vector<unsigned int>::const_iterator it = boards.begin(); it!=boards.end();++it){
 		board b = dat.allboards[*it];
 		bool color = dat.allmoves[*it].player;
-		double rt =  dat.thinking_times[*it];
 		std::vector<zet> zets = a->solve(b,color);
+		//calculate 
 		for (std::vector<zet>::const_iterator i = zets.begin(); i != zets.end(); ++i) {
 			std::cout<<uint64tobinstring(b.pieces[BLACK])<<"," <<uint64tobinstring(b.pieces[WHITE])<<","<< color <<","<<i->zet_id<<","<<i->val<<std::endl;
 		}
@@ -111,6 +131,7 @@ Source prepeare_source(int argc, const char* argv[]){
 int main(int argc, const char *argv[])
 {
 	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
+	//FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
 	FILE_LOG(logDEBUG) << "Initializing aigames"<<std::endl; 
 	Source s = prepeare_source(argc,argv);
 	data_struct dat; 
@@ -120,7 +141,7 @@ int main(int argc, const char *argv[])
 	Agent* agent = b.build(p);
 
 	for (std::set<int>::iterator i = dat.distinct_players.begin(); i != dat.distinct_players.end();++i){
-		execute_agent_diffs(agent, *i, dat);	
+		execute_agent_for_time_predictions(agent, *i, dat);	
 	}
 	delete agent;
 	return 0;

@@ -13,7 +13,7 @@ try:
 	data_file = argv[1]
 	split_percentage = argv[2]
 except:
-	print ("usage:")
+	print ("usage: <data_file> <split_percentage>")
 	exit
 
 

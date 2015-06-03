@@ -5,6 +5,8 @@
 typedef struct Node Node;
 typedef std::map<uint64,Node*> child_map;
 
+double average_diff(std::vector<zet> &zets, int player);
+double calc_best_diff(std::vector<zet> &zets, int player);
 /**
  *  Tree node 
  * */
@@ -157,6 +159,7 @@ protected:
 
 
 private:
+	void print_time_prediction_metrics(board& b, Node* n, std::vector<zet> &zets);
 	/**
 	 * Select a path starting from the root of the tree that 
 	 * ends with a new node
@@ -179,6 +182,8 @@ private:
 	 *  Counter of the number of switches 
 	 * */
 	int num_switches;
+	int consecutive; 
+	int max_consecutive;
 
 	void count_switches(const std::vector<Node*> &nodes);
 	uint64 get_first_move_id(const std::vector<Node*> &nodes);

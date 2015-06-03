@@ -1,0 +1,29 @@
+# A BFS implementation 
+## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v),step(v)}
+implementation=MIN_DIFF_BFS
+K0=?0{2,8,1}
+gamma=?1{0.001,0.1,0.1}
+delta=?2{0.0,1.0,0.1}
+lapse_rate=?3{0.01,1.0,0.1}
+vert_scale=?4{0.25, 4.0, 0.25}
+diag_scale=?5{0.25, 4.0, 0.25}
+opp_scale=?6{0.25, 4.0, 0.25}
+weights_0=?7{-2.0, 2.0, 1}
+weights_1=?8{-2.0, 2.0, 1}
+weights_2=?9{-2.0, 2.0, 1}
+weights_3=?10{-2.0, 2.0, 1}
+weights_4=?11{-2.0, 2.0, 1}
+weights_5=?12{-2.0, 2.0, 1}
+triangle_weight=?13{-2.0, 2.0, 1}
+exploration_constant=0
+
+
+
+
+
+
+
+
+
+
+
