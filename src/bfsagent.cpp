@@ -54,6 +54,7 @@ bool better(pair<uint64,Node*> n1p, pair<uint64,Node*> n2p) {
 void BFSAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 	for (std::vector<Node*>::const_reverse_iterator i = nodes.rbegin(); i != nodes.rend(); ++i) {
 		Node* n = *i;
+		FILE_LOG(logDEBUG) << "before back-propagating :"<< n->val <<"/" <<n->visits<<"="<<(n->val/n->visits)<< std::endl ;
 		n->visits++;
 		if (n->visits==1){
 			n->val=new_val*n->visits;
@@ -63,7 +64,7 @@ void BFSAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 		}
 		mark_solved(n);
 		mark_playing_color_won(n);
-		FILE_LOG(logDEBUG) << "after back-propagating "<< *n << std::endl ;
+		FILE_LOG(logDEBUG) << "after back-propagating :"<< n->val <<"/" <<n->visits<<"="<<(n->val/n->visits)<< std::endl ;
 	}
 }
 
@@ -109,6 +110,7 @@ Node* BFSAgent::select_next_node(Node* n) {
  * 
  * */
 void BFSAgent::pre_solution(){
+	TreeAgent::pre_solution();
 	h.self=get_playing_color();
 	h.remove_features();
 }

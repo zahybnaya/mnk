@@ -1,0 +1,16 @@
+implementation=MIN_DIFF_BFS
+D0=5
+K0=5.2604
+gamma=0.0052758
+delta=0.28837
+lapse_rate=0.01
+vert_scale=0.99149
+diag_scale=1.006
+opp_scale=1.2746
+weights_0=0.79379
+weights_1=1.0062
+weights_2=0.36429
+weights_3=11.356
+weights_4=2.4879
+weights_5=-134.66
+triangle_weight=-2.7873

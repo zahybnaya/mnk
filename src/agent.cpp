@@ -42,6 +42,7 @@ zet Agent::play(board& b,bool player){
 		std::vector<zet> s = enumerate_moves(b,player); 
 		int rn_n = std::uniform_int_distribution<int>(0,s.size()-1)(get_generator());
 		FILE_LOG(logDEBUG)<<" * lapsing - returning random move" <<std::endl;
+		//std::cout<<uint64tobinstring(b.pieces[BLACK])<<","<<uint64tobinstring(b.pieces[WHITE])<<","<< player <<",0,0,0,0"<< std::endl; 
 		return s[rn_n];
 	}
 	std::vector<zet> s = solve(b,player); //TODO MAKE SURE THIS SETS playing_color too
