@@ -46,9 +46,7 @@ addpath(strcat(home,'/mnk/src/matlab/',agent_name))
 
 fcn = 'Gomoku_wrapper';
 data = {player, agent_file, data_file};
-
 bounds_agent
-
 use_defaults=0
 % *** If you just want to use the default settings,
 % *** you don't need to edit the rest of the file,

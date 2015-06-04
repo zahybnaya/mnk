@@ -73,6 +73,8 @@ Node* tie_break(std::vector<pair<uint64,Node*>> v, double val){
 	std::copy_if(v.begin(), v.end(), std::back_inserter(maxs),[val](const std::pair<uint64,Node*> &p){
 			return (p.second->val/p.second->visits==val);
 			});
+
+	FILE_LOG(logDEBUG) << " tie-braking amongst "<< maxs.size() <<" candidates with val:" << val<< std::endl;
 	std::random_shuffle(maxs.begin(),maxs.end()); //TODO use std::advance
 	return maxs.begin()->second;
 }
@@ -100,9 +102,10 @@ Node* BFSAgent::select_next_node(Node* n) {
 	assert(v.size()>0);
 	std::pair<uint64,Node*> argmax =
 		*std::max_element(v.begin(),v.end(),better_for_black);
-	FILE_LOG(logDEBUG) << " returning node "<< *argmax.second<< std::endl;
+	Node* ret = tie_break(v, (argmax.second->val/argmax.second->visits));
+	FILE_LOG(logDEBUG) << " returning node "<< *ret << std::endl;
 	//return argmax.second;
-	return tie_break(v, (argmax.second->val/argmax.second->visits));
+	return ret;
 }
 
 /**

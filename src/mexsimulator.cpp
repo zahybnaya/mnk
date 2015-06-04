@@ -1,7 +1,38 @@
 #include "Gomoku.cpp"
 #include <string>
 #include <cassert>
-	
+/**
+ *  Get the right value from the parameter array
+ * */
+inline std::string assigned_val(std::string val, double* paramptr){
+	size_t start_range = val.find("{");
+	if (start_range == std::string::npos){
+		FILE_LOG(logERROR) << "Wrong format for concerete "<<val<<std::endl;
+		exit(-1);
+	}
+	int ind = std::stoi(val.substr(1,start_range-1));
+	double v = paramptr[ind];
+	assert(v);
+	return std::to_string(v);
+}
+
+/***
+ * Look for the values of ?? and fills it with the relevant data
+ * Suggestion: ?<index>{lower,upper}
+ * */
+inline void concrete(Agent_params& ap,double* paramptr){
+	FILE_LOG(logDEBUG) << "starting concrete " << std::endl;
+	for (properties::iterator i = ap.m_properties.begin(); i != ap.m_properties.end(); ++i) {
+		if(is_concrete_param(i->second)){
+			FILE_LOG(logDEBUG) << "need to concrete: ["<<i->first << "] with value:" << i->second<< std::endl; 
+			ap.m_properties[i->first]=assigned_val(i->second,paramptr);
+			FILE_LOG(logDEBUG) << " concrete-assgined ("<< ap.m_properties[i->first]<<")"<< std::endl;
+	       	}
+
+	}
+}
+
+
 
 void mexFunction(std::string agent_file, std::string data_file, double* paramptr, int player){
 	FILE_LOG(logDEBUG) << " Starting mexFunction" << std::endl;
@@ -14,7 +45,7 @@ void mexFunction(std::string agent_file, std::string data_file, double* paramptr
 	for (properties::iterator i = ap.m_properties.begin(); i != ap.m_properties.end(); ++i) {
 		assert(!is_concrete_param(i->second));
 	}
-	char* output="Output/out.txt";
+	char output[]="Output/out.txt";
 	compute_loglik_agent(ap,dat,true,player,ALL,times_file,output);
 }
 
@@ -33,7 +64,7 @@ int get_subject(int argc, const char* argv[]){
 
 int main(int argc, char* argv[]){
 	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
-	const int iters = 100;
+	const int iters = 5;
 	std::string agent_file(argv[1]); 
 	std::string data_file(argv[2]); 
 

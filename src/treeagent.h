@@ -61,7 +61,7 @@ std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c);
 class TreeAgent: public Agent {
 
 public:
-	TreeAgent(){};
+	TreeAgent():last_move_searched(-1){};
 	~TreeAgent(){};
 
 	/**
