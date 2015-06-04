@@ -164,8 +164,8 @@ double compute_loglik_agent(Agent_params ap , data_struct& dat, bool talk, int s
 	}
 	else{
 		if(times_file=="")
-			board_list=new todolist(dat.select_boards(subject,data_type));
-		else board_list=new todolist(dat.select_boards(subject,data_type),times_file);
+			board_list=new todolist(dat.select_boards(subject));
+		else board_list=new todolist(dat.select_boards(subject),times_file);
 	}
 	if(talk){
 		if(output_file==NULL)
@@ -216,8 +216,8 @@ double compute_loglik(heuristic& h, data_struct& dat, bool talk, int subject,
 	}
 	else{
 		if(times_file==NULL)
-			board_list=new todolist(dat.select_boards(subject,data_type));
-		else board_list=new todolist(dat.select_boards(subject,data_type),times_file);
+			board_list=new todolist(dat.select_boards(subject));
+		else board_list=new todolist(dat.select_boards(subject),times_file);
 	}
 	if(talk){
 		if(output_file==NULL)

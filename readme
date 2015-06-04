@@ -26,6 +26,11 @@ cross validate takes the parameter values (from the optimization) and then execu
 The dat files contains a matrix of (currently) 30 values for the log likelihood. Followed by the values selected for the model parameters the got the best fitting results. 
 Followed by the mean log likelihood as the last line of the file
 
+Model comparision plots:
+=======================
+look for loglik.csv files under $scratch . Create a file with the following format "<model> <subject> <loglik>"
+Use the ./scripts/plot_loglik.py to create the plot
+
 
 Format for out.txt:
 ===================
@@ -39,8 +44,7 @@ Performing model/parameter recovery:
 
 This script finds the fitting parameters in a given model_file (e.g., lines like "par=?1{0,100,0.5}" ) 
 It creates "points" for each parameter, currently there is only one method implemented and that's a "grid".  A line like "par=?1{0,100,0.5}" means that par is a parameter 
-that can go from 0 to 100 with jumps of 0.5. 
-The grid will be n-dimensional (with n fitted parameters). 
+that can go from 0 to 100 with jumps of 0.5.  The grid will be n-dimensional (with n fitted parameters). 
 
 Phases:
 

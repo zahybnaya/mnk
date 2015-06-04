@@ -425,23 +425,15 @@ void data_struct::make_test_and_train(double frac, mt19937_64 engine){
 /**
  *  Retrieves the board indeices for a player
  * */
-vector<unsigned int> data_struct::select_boards(int player, int data_type=ALL){
+vector<unsigned int> data_struct::select_boards(int player){
   vector<unsigned int> boards;
-  if(data_type==TEST){
-    for(unsigned int i=0;i<Ntest;i++)
-      if(player_ids[test[i]]==player || player==-1)
-        boards.push_back(test[i]);
+  for(unsigned int i=0;i<Nboards;i++){
+	  if(player_ids[i]==player || player==-1){
+		  boards.push_back(i); 
+	  }
   }
-  else if(data_type==TRAIN){
-    for(unsigned int i=0;i<Ntrain;i++)
-      if(player_ids[train[i]]==player || player==-1)
-        boards.push_back(train[i]);
-  }
-  else for(unsigned int i=0;i<Nboards;i++)
-    if(player_ids[i]==player || player==-1)
-      boards.push_back(i); 
   if (boards.size() == 0 ){
-	throw std::runtime_error("No boards found!");
+	  throw std::runtime_error("No boards found!");
   }
   return boards;
 }

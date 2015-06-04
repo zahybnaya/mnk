@@ -6,9 +6,6 @@
 #include <vector>
 #include <set>
 
-#define TEST 1
-#define TRAIN 2
-#define ALL 0
 #define TIMES_EXT  ".times"
 
 struct data_struct{
@@ -53,7 +50,7 @@ struct data_struct{
   void make_test_and_train(double, mt19937_64);
   void write_to_header(char*);
   double compute_chance();
-  vector<unsigned int> select_boards(int,int);
+  vector<unsigned int> select_boards(int);
 };
 
 inline std::ostream& operator<<(std::ostream& o, data_struct& d){

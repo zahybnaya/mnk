@@ -1,5 +1,5 @@
 #
-# Assumes: model subject loglik
+# Assumes the following format: model subject loglik
 #
 from sys import argv
 import matplotlib.pyplot as plt
@@ -40,6 +40,10 @@ data = read_tuples(model_file)
 
 subjects = sorted(set([x[1] for x in data ]))
 models = set([x[0] for x in data ])
+print "models:",
+print models
+print "subjects",
+print subjects
 lims = [
         1,
         3.2
