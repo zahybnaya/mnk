@@ -25,6 +25,11 @@ function cross_validate(player,agent_file,train_data_file, test_data_file)
 		mean_lt=mean(LT)
 		result_file_name = sprintf('test_results%d.dat',player)
 		save(result_file_name,'LT','x','mean_lt','-ascii')
+		fid = fopen('loglik.csv', 'a+');
+		%param, gen_value, fitted_value, ds
+		fprintf(fid, '%s, %s, %d\n',agent_file, test_data_file, mean_lt)
+		fclose(fid);
+
 	end
 end
 
