@@ -11,10 +11,24 @@ int get_subject(int argc, const char* argv[]){
 	return -1;
 }
 
+bool is_debug(int argc, const char* argv[]){
+
+	for(int i=0;i<argc;++i){
+		if (strcmp(argv[i],"-debug")==0) {
+			return	true;
+		}
+	}
+	return false;
+}
+
+
 
 int main(int argc, const char* argv[]){
-	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
-	//FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
+	if (is_debug(argc, argv)){
+		FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
+	} else {
+		FILELog::ReportingLevel() = FILELog::FromString("ERROR");
+	}
 	Source src=prepeare_source(argc, argv);
 	int subject = get_subject(argc,argv);
 	heuristic h;
