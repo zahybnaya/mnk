@@ -29,7 +29,9 @@ bool UCTAgent::is_negamax(){
  * UCT uses a given policy to evaluate new states.
  * */
 double UCTAgent::evaulate(Node* lastNode,Node* /* parent*/, uint64 ){
-	return policy.eval(lastNode->m_board);
+	double r = policy.eval(lastNode->m_board);
+	FILE_LOG(logDEBUG)<<"evaluating last node as "<<r<<std::endl; 
+	return r;
 }
 
 /**
@@ -41,8 +43,10 @@ double UCTAgent::uct(Node* n, int ttl_visits) {
 	bool player_turn = !n->player;
 	if ( is_negamax())
 		exploitation=(player_turn==BLACK )?exploitation:-exploitation;
-	return 
-		get_exploration_constant()*exploration + exploitation; 
+	double r = get_exploration_constant()*exploration + exploitation; 
+	FILE_LOG(logDEBUG)<<"UCT of Node"<<n<<" "<<r<<std::endl; 
+	return r;
+		
 }
 
 struct uct_comparator_t {
@@ -74,6 +78,7 @@ Node* UCTAgent::select_next_node(Node* n){
 
 /**
  * A solved node is one that has all children expanded
+:qa
  * */
 void UCTAgent::mark_solved(Node* n){
 	if (!unexpanded_moves(n).empty()){
@@ -87,8 +92,9 @@ void UCTAgent::mark_solved(Node* n){
  * */
 double UCTAgent::expand(Node* n){
 	uint64 move = select_random_unknown_move(n);
-	Node* new_node = TreeAgent::connect(move,n);
-	return evaulate(new_node, n, move);
+	double eval = evaulate(new_node, n, move);
+	Node* new_node = TreeAgent::connect(move,n,eval,1);
+	return eval;
 }
 
 

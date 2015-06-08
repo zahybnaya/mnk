@@ -38,6 +38,7 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 	assert(num_iterations>0);
 	FILE_LOG(logDEBUG) << " Number of iterations  "<< num_iterations<< std::endl;
 	Node* n = create_initial_state(b);
+	FILE_LOG(logDEBUG) << " Root node  "<< n<< std::endl;
 	build_tree(n,num_iterations);	
 	std::vector<zet> ret= move_estimates(n);
 	//print_time_prediction_metrics(b,n,ret);
@@ -226,7 +227,7 @@ std::vector<Node*> TreeAgent::select_variation(Node* n){
 		ret.push_back(n);
 		n = select_next_node(n); 
 	} 
-	FILE_LOG(logDEBUG) << " variation path size: "<< ret.size()<<std::endl;
+	FILE_LOG(logDEBUG) << "Selection variation path size: "<< ret.size()<<std::endl;
 	return ret;
 }
 
@@ -239,10 +240,13 @@ std::vector<zet> TreeAgent::move_estimates(Node* n){
 	FILE_LOG(logDEBUG)<<" Move estimates:";
 	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
 		uint64 move_id=i->first;
+		if(i->second->visits==0) {
+			continue;
+		}
 		double move_value = (i->second->val)/(i->second->visits);
 		bool player = n->player;
 		zet z(move_id,move_value,player);
-		FILE_LOG(logDEBUG)<<move_value<<" ";
+		FILE_LOG(logDEBUG)<<move_id<<":"<<move_value<<" ";
 		ret.push_back(z);
 	}
 	FILE_LOG(logDEBUG)<<std::endl;

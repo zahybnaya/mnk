@@ -101,7 +101,7 @@ protected:
 	 *  Generates a new node by applying move 
 	 *  and connecting it to parent. value and visits are also optional params
 	 * */
-	virtual Node* connect(uint64 move,Node* parent,double value=0.0,int visits=0);
+	virtual Node* connect(uint64 move,Node* parent,double value,int visits);
 	/**
 	 * Returns a random move from the list of moves  
 	 * which does not have a node yet

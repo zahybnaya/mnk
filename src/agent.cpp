@@ -42,10 +42,9 @@ zet Agent::play(board& b,bool player){
 		std::vector<zet> s = enumerate_moves(b,player); 
 		int rn_n = std::uniform_int_distribution<int>(0,s.size()-1)(get_generator());
 		FILE_LOG(logDEBUG)<<" * lapsing - returning random move" <<std::endl;
-		//std::cout<<uint64tobinstring(b.pieces[BLACK])<<","<<uint64tobinstring(b.pieces[WHITE])<<","<< player <<",0,0,0,0"<< std::endl; 
 		return s[rn_n];
 	}
-	std::vector<zet> s = solve(b,player); //TODO MAKE SURE THIS SETS playing_color too
+	std::vector<zet> s = solve(b,player); 
 	FILE_LOG(logDEBUG)<<"Playing for player "<<((player==BLACK)?"BLACK":"WHITE")<< " there are "<< s.size() <<" moves" << std::endl;
 	FILE_LOG(logDEBUG)<<" board is :" <<b<<std::endl;
 	if(s.empty()){
@@ -60,7 +59,6 @@ zet Agent::play(board& b,bool player){
 	for (std::vector<zet>::const_iterator i = s.begin(); i != s.end(); ++i) {
 		FILE_LOG(logDEBUG)<<"    "<<i->zet_id<<" with value:"<<i->val<<std::endl;
 	}
-
 	if (player == BLACK || is_negamax()){
 		r=*std::max_element(s.begin(),s.end(),[](const zet& z1, const zet& z2 ){ return z1.val < z2.val;});
 	} else{
