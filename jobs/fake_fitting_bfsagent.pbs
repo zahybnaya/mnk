@@ -1,0 +1,29 @@
+#!/bin/bash
+#PBS -N agentsuctagent_fitting
+#PBS -l nodes=8:ppn=20
+#PBS -l walltime=60:00:00
+#PBS -l mem=4GB
+#PBS -t 0-37
+#PBS -M zb9@nyu.edu
+#PBS -m abe
+BASE_DIR=$HOME/mnk
+SRCDIR=$BASE_DIR/src
+DIREC=$SCRATCH/Gomoku
+AGENT=bfsagent
+POINT=${PBS_ARRAYID}
+AGENT_FILE=$BASE_DIR/agents/${AGENT}  
+module purge
+module load matlab/2014a gcc/4.9.2
+export MATLABPATH=$DIREC:$SRCDIR/matlab
+export LD_PRELOAD=$GCC_LIB/libstdc++.so
+cp $SRCDIR/Gomoku_model.mexa64 $DIREC
+for DS in {0..2}; do 
+		DATA_FILE=$BASE_DIR'/data/'${AGENT}'___fake_'${POINT}'_DS'${DS}
+		RESULT_PATH=$DIREC/${AGENT}'__fake_'${POINT}'_DS'${DS}
+		mkdir -p ${RESULT_PATH}/Output
+		cd ${RESULT_PATH}
+		rm Output/out*
+		echo "Gomoku_optim_mcs(-1,'$AGENT_FILE', '$DATA_FILE'); exit;" | matlab -nodisplay
+		echo "Done"
+done;
+	
