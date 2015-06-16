@@ -22,16 +22,38 @@ std::string UCTAgent::get_name() const{
  * are values stored in a negamax tree
  * */
 bool UCTAgent::is_negamax(){
-	return true;
+	return false;
 }
+
+void UCTAgent::init(){
+	Agent::init();
+	branching_factor=std::bernoulli_distribution(fmod(get_K0(),1.0));
+	h.gamma  = get_gamma();
+	h.delta   = get_delta();
+	h.vert_scale  = get_vert_scale();
+	h.diag_scale  = get_diag_scale();
+	h.opp_scale   = get_opp_scale();
+	for(int i=0;i<6;i++)
+		h.weight[i]=get_weight(i);
+	h.weight[16]=get_triangle_weight();
+	h.update();
+	FILE_LOG(logDEBUG) << "Init an agent with the following properties- " <<" K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
+
+}
+
 
 /**
  * UCT uses a given policy to evaluate new states.
  * */
 double UCTAgent::evaulate(Node* lastNode,Node* /* parent*/, uint64 ){
-	double r = policy.eval(lastNode->m_board);
-	FILE_LOG(logDEBUG)<<"evaluating last node as "<<r<<std::endl; 
-	return r;
+	int num_of_evals =  get_num_of_evals();
+	double r =0;
+	for (int i = 0; i < num_of_evals; i++) {
+		r += policy.eval(lastNode->m_board);
+	}
+	double rval = r/num_of_evals;
+	FILE_LOG(logDEBUG)<<"evaluating last node as "<<rval<<std::endl; 
+	return rval;
 }
 
 /**
@@ -65,8 +87,7 @@ struct uct_comparator_t {
 Node* UCTAgent::select_next_node(Node* n){
 	assert(!n->solved);
 	assert(!n->m_board.is_ended());
-	std::vector<zet> moves = unexpanded_moves(n);
-	if (!moves.empty()){
+	if (n->children.empty()){
 		return NULL;
 	}
 	std::vector<pair<uint64,Node*>> v= get_shuffled_vector(n->children);
@@ -78,25 +99,58 @@ Node* UCTAgent::select_next_node(Node* n){
 
 /**
  * A solved node is one that has all children expanded
-:qa
  * */
 void UCTAgent::mark_solved(Node* n){
-	if (!unexpanded_moves(n).empty()){
-		return;
-	}
 	TreeAgent::mark_solved(n);
 }
+
+
+double value_for_new_node_uct(Node* parent, zet z){
+	//return (parent->val/parent->visits)+(((parent->player==BLACK)?1:-1)*z.val);
+	return ((parent->val/parent->visits)+z.val);
+}
+
 
 /**
  * UCT expand
  * */
 double UCTAgent::expand(Node* n){
-	uint64 move = select_random_unknown_move(n);
-	double eval = evaulate(new_node, n, move);
-	Node* new_node = TreeAgent::connect(move,n,eval,1);
-	return eval;
+	if (n->visits==0/*root*/) {
+                n->val=h.evaluate(n->m_board);
+                n->visits=1;
+        }
+	unsigned int k = int(get_K0()) + branching_factor(get_generator());
+	double ret;
+	std::vector<zet> zets;
+	h.self=get_playing_color();
+	h.get_moves(n->m_board,n->player,false,zets);
+	unsigned int actual_branching_factor = k<zets.size()?k:zets.size();
+	Node* new_node = NULL;
+	for (unsigned int i=0;i<actual_branching_factor;++i){
+		zet z = zets[i]; 
+		uint64 move = z.zet_id;
+		new_node = TreeAgent::connect(move,n,0,0);
+		double eval = evaulate(new_node, n, move);
+		new_node->val=eval;
+		new_node->visits=1;
+		double zval = value_for_new_node_uct(n,z);
+		double normalized_h_value = (1/(1+exp(-zval)));
+		assert(normalized_h_value>=0 && normalized_h_value<=1);
+		new_node->val+=get_virtual_rollouts()* normalized_h_value;
+		new_node->visits+=get_virtual_rollouts();
+		if(i==0){
+			ret = eval;
+		}
+	}
+	return ret;
 }
 
+/**
+ * Number of evaluations of the policy
+ * */
+int UCTAgent::get_num_of_evals(){
+	return get_int_property("num_of_evals");
+}
 
 /**
  *  UCT constant 
@@ -105,6 +159,39 @@ double UCTAgent::get_exploration_constant() {
 	return get_double_property("exploration_constant");
 }
 
+double UCTAgent::get_K0() {
+	return get_double_property("K0");
+}
+double UCTAgent::get_gamma() {
+	return get_double_property("gamma");
+}
+double UCTAgent::get_delta() {
+	return get_double_property("delta");
+}
+double UCTAgent::get_vert_scale() {
+	return get_double_property("vert_scale");
+}
+double UCTAgent::get_diag_scale() {
+	return get_double_property("diag_scale");
+}
+double UCTAgent::get_opp_scale() {
+	return get_double_property("opp_scale");
+}
+
+double UCTAgent::get_triangle_weight(){
+	return get_double_property("triangle_weight");
+}
+
+
+double UCTAgent::get_virtual_rollouts(){
+	return get_int_property("virtual_rollouts");
+}
+
+
+double UCTAgent::get_weight(int i){
+	std::string t="weights_"+std::to_string(i);
+	return get_double_property(t);
+}
 
 
 

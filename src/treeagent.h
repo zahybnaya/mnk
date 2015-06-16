@@ -12,14 +12,15 @@ double calc_best_diff(std::vector<zet> &zets, int player);
  * */
 struct Node {
 	Node(board m_board,bool player,double val=0.0, int visits=0):m_board(m_board),val(val),
-		visits(visits),player(player),solved(false), playing_color_won(false){}
+		visits(visits),player(player),solved(false), forced_win(false), forced_loss(false){}
 	board m_board;
 	child_map children; 
 	double val;
 	int visits;
 	bool player;
 	bool solved; 
-	bool playing_color_won; 
+	bool forced_win; 
+	bool forced_loss; 
 };
 
 /**
@@ -155,8 +156,7 @@ protected:
 	/**
 	 *  marks that the playing agent has won from this node
 	 * */
-	virtual void mark_playing_color_won(Node* n);
-
+	virtual void mark_forced_win_loss(Node* n);
 
 private:
 	void print_time_prediction_metrics(board& b, Node* n, std::vector<zet> &zets);

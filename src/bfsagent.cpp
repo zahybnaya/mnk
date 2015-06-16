@@ -3,6 +3,7 @@
 #include <random>
 #include <algorithm>
 #include <assert.h>
+#include <sstream>
 
 /**
  * Initializaion of the heuristic properties
@@ -48,24 +49,66 @@ bool better(pair<uint64,Node*> n1p, pair<uint64,Node*> n2p) {
 	return n2_val < n1_val;
 } 
 
+
+
+void assert_children(std::vector<Node*> nodes){
+	Node* prev = NULL;
+	Node*	n = NULL;
+	for (std::vector<Node*>::const_reverse_iterator i = nodes.rbegin(); i != nodes.rend(); ++i) {
+		prev = n;
+		n=*i;
+		if (prev != NULL){
+			bool found_child = false;
+			for (child_map::const_iterator ci = n->children.begin(); ci !=n->children.end(); ++ci) {
+				if(ci->second==prev){
+					found_child = true;
+					break;
+				}
+			}
+			assert(found_child);
+		}
+	}
+}
+
+/***
+ *
+ * */
+void print_path(std::vector<Node*> nodes){
+	std::stringstream ss; 
+	for (std::vector<Node*>::const_reverse_iterator i = nodes.rbegin(); i != nodes.rend(); ++i) {
+		Node* n = *i;
+		ss<< (n->val/n->visits) <<"," ; 
+	}
+	FILE_LOG(logDEBUG) << ss.str() << std::endl;
+}
 /**
  * A minimax back_propagation
  * */
 void BFSAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
+	assert_children(nodes);
+	int level_counter = 0;
+	FILE_LOG(logDEBUG) << "back-propagating begins " <<std::endl;
+	print_path(nodes);
 	for (std::vector<Node*>::const_reverse_iterator i = nodes.rbegin(); i != nodes.rend(); ++i) {
 		Node* n = *i;
 		FILE_LOG(logDEBUG) << "before back-propagating :"<< n->val <<"/" <<n->visits<<"="<<(n->val/n->visits)<< std::endl ;
+		double oldval = n->val/n->visits;
 		n->visits++;
 		if (n->visits==1){
 			n->val=new_val*n->visits;
 		} else {
 			Node* argmax = std::max_element(n->children.begin(),n->children.end(),better_for_black)->second;
 			n->val=(argmax->val/argmax->visits)*n->visits;
+			if(abs(oldval-(n->val/n->visits))>0.01){
+				FILE_LOG(logDEBUG)<<" back-propagating value changed at "<<level_counter << " out of " <<nodes.size() <<std::endl;
+			}
 		}
 		mark_solved(n);
-		mark_playing_color_won(n);
+		mark_forced_win_loss(n);
 		FILE_LOG(logDEBUG) << "after back-propagating :"<< n->val <<"/" <<n->visits<<"="<<(n->val/n->visits)<< std::endl ;
+		level_counter++;
 	}
+	print_path(nodes);
 }
 
 Node* tie_break(std::vector<pair<uint64,Node*>> v, double val){
@@ -73,12 +116,32 @@ Node* tie_break(std::vector<pair<uint64,Node*>> v, double val){
 	std::copy_if(v.begin(), v.end(), std::back_inserter(maxs),[val](const std::pair<uint64,Node*> &p){
 			return (p.second->val/p.second->visits==val);
 			});
-
 	FILE_LOG(logDEBUG) << " tie-braking amongst "<< maxs.size() <<" candidates with val:" << val<< std::endl;
 	std::random_shuffle(maxs.begin(),maxs.end()); //TODO use std::advance
 	return maxs.begin()->second;
 }
 
+std::string print_v(std::vector<pair<uint64,Node*>> v){
+	std::stringstream ss;
+	for (std::vector<pair<uint64,Node*>>::const_iterator i = v.begin(); i != v.end(); ++i) {
+		ss<<"{"<< (i->second->val/i->second->visits) << "}";
+	}
+	ss<<std::endl;
+	return ss.str();
+}
+
+
+
+std::string print_children(Node* n){
+	std::stringstream ss;
+	ss<<((n->player==BLACK)?"BLACK ":"WHITE ");
+	ss<<n->val/n->visits<<":";
+	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
+		ss<<"{"<< (i->second->val/i->second->visits) << "}";
+	}
+	ss<<std::endl;
+	return ss.str();
+}
 
 
 /***
@@ -94,8 +157,8 @@ Node* BFSAgent::select_next_node(Node* n) {
 	}
 	std::vector<pair<uint64,Node*>> v= get_shuffled_vector(n->children);
 	if(v.size()<=0){
-		for ( child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
-			FILE_LOG(logERROR) << *(i->second);
+		for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
+			FILE_LOG(logERROR) << "forced_win:" <<i->second->forced_win << "forced_loss:" <<i->second->forced_loss << "solved:" << i->second->solved ;
 		}
 		FILE_LOG(logERROR)<< "Total of "<< n->children.size() <<" children" <<std::endl;
 	}
@@ -103,6 +166,12 @@ Node* BFSAgent::select_next_node(Node* n) {
 	std::pair<uint64,Node*> argmax =
 		*std::max_element(v.begin(),v.end(),better_for_black);
 	Node* ret = tie_break(v, (argmax.second->val/argmax.second->visits));
+//	if(abs((argmax.second->val/argmax.second->visits)-(n->val/n->visits))>0.001){
+//		FILE_LOG(logERROR)<<"all_children:"<< print_children(n)<<std::endl;
+//		FILE_LOG(logERROR)<<"filtered:"<< print_v(v)<<std::endl;
+//		FILE_LOG(logERROR)<< " Selected "<< argmax.second->val/argmax.second->visits<<" from node with"<< (n->val/n->visits) << std::endl;
+//	}
+	//assert(abs((argmax.second->val/argmax.second->visits)-(n->val/n->visits))<0.001);
 	FILE_LOG(logDEBUG) << " returning node "<< *ret << std::endl;
 	//return argmax.second;
 	return ret;
@@ -130,7 +199,7 @@ double value_for_new_node(Node* parent, zet z){
 }
 
 /**
- * Changes from implementation to another
+ * 
  * */
 double BFSAgent::expand(Node* n){
 	if (n->visits==0/*root*/) {

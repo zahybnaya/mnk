@@ -22,24 +22,14 @@ void MinDiffTreeAgent::init(){
 	abrupt_stop = std::bernoulli_distribution(get_abrupt_stop_rate()); 
 }
 
-//
-//bool MinDiffTreeAgent::is_stop(Node* n , int iteration , int player) {
-//	double k = 100;
-//	std::vector<zet> zets = move_estimates(n);
-//	if (zets.size()<2) return false;
-//	double min_diff= calc_best_diff(zets,  player);
-//	double avg_diff= average_diff(zets,  player);
-//	double alpha = 1 / (1+exp(-(iteration/double(100))));
-//	FILE_LOG(logDEBUG)<<" Min/Avg Ratio:"<<(min_diff/avg_diff) << " 1-alpha:"<< (1-alpha) << " k:"<<k <<" iteration:" <<iteration<<std::endl;
-//	bool cond= (min_diff/avg_diff > k*(1-(alpha)));
-//	if(cond){
-//	       	FILE_LOG(logDEBUG)<< " completed " << iteration <<" iterations" <<std::endl;
-//	}
-//	return cond;
-//
-//}
-//
+int MinDiffTreeAgent::get_convergence_times(){
+	return get_double_property("convergence_times");
+}
 
+
+double MinDiffTreeAgent::get_stop_decrease_rate(){
+	return get_double_property("stop_decrease_rate");
+}
 
 bool MinDiffTreeAgent::is_stop(Node* n , int iteration , int player) {
 	std::vector<zet> zets = move_estimates(n);
@@ -51,10 +41,11 @@ bool MinDiffTreeAgent::is_stop(Node* n , int iteration , int player) {
 	double min_diff= calc_best_diff(zets,  player);
 	double avg_diff= average_diff(zets,  player);
 	FILE_LOG(logDEBUG)<<" Min/Avg Ratio:"<<(min_diff/avg_diff)  <<" iteration:" <<iteration<<std::endl;
-	bool cond= (min_diff/avg_diff > get_stop_threshold() * 1/pow(iteration,0.1));
+	bool cond= (min_diff/avg_diff > get_stop_threshold() * 1/pow(iteration,get_stop_decrease_rate()));
+	//std::cout<<min_diff/avg_diff << " " << get_stop_threshold() * 1/pow(iteration,get_stop_decrease_rate())<<std::endl;
 	if(cond){
 	       	FILE_LOG(logDEBUG)<< " completed " << iteration <<" iterations" <<std::endl;
-		std::cout<< " completed " << iteration <<" iterations" <<std::endl;
+		//std::cout<< " completed " << iteration <<" iterations" <<std::endl;
 	}
 	return cond;
 }

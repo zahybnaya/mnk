@@ -13,7 +13,7 @@ std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
 	std::vector<pair<uint64,Node*>> v;
 	assert(c.size()>0);
 	std::copy_if(c.begin(), c.end(), std::back_inserter(v),[](const std::pair<uint64,Node*> &p){
-			return !p.second->solved && !p.second->playing_color_won;
+			return !p.second->solved && !p.second->forced_win && !p.second->forced_loss;
 			});
 	std::random_shuffle(v.begin(),v.end());
 	return v;
@@ -126,14 +126,19 @@ void TreeAgent::pre_solution(){
 /**
  * Creates a new node to represent node and adds it as a child to parent
  */
-Node* TreeAgent::connect(uint64 move,Node* parent,double value,int visits){
+Node* TreeAgent::connect(uint64 move, Node* parent,double value,int visits){
 	assert(parent);
 	zet z = zet(move,value,parent->player); 
 	Node* new_node = new Node(parent->m_board+z,!parent->player,value,visits);
 	if (new_node->m_board.is_ended()){
 		new_node->solved=true;
-		if ((new_node->player == this->playing_color) && new_node->m_board.player_has_won(new_node->player)){
-			new_node->playing_color_won=true;
+		//if ((new_node->player == this->playing_color) && new_node->m_board.player_has_won(new_node->player)){
+		if (new_node->m_board.player_has_won(new_node->player)){
+			new_node->forced_win=true;
+		}
+		if (new_node->m_board.player_has_won(!new_node->player)){
+			assert(!new_node->forced_win);
+			new_node->forced_loss=true;
 		}
 	} 
  	parent->children[move]=new_node; 
@@ -204,7 +209,7 @@ void TreeAgent::count_switches(const std::vector<Node*> &nodes){
  * */
 void TreeAgent::iterate(Node* n){
 	assert(!n->m_board.is_ended());
-	if (n->solved || n->playing_color_won){
+	if (n->solved || n->forced_win || n->forced_loss){
 		FILE_LOG(logDEBUG) << " Node is solved, returning "<< std::endl;
 		return;
 	}
@@ -255,24 +260,22 @@ std::vector<zet> TreeAgent::move_estimates(Node* n){
 
 
 /**
- * Marks if the playing color had won : either by AND for the negative color or OR for the playing ccolor
+ * if one of the children is forces_loss then node is forced_win. 
+ * if all children are forced_win then node is forced_loss
  * */
-void TreeAgent::mark_playing_color_won(Node* n){
+void TreeAgent::mark_forced_win_loss(Node* n){
 	if(n->children.empty()) 
 		return;
-	bool use_or = (n->player == this->playing_color);
-	bool mark_play = true;
+	n->forced_win=false;
+	n->forced_loss=true;
 	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
-		if(use_or){
-			if (i->second->playing_color_won) break;
-			mark_play=false;
-		} else if( (mark_play=(mark_play && i->second->playing_color_won))==false){
-			return;
-		} 
-	}
-	if (mark_play){
-		n->playing_color_won = true;
-	}
+			if (!i->second->forced_win){
+				n->forced_loss = false;
+			} 
+			if (i->second->forced_loss){
+				n->forced_win = true;
+			}
+	} 
 }
 
 /**
@@ -286,7 +289,7 @@ void TreeAgent::mark_solved_if_all_children_solved(Node* n){
 	bool mark_solved=true;
 	assert(n->children.size()>0);
 	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
-		if( (mark_solved=(mark_solved && i->second->solved))==false){
+		if( (mark_solved=(mark_solved && (i->second->solved || i->second->forced_win || i->second->forced_loss)))==false){
 			return;
 		} 
 	}
@@ -313,7 +316,7 @@ void TreeAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 		n->val+=new_val;
 		n->visits++;
 		mark_solved(n);
-		mark_playing_color_won(n);
+		mark_forced_win_loss(n);
 		FILE_LOG(logDEBUG) << "after back-propagating :"<< n->val <<"/" <<n->visits<< std::endl ;
 	}
 }

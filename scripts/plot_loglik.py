@@ -62,10 +62,15 @@ for compare in product(models,models):
     plt.ylabel(compare[1])
     plt.grid(True)
     plt.axis([1,3.2,1,3.2])
-    plt.scatter(data_1, data_2, s=215,  alpha=0.8)
-    plt.plot(lims, lims, 'k--', alpha=0.85, zorder=0)
-    #plt.show()
-    plt.savefig(compare[0]+"_vs_"+compare[1]+"png")
-    plt.close()
+    try:
+        plt.scatter(data_1, data_2, s=215,  alpha=0.8)
+        plt.plot(lims, lims, 'k--', alpha=0.85, zorder=0)
+        #plt.show()
+        plt.savefig(compare[0]+"_vs_"+compare[1]+"png")
+        plt.close()
+    except:
+        print "problem with "+str(compare[0]) + " and "+ str(compare[0])
+        print "data_1:" + str(data_1) 
+        print "data_2:" + str(data_2) 
 #
 
