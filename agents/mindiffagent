@@ -16,6 +16,8 @@ weights_4=?11{-2.0, 2.0, 1}
 weights_5=?12{-2.0, 2.0, 1}
 triangle_weight=?13{-2.0, 2.0, 1}
 exploration_constant=0
+stop_threshold=?14{0,2}
+abrupt_rate=0.001
 
 
 
