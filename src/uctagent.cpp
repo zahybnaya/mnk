@@ -106,8 +106,8 @@ void UCTAgent::mark_solved(Node* n){
 
 
 double value_for_new_node_uct(Node* parent, zet z){
-	//return (parent->val/parent->visits)+(((parent->player==BLACK)?1:-1)*z.val);
-	return ((parent->val/parent->visits)+z.val);
+	return (parent->val/parent->visits)+(((parent->player==BLACK)?1:-1)*z.val);
+	//return ((parent->val/parent->visits)+z.val);
 }
 
 
@@ -182,11 +182,9 @@ double UCTAgent::get_triangle_weight(){
 	return get_double_property("triangle_weight");
 }
 
-
 double UCTAgent::get_virtual_rollouts(){
 	return get_int_property("virtual_rollouts");
 }
-
 
 double UCTAgent::get_weight(int i){
 	std::string t="weights_"+std::to_string(i);

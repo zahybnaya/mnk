@@ -6,6 +6,7 @@
 #include <random>
 #include <algorithm>
 
+const double FORCED_WIN_VALUE = 100;
 /**
  * Shuffles a vector from children map
  * */
@@ -18,8 +19,6 @@ std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
 	std::random_shuffle(v.begin(),v.end());
 	return v;
 }
-
-
 
 
 
@@ -274,8 +273,15 @@ void TreeAgent::mark_forced_win_loss(Node* n){
 			} 
 			if (i->second->forced_loss){
 				n->forced_win = true;
+				n->val = ((n->player==BLACK)?1:-1)*FORCED_WIN_VALUE * n->visits;
 			}
 	} 
+	if(n->forced_loss){
+		n->val = ((n->player==BLACK)?-1:1)*FORCED_WIN_VALUE * n->visits;
+	}
+	if (n->solved && !n->forced_loss && !n->forced_win){
+		//n->val = 0;
+	}
 }
 
 /**

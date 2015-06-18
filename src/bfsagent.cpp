@@ -24,6 +24,22 @@ void BFSAgent::init(){
 
 }
 
+std::string print_children(Node* n){
+	std::stringstream ss;
+	ss<<((n->player==BLACK)?"BLACK ":"WHITE ");
+	ss<<n->val/n->visits<<":";
+	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
+		ss<<"{"<< (i->second->val/i->second->visits) << ", forced_win:" <<i->second->forced_win << "forced_loss:" <<i->second->forced_loss << "solved:" << i->second->solved<<"}";
+		if(!i->second->forced_win && !i->second->forced_loss && i->second->solved){
+			ss<<n->m_board;
+		}
+	}
+	ss<<std::endl;
+	return ss.str();
+}
+
+
+
 /**
  * 
  * */
@@ -86,11 +102,11 @@ void print_path(std::vector<Node*> nodes){
  * */
 void BFSAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 	assert_children(nodes);
-	int level_counter = 0;
 	FILE_LOG(logDEBUG) << "back-propagating begins " <<std::endl;
 	print_path(nodes);
 	for (std::vector<Node*>::const_reverse_iterator i = nodes.rbegin(); i != nodes.rend(); ++i) {
 		Node* n = *i;
+		double old_val = (n->val/n->visits);
 		FILE_LOG(logDEBUG) << "before back-propagating :"<< n->val <<"/" <<n->visits<<"="<<(n->val/n->visits)<< std::endl ;
 		double oldval = n->val/n->visits;
 		n->visits++;
@@ -99,14 +115,15 @@ void BFSAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 		} else {
 			Node* argmax = std::max_element(n->children.begin(),n->children.end(),better_for_black)->second;
 			n->val=(argmax->val/argmax->visits)*n->visits;
-			if(abs(oldval-(n->val/n->visits))>0.01){
-				FILE_LOG(logDEBUG)<<" back-propagating value changed at "<<level_counter << " out of " <<nodes.size() <<std::endl;
-			}
 		}
 		mark_solved(n);
 		mark_forced_win_loss(n);
 		FILE_LOG(logDEBUG) << "after back-propagating :"<< n->val <<"/" <<n->visits<<"="<<(n->val/n->visits)<< std::endl ;
-		level_counter++;
+		if ((n->val/n->visits)==old_val){
+			FILE_LOG(logDEBUG) << print_children(n);
+			print_path(nodes);
+		}
+		//assert((n->val/n->visits)!=old_val);
 	}
 	print_path(nodes);
 }
@@ -124,19 +141,6 @@ Node* tie_break(std::vector<pair<uint64,Node*>> v, double val){
 std::string print_v(std::vector<pair<uint64,Node*>> v){
 	std::stringstream ss;
 	for (std::vector<pair<uint64,Node*>>::const_iterator i = v.begin(); i != v.end(); ++i) {
-		ss<<"{"<< (i->second->val/i->second->visits) << "}";
-	}
-	ss<<std::endl;
-	return ss.str();
-}
-
-
-
-std::string print_children(Node* n){
-	std::stringstream ss;
-	ss<<((n->player==BLACK)?"BLACK ":"WHITE ");
-	ss<<n->val/n->visits<<":";
-	for (child_map::const_iterator i = n->children.begin(); i != n->children.end(); ++i) {
 		ss<<"{"<< (i->second->val/i->second->visits) << "}";
 	}
 	ss<<std::endl;
@@ -171,8 +175,11 @@ Node* BFSAgent::select_next_node(Node* n) {
 //		FILE_LOG(logERROR)<<"filtered:"<< print_v(v)<<std::endl;
 //		FILE_LOG(logERROR)<< " Selected "<< argmax.second->val/argmax.second->visits<<" from node with"<< (n->val/n->visits) << std::endl;
 //	}
-	//assert(abs((argmax.second->val/argmax.second->visits)-(n->val/n->visits))<0.001);
-	FILE_LOG(logDEBUG) << " returning node "<< *ret << std::endl;
+//	assert(abs((argmax.second->val/argmax.second->visits)-(n->val/n->visits))<0.001);
+
+	FILE_LOG(logDEBUG)<<"all_children:"<< print_children(n)<<std::endl;
+	FILE_LOG(logDEBUG)<<"filtered:"<< print_v(v)<<std::endl;
+	FILE_LOG(logDEBUG)<<"*selecting node{"<< (ret->val/ret->visits) << " forced_win:" <<ret->forced_win << " forced_loss:" <<ret->forced_loss << " solved:" << ret->solved<<"}";
 	//return argmax.second;
 	return ret;
 }
