@@ -1,5 +1,3 @@
-# A BFS implementation 
-## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v),step(v)}
 implementation=MIN_DIFF_BFS
 K0=?0{2,8,1}
 gamma=?1{0.001,0.1,0.1}
@@ -15,17 +13,8 @@ weights_3=?10{-2.0, 2.0, 1}
 weights_4=?11{-2.0, 2.0, 1}
 weights_5=?12{-2.0, 2.0, 1}
 triangle_weight=?13{-2.0, 2.0, 1}
+stop_threshold=?14{0.01,3}
+stop_decrease_rate=?15{0.1,1}
+convergence_times=?16{10,1000}
 exploration_constant=0
-stop_threshold=?14{0,2}
 abrupt_rate=0.001
-
-
-
-
-
-
-
-
-
-
-

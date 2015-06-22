@@ -24,7 +24,7 @@ public:
 	heuristic h;
 private:
 	std::bernoulli_distribution lapse;
-	bool is_negamax(){return false;};
+	bool is_negamax(){return true;};
 };
 
 

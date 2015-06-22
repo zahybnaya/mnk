@@ -52,7 +52,7 @@ bool MinDiffTreeAgent::is_stop(Node* n , int iteration , int player) {
 	double ratio = min_diff/avg_diff;
 	if (ratio == this->last_ratio){
 		if(++this->persistent_ratio_times > get_convergence_times()){
-			this->last_ratio = 0;
+			this->last_ratio = -1;
 			this->persistent_ratio_times = 0;
 			return true;
 		}  
