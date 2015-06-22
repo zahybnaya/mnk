@@ -9,9 +9,13 @@
 % x0(i,l(i)) is the ith coordinate of the initial point
 
 % self-defined initialization list
-L = 3*ones(15,1);
-l = 2*ones(15,1);
+L = 3*ones(17,1);
+l = 2*ones(17,1);
 load x0.mat -mat
-x0=x0(2:16,:)
+x0=x0(2:15,:)
+stop_ratio =[0.01 1.0 3.0]
+decrease_rate  =[0.1 0.4 1.0]
+consecutive_times =[10 100 1000]
+x0=[x0;stop_ratio;decrease_rate;consecutive_times] 
 %x0 = [-10*ones(n,1) zeros(n,1) 10*ones(n,1)];
 
