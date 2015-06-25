@@ -111,11 +111,13 @@ void execute_match(Agent* b_agent, Agent* w_agent, board& board, bool show_play=
 		if (show_play)
 			std::cout << board << std::endl;
 		player = agents[active_player];
+		player->pre_solution();
 		zet move = player->play(board,active_player);
 		FILE_LOG(logDEBUG)<<"*Calculating value for the "<< active_player << "player. Move returned with "<< move.player<<std::endl;
 		board = board+move;
 		assert(board.pieces[active_player] & move.zet_id);
 		print_row(std::cout, board,player,move);
+		player->post_solution();
 	}
 	if (show_play)
 		std::cout << board << std::endl;

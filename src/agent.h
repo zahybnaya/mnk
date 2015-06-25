@@ -56,7 +56,21 @@ class Agent {
 		 * */
 		inline bool get_playing_color() {return playing_color;}
 
+		/***
+		 * Procedure for anything that should be done before 
+		 * any solution
+		 * */
+		virtual void pre_solution(){}
+
+		/***
+		 * Procedure for anything that should be done after 
+		 * any solution
+		 * */
+		virtual void post_solution(){}
+
+
 	protected:
+
 		/**
 		 * Obtain a list of values
 		 * */

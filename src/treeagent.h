@@ -69,26 +69,14 @@ public:
 	 * Iterations for the tree
 	 * */
 	int get_iterations();
-
+	virtual void pre_solution();
+	virtual void post_solution(){}
 
 	/**
 	 *  returns a vector of estimated moves 
 	 * */
 	std::vector<zet> solve(board& b,bool player);
 protected:
-
-	/***
-	 * Procedure for anything that should be done before 
-	 * any solution
-	 * */
-	virtual void pre_solution();
-
-	/***
-	 * Procedure for anything that should be done after 
-	 * any solution
-	 * */
-	virtual void post_solution(){}
-
 	/**
 	 * The gamma parameter for the iteration dist
 	 * */

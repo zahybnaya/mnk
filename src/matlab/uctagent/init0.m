@@ -11,9 +11,8 @@
 % self-defined initialization list
 L = 3*ones(3,1);
 l = 2*ones(3,1);
-lapse_rate=[0.0100 0.0200 0.0300]
-gamma=[0.0050 0.0100 0.0200]
-exp_c=[0.1 0.5 2.0]
-x0=[lapse_rate;gamma;exp_c]
-%x0 = [-10*ones(n,1) zeros(n,1) 10*ones(n,1)];
+exploration_constant=[0.0100 0.5000 2.00]
+num_of_evals=[1 100 1000]
+virtual_rollouts=[0 1 10]
+x0=[exploration_constant; num_of_evals; virtual_rollouts]
 

@@ -66,8 +66,10 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 	while(board_list->get_next(i,success)){
 		iteration++;
 		board_list_mutex.unlock();
+		agent->pre_solution();
 		m=agent->play(dat->allboards[i],dat->allmoves[i].player);
 		success=(m.zet_id==dat->allmoves[i].zet_id);
+		agent->post_solution();
 		board_list_mutex.lock();
 	}
 	delete agent;

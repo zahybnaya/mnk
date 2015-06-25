@@ -10,16 +10,19 @@ std::vector<zet> MyopicAgent::solve(board& b,bool player){
 	return moves;
 }
 
+void MyopicAgent::pre_solution(){
+	h.self=get_playing_color();
+	h.remove_features();
+}
 
-double MyopicAgent::get_D0() {
-	return get_double_property("D0");
+/**
+ * restore features after each solution
+ * */
+void MyopicAgent::post_solution(){
+	h.restore_features();
 }
-double MyopicAgent::get_K0() {
-	return get_double_property("K0");
-}
-double MyopicAgent::get_gamma() {
-	return get_double_property("gamma");
-}
+
+
 double MyopicAgent::get_delta() {
 	return get_double_property("delta");
 }
@@ -46,8 +49,6 @@ double MyopicAgent::get_weight(int i){
  * */
 void MyopicAgent::init(){
 	Agent::init();
-	h.D0 = get_D0();
-	h.gamma  = get_gamma();
 	h.delta   = get_delta();
 	h.vert_scale   = get_vert_scale();
 	h.diag_scale   = get_diag_scale();
@@ -56,7 +57,7 @@ void MyopicAgent::init(){
 		h.weight[i]=get_weight(i);
 	h.weight[16]=get_triangle_weight();
 	h.update();
-	FILE_LOG(logDEBUG) << "Init an agent with the following properties- " << " h.D0:" << get_D0() <<" h.K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
+	FILE_LOG(logDEBUG) << "Init an agent with the following properties- "  << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
 
 }
 

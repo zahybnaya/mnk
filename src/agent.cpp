@@ -51,9 +51,6 @@ zet Agent::play(board& b,bool player){
 		FILE_LOG(logERROR)<<" board with no moves "<<b <<std::endl;
 	}
 	assert(!s.empty());
-	//if(b.active_player()!=player){
-	//	FILE_LOG(logERROR)<<"Player  "<<((player==BLACK)?"BLACK":"WHITE")<< " is not the same as board::active_player()" << std::endl;
-	//}
 	zet r;
 	std::random_shuffle(s.begin(),s.end());
 	for (std::vector<zet>::const_iterator i = s.begin(); i != s.end(); ++i) {

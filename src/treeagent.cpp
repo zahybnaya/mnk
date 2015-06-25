@@ -21,15 +21,12 @@ std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
 }
 
 
-
 /**
  * Returns a list of possible moves and their estimates. 
  */
 std::vector<zet> TreeAgent::solve(board& b,bool player){
-	this->playing_color = player;
 	FILE_LOG(logDEBUG) << "Starting to solve board:{"<< uint64tobinstring(b.pieces[0]) ;
 	FILE_LOG(logDEBUG) << ","<< uint64tobinstring(b.pieces[1])<<"}" << std::endl;
-	pre_solution();
 	this->playing_color=player;
 	double gamma = get_iter_gamma();
 	std::geometric_distribution<int> iter_dist(gamma);
@@ -42,7 +39,6 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 	std::vector<zet> ret= move_estimates(n);
 	//print_time_prediction_metrics(b,n,ret);
 	delete_tree(n);
-	post_solution();
 	return ret;
 }
 

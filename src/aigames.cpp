@@ -42,9 +42,11 @@ void execute_agent_for_time_predictions(Agent* a, int player_num, data_struct &d
 	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();++it){
 		board b = dat.allboards[*it];
 		bool color = dat.allmoves[*it].player;
+		a->pre_solution();
 		zet m=a->play(b,color);
 		assert(!b.contains(m.zet_id,m.player));
 		assert(!b.contains(m.zet_id,color));
+		a->post_solution();
 	} 
 }
 
@@ -82,10 +84,12 @@ void execute_agent(Agent* a, int player_num, data_struct &dat )
 	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();++it){
 		board b = dat.allboards[*it];
 		bool color = dat.allmoves[*it].player;
+		a->pre_solution();
 		zet m=a->play(b,color);
 		assert(!b.contains(m.zet_id,m.player));
 		assert(!b.contains(m.zet_id,color));
 		print_agent(color,std::cout,a,b,m,player_num);
+		a->post_solution();
 	} 
 }
 

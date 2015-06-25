@@ -40,6 +40,6 @@ mexsim:
 
 
 modelfitting:
-	echo "mex  -f /Applications/MATLAB.app/bin/mexopts.sh -v -output Gomoku_model CXXFLAGS=\"\\\$$CXXFLAGS -Wall -Wextra -std=c++11 -O3   -fexpensive-optimizations\" heuristic.cpp mexfunction.cpp  bfs.cpp  features.cpp agent.cpp agent_builder.cpp myopicagent.cpp uctagent.cpp treeagent.cpp randomplayout.cpp data_struct.cpp bfsagent.cpp ; exit" | /Applications/MATLAB.app/bin/matlab -check_malloc -nodisplay
+	echo "mex  -f /Applications/MATLAB.app/bin/mexopts.sh -v -output Gomoku_model CXXFLAGS=\"\\\$$CXXFLAGS -Wall -Wextra -std=c++11 -O3   -fexpensive-optimizations\" heuristic.cpp mexfunction.cpp  bfs.cpp  features.cpp agent.cpp agent_builder.cpp myopicagent.cpp uctagent.cpp treeagent.cpp randomplayout.cpp data_struct.cpp bfsagent.cpp mindifftreeagent.cpp ; exit" | /Applications/MATLAB.app/bin/matlab -check_malloc -nodisplay
 
                                                                                                                                                                                                                                                                      
