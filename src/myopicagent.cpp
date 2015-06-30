@@ -6,12 +6,14 @@
 
 std::vector<zet> MyopicAgent::solve(board& b,bool player){
 	this->playing_color = player;
+	h.self = player;
+	FILE_LOG(logDEBUG)<<" evaluating moves using "<< h.Nfeatures <<" features" <<std::endl;
 	std::vector<zet> moves = h.get_moves(b,player,false); 
 	return moves;
 }
 
 void MyopicAgent::pre_solution(){
-	h.self=get_playing_color();
+	FILE_LOG(logDEBUG)<<" pre_solution of myopic. Setting self(playing_color) to "<< get_playing_color()<<std::endl;
 	h.remove_features();
 }
 
@@ -19,6 +21,8 @@ void MyopicAgent::pre_solution(){
  * restore features after each solution
  * */
 void MyopicAgent::post_solution(){
+	
+	FILE_LOG(logDEBUG)<<" post-solution of myopic. "<< get_playing_color()<<std::endl;
 	h.restore_features();
 }
 

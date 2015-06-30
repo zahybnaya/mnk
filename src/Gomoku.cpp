@@ -61,8 +61,8 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 	board_list_mutex.lock();
 	int iteration  = 0;
 	Agent_builder b;
-	Agent* agent = b.build(ap);
 	FILE_LOG(logDEBUG) << "Building agent accodring to "<<ap.agent_file<<std::endl;
+	Agent* agent = b.build(ap);
 	while(board_list->get_next(i,success)){
 		iteration++;
 		board_list_mutex.unlock();

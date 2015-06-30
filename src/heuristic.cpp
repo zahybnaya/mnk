@@ -212,13 +212,17 @@ void heuristic::remove_features(){
 	vector<pattern>::iterator i = feature.begin();
 	while ( i != feature.end() ) {
 		if(attention(engine)){
+			FILE_LOG(logDEBUG)<<" Removing feature"<<std::endl;
 			feature_backup.push_back(*i);
 			i=feature.erase(i);
 			removed_counter++;
 		}else{
+
+			FILE_LOG(logDEBUG)<<" Keeping feature"<<std::endl;
 			++i;
 		}
 	}
+	FILE_LOG(logDEBUG)<<" Removes total of "<<removed_counter<<" features"<<std::endl;
 	Nfeatures -=removed_counter;
 }
 
