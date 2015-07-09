@@ -54,6 +54,39 @@ void round_robin(heuristic* participant,int Nparticipants,ofstream& output,int f
 /**
  * The execution of a new loglik
  * */
+void compute_loglik_task_output(Agent_params ap,data_struct* dat,todolist* board_list){
+	int i=-1;
+	bool success=false;
+	zet m;
+	board_list_mutex.lock();
+	int iteration  = 0;
+	Agent_builder b;
+	FILE_LOG(logDEBUG) << "Building agent accodring to "<<ap.agent_file<<std::endl;
+	Agent* agent = b.build(ap);
+	while(board_list->get_next(i,success)){
+		iteration++;
+		board_list_mutex.unlock();
+		for (int j = 0; j < 1000; j++) {
+			agent->pre_solution();
+			std::vector<zet> moves = agent->solve(dat->allboards[i],dat->allmoves[i].player);
+			for (std::vector<zet>::const_iterator i = moves.begin(); i != moves.end(); ++i) {
+				std::cout<<uint64totile(i->zet_id)<<","<<i->val <<std::endl;
+			}
+			m=agent->play(dat->allboards[i],dat->allmoves[i].player);
+			std::cout<< "played,"<<uint64totile(m.zet_id)<<std::endl;
+			success=(m.zet_id==dat->allmoves[i].zet_id);
+			agent->post_solution();
+		}
+		board_list_mutex.lock();
+	}
+	delete agent;
+	board_list_mutex.unlock();
+}
+
+
+/**
+ * The execution of a new loglik
+ * */
 void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 	int i=-1;
 	bool success=false;
@@ -75,6 +108,10 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 	delete agent;
 	board_list_mutex.unlock();
 }
+
+
+
+
 
 void worker_thread_notree(heuristic h,data_struct* dat,todolist* board_list){
 	int i=-1;

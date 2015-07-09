@@ -6,7 +6,7 @@ typedef struct Node Node;
 typedef std::map<uint64,Node*> child_map;
 
 double average_diff(std::vector<zet> &zets, int player);
-double calc_best_diff(std::vector<zet> &zets, int player);
+double calc_best_diff(std::vector<zet> &zets, int player, bool nonlinearity=false);
 /**
  *  Tree node 
  * */

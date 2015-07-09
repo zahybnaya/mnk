@@ -1,7 +1,7 @@
 implementation=UCT
-exploration_constant=?1{0,1,0.1}
-num_of_evals=?2{1,1000,10}
-virtual_rollouts=?3{0,100,10}
+exploration_constant=?0{0,1,0.1}
+num_of_evals=?1{1,1000,10}
+virtual_rollouts=?2{0,100,10}
 K0=4
 gamma=0.01
 delta=0.2

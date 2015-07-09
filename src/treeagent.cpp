@@ -47,13 +47,19 @@ double max_val(std::vector<zet> &zets, int player){
 	return (zets[0].val);
 }
 
+double sigmoid(double x){
+	return 1/(1+exp(-x));
+}
 
 
-double calc_best_diff(std::vector<zet> &zets, int player){
+double calc_best_diff(std::vector<zet> &zets, int player, bool nonlinearity){
 	std::sort(zets.begin(), zets.end(),[player](const zet& z1, const zet& z2){ return (player==BLACK)? (z1.val > z2.val):(z2.val > z1.val);  });
 	assert((player==BLACK)?zets[0].val>=zets[1].val:zets[0].val<=zets[1].val);
 	if (zets.size()>2)
 		assert((player==BLACK)?zets[1].val>=zets[2].val:zets[1].val<=zets[2].val);
+	if(nonlinearity){
+		return abs(sigmoid(zets[0].val) - sigmoid(zets[1].val));
+	}
 	return abs(zets[0].val - zets[1].val);
 }
 

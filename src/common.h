@@ -9,6 +9,25 @@
 
 typedef uint64_t uint64;
 typedef std::map<std::string,std::string> properties;
+bool is_debug(int argc, const char* argv[]);
+
+inline void set_debug(int argc, const char* argv[]){
+	if (is_debug(argc, argv)){
+		FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
+	} else {
+		FILELog::ReportingLevel() = FILELog::FromString("ERROR");
+	}
+}
+
+inline bool is_debug(int argc, const char* argv[]){
+	for(int i=0;i<argc;++i){
+		if (strcmp(argv[i],"-debug")==0) {
+			return	true;
+		}
+	}
+	return false;
+}
+
 
 struct Agent_params {
 	std::string agent_file;	

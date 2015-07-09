@@ -32,7 +32,7 @@ private:
 	double get_vert_scale();
 	double get_diag_scale();
 	double get_opp_scale();
-	double get_virtual_rollouts();
+	int get_virtual_rollouts();
 	/* uct funtions */
 	virtual double get_exploration_constant(); 
 	RandomPlayout policy;

@@ -52,7 +52,7 @@ double UCTAgent::evaulate(Node* lastNode,Node* /* parent*/, uint64 ){
 		r += policy.eval(lastNode->m_board);
 	}
 	double rval = r/num_of_evals;
-	FILE_LOG(logDEBUG)<<"evaluating last node as "<<rval<<std::endl; 
+	FILE_LOG(logDEBUG)<<"evaluating last node as "<<rval<<" with "<<num_of_evals<<" evaluations"<<std::endl; 
 	return rval;
 }
 
@@ -182,7 +182,7 @@ double UCTAgent::get_triangle_weight(){
 	return get_double_property("triangle_weight");
 }
 
-double UCTAgent::get_virtual_rollouts(){
+int UCTAgent::get_virtual_rollouts(){
 	return get_int_property("virtual_rollouts");
 }
 

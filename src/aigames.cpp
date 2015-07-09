@@ -35,9 +35,9 @@ void print_agent(bool color,std::ostream& o,Agent* a, board b, zet m, int player
  * */
 void execute_agent_for_time_predictions(Agent* a, int player_num, data_struct &dat )
 {
-	std::vector<unsigned int> boards= dat.select_boards(player_num,ALL);
+	std::vector<unsigned int> boards= dat.select_boards(player_num);
 	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
-	std::cout<<uint64tobinstring(b.pieces[BLACK])<<","<<uint64tobinstring(b.pieces[WHITE])<<","<< this->playing_color <<","<<best_diff<<","<<entropy<<","<<this->num_switches<<","<<count_evals << ","<< best_val <<","<< normalized_best_diff <<","<< num_consecutive<<","<< num_nodes << ","<<num_pieces <<","<< num_patterns  << std::endl; 
+	//std::cout<<uint64tobinstring(b.pieces[BLACK])<<","<<uint64tobinstring(b.pieces[WHITE])<<","<< a->playing_color <<","<<best_diff<<","<<entropy<<","<<this->num_switches<<","<<count_evals << ","<< best_val <<","<< normalized_best_diff <<","<< num_consecutive<<","<< num_nodes << ","<<num_pieces <<","<< num_patterns  << std::endl; 
 	std::cout<<"black,white,player,best_diff,entropy,tree_switch,count_evals,max_val,normalized_best_diff,num_consecutive,num_nodes,num_pieces, num_patterns "<<std::endl;
 	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();++it){
 		board b = dat.allboards[*it];
@@ -57,7 +57,7 @@ void execute_agent_for_time_predictions(Agent* a, int player_num, data_struct &d
  * */
 void execute_agent_diffs(Agent* a, int player_num, data_struct &dat )
 {
-	std::vector<unsigned int> boards= dat.select_boards(player_num,ALL);
+	std::vector<unsigned int> boards= dat.select_boards(player_num);
 	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
 	std::cout<<"black,white,player,best_diff,entropy,tree_switch,count_evals,max_val"<<std::endl;
 	for (std::vector<unsigned int>::const_iterator it = boards.begin(); it!=boards.end();++it){
@@ -78,7 +78,7 @@ void execute_agent_diffs(Agent* a, int player_num, data_struct &dat )
  * */
 void execute_agent(Agent* a, int player_num, data_struct &dat )
 {
-	std::vector<unsigned int> boards= dat.select_boards(player_num,ALL);
+	std::vector<unsigned int> boards= dat.select_boards(player_num);
 	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
 	print_header(std::cout);
 	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();++it){
@@ -134,7 +134,9 @@ Source prepeare_source(int argc, const char* argv[]){
 
 int main(int argc, const char *argv[])
 {
-	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
+
+	set_debug(argc, argv);
+	//FILELog::ReportingLevel() = FILELog::FromString("ERROR");
 	//FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
 	FILE_LOG(logDEBUG) << "Initializing aigames"<<std::endl; 
 	Source s = prepeare_source(argc,argv);
@@ -145,7 +147,8 @@ int main(int argc, const char *argv[])
 	Agent* agent = b.build(p);
 
 	for (std::set<int>::iterator i = dat.distinct_players.begin(); i != dat.distinct_players.end();++i){
-		execute_agent_for_time_predictions(agent, *i, dat);	
+		//execute_agent_for_time_predictions(agent, *i, dat);	
+		execute_agent(agent, *i, dat);
 	}
 	delete agent;
 	return 0;
