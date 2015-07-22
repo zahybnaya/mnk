@@ -12,9 +12,9 @@ class RandomPlayout
 public:
 	RandomPlayout();
 	~RandomPlayout(){};
-	double eval(board b);
+	virtual double eval(board b);
 
-private:
+protected:
 	double state_value(board& b);
 	zet select_random_move(board& b);
 	mt19937_64 rng;

@@ -37,7 +37,6 @@ def read_dict(filename):
 
 model_file = argv[1]
 data = read_tuples(model_file)
-
 subjects = sorted(set([x[1] for x in data ]))
 models = set([x[0] for x in data ])
 print "models:",
@@ -68,8 +67,10 @@ for compare in product(models,models):
         #plt.show()
         plt.savefig(compare[0]+"_vs_"+compare[1]+"png")
         plt.close()
-    except:
-        print "problem with "+str(compare[0]) + " and "+ str(compare[0])
+    except Exception as inst:
+        print type(inst)
+        print inst
+        print "problem with "+str(compare[0]) + " and "+ str(compare[1])
         print "data_1:" + str(data_1) 
         print "data_2:" + str(data_2) 
 #

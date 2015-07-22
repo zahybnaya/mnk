@@ -24,6 +24,7 @@ public:
 	void mark_solved(Node* n);
 	void init();
 private:
+	int get_policy_code();
 	double get_triangle_weight();
 	double get_weight(int i);
 	double get_K0();

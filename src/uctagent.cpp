@@ -3,12 +3,12 @@
 #include <assert.h>
 #include <algorithm>
 #include "randomplayout.h"
+#include "geometricrandom.h"
 
 /**
  * Constructor 
  * */
 UCTAgent::UCTAgent(){
-	policy = RandomPlayout();
 }
 
 /**
@@ -25,6 +25,10 @@ bool UCTAgent::is_negamax(){
 	return false;
 }
 
+int UCTAgent::get_policy_code(){
+	return get_int_property("policy_code");
+}
+
 void UCTAgent::init(){
 	Agent::init();
 	branching_factor=std::bernoulli_distribution(fmod(get_K0(),1.0));
@@ -37,6 +41,19 @@ void UCTAgent::init(){
 		h.weight[i]=get_weight(i);
 	h.weight[16]=get_triangle_weight();
 	h.update();
+
+	switch(get_policy_code()){
+		case 0:
+			policy = RandomPlayout();
+			break;
+		case 1:
+			policy = GeometricRandomPlayout(h);
+			break;
+		default:
+			throw std::runtime_error("no policy");
+	}
+
+
 	FILE_LOG(logDEBUG) << "Init an agent with the following properties- " <<" K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
 
 }
@@ -107,7 +124,6 @@ void UCTAgent::mark_solved(Node* n){
 
 double value_for_new_node_uct(Node* parent, zet z){
 	return (parent->val/parent->visits)+(((parent->player==BLACK)?1:-1)*z.val);
-	//return ((parent->val/parent->visits)+z.val);
 }
 
 
