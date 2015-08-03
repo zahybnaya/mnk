@@ -51,8 +51,12 @@ lims = [
 for compare in product(models,models):
     if compare[0] == compare[1]:
         continue;
-    data_1 = [d[2] for s in subjects for d in data if d[1] == s and d[0]==compare[0]]
-    data_2 = [d[2] for s in subjects for d in data if d[1] == s and d[0]==compare[1]]
+    sub_1 = set([d[1] for s in subjects for d in data if d[1] == s and d[0]==compare[0]])
+    sub_2 = set([d[1] for s in subjects for d in data if d[1] == s and d[0]==compare[1]])
+    subs_both = sub_1 & sub_2
+
+    data_1 = [d[2] for s in subjects for d in data if d[1] == s and d[0]==compare[0] and s in subs_both]
+    data_2 = [d[2] for s in subjects for d in data if d[1] == s and d[0]==compare[1] and s in subs_both]
 #colors = np.random.rand(N)
 #area = np.pi * (15 * np.random.rand(N))**2 # 0 to 15 point radiuses
 #plt.scatter(x, y, s=area, c=colors, alpha=0.5)

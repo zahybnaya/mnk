@@ -25,7 +25,7 @@ const uint64 full   =0x0000fffffffffffULL;
 const uint64 center =0x00001f03e07c0f8ULL;
 const uint64 allbutfirstcol = 0x00000ffdffbff7feULL;
 
-inline bool is_win(uint64 pieces){
+inline bool is_win(uint64 pieces) {
   return (pieces & (pieces>>BOARD_WIDTH) & (pieces>>(2*BOARD_WIDTH)) & (pieces>>(3*BOARD_WIDTH))) ||
          (pieces & (pieces>>(BOARD_WIDTH+1)) & (pieces>>(2*BOARD_WIDTH+2)) & (pieces>>(3*BOARD_WIDTH+3))) ||
          (pieces & (pieces>>(BOARD_WIDTH-1)) & (pieces>>(2*BOARD_WIDTH-2)) & (pieces>>(3*BOARD_WIDTH-3)) & 0x0000000000007f8ULL) ||
@@ -40,7 +40,7 @@ const uint64 allbutlastcol =0x00000007fbfdfeffULL;
 const uint64 allbutfirstrow =0x0000000ffffffe00ULL;
 const uint64 allbutlastrow =0x0000000007ffffffULL;
 
-inline bool is_win(uint64 pieces){
+inline bool is_win(uint64 pieces) {
   return (pieces & (pieces>>BOARD_WIDTH) & (pieces>>(2*BOARD_WIDTH)) & (pieces>>(3*BOARD_WIDTH))) ||
          (pieces & (pieces>>(BOARD_WIDTH+1)) & (pieces>>(2*BOARD_WIDTH+2)) & (pieces>>(3*BOARD_WIDTH+3))) ||
          (pieces & (pieces>>(BOARD_WIDTH-1)) & (pieces>>(2*BOARD_WIDTH-2)) & (pieces>>(3*BOARD_WIDTH-3)) & 0x0000000000001f8ULL) ||
@@ -333,21 +333,21 @@ struct board{
     pieces[BLACK] &= ~m;
     pieces[WHITE] &= ~m;
   }
-  inline bool is_full(){
+  inline bool is_full() {
     return (pieces[BLACK] | pieces[WHITE])==full;
   }
 
-  inline bool is_ended(){
+  inline bool is_ended() {
     return is_win(pieces[BLACK])|| is_win(pieces[WHITE]) || is_full() ;
   }
-  inline bool black_has_won(){
+  inline bool black_has_won() {
     return is_win(pieces[BLACK]);
   }
 
-  inline bool white_has_won(){
+  inline bool white_has_won() {
     return is_win(pieces[WHITE]);
   }
-  inline bool player_has_won(bool player){
+  inline bool player_has_won(bool player) {
     return is_win(pieces[player]);
   }
   inline int num_pieces(){

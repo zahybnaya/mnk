@@ -37,6 +37,7 @@ inline void concrete(Agent_params& ap,double* paramptr){
 
 void mexFunction(int /*nlhs*/, mxArray *plhs[],int /*nrhs*/, const mxArray *prhs[]){
 	FILELog::ReportingLevel() = FILELog::FromString("ERROR");
+	//FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
 	FILE_LOG(logDEBUG) << " Starting mexFunction" << std::endl;
 	double* playerptr=mxGetPr(prhs[0]);
 	char* agent_file =mxArrayToString(prhs[1]);

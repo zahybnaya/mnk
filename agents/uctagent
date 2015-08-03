@@ -16,4 +16,3 @@ weights_3=5.0
 weights_4=2.5
 weights_5=10.0
 triangle_weight=1.2
-exploration_constant=0

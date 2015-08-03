@@ -66,14 +66,14 @@ void compute_loglik_task_output(Agent_params ap,data_struct* dat,todolist* board
 	while(board_list->get_next(i,success)){
 		iteration++;
 		board_list_mutex.unlock();
-		for (int j = 0; j < 1000; j++) {
+		for (int j = 0; j < 100000; j++) {
 			agent->pre_solution();
-			std::vector<zet> moves = agent->solve(dat->allboards[i],dat->allmoves[i].player);
-			for (std::vector<zet>::const_iterator i = moves.begin(); i != moves.end(); ++i) {
-				std::cout<<uint64totile(i->zet_id)<<","<<i->val <<std::endl;
-			}
+			//std::vector<zet> moves = agent->solve(dat->allboards[i],dat->allmoves[i].player);
+			//for (std::vector<zet>::const_iterator i = moves.begin(); i != moves.end(); ++i) {
+				//std::cout<<uint64totile(i->zet_id)<<","<<i->val <<std::endl;
+			//}
 			m=agent->play(dat->allboards[i],dat->allmoves[i].player);
-			std::cout<< "played,"<<uint64totile(m.zet_id)<<std::endl;
+			std::cout<< uint64totile(m.zet_id)<<std::endl;
 			success=(m.zet_id==dat->allmoves[i].zet_id);
 			agent->post_solution();
 		}
@@ -162,7 +162,7 @@ void worker_thread_super(superheuristic s,data_struct* dat,todolist* board_list)
 double compute_loglik_agent_threads(Agent_params ap , data_struct* dat,todolist* board_list){
 	thread t[NTHREADS];
 	for(int i=0;i<NTHREADS;i++){
-		t[i]=thread(compute_loglik_task,ap,dat,board_list);
+		t[i]=thread(compute_loglik_task_output,ap,dat,board_list);
 	}
 	for(int i=0;i<NTHREADS;i++)
 		t[i].join();
@@ -411,7 +411,6 @@ void missing_values()
 {
 	std::cout << "Usage: -a <agent_file> -d <data_file>" << std::endl;
 }
-
 
 Source prepeare_source(int argc, const char* argv[]){
 	std::string state_file, agent_file;

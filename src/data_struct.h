@@ -42,9 +42,7 @@ struct data_struct{
   void add_board(std::string black_pieces,std::string white_pieces, bool is_postmove,std::string move_id, std::string color );
   void add_thinking_time(std::string);
   zet make_zet(std::string move_id, std::string color);
-
-
-
+  void show_content();
   void add_names_gianni(char*);
   void execute_command_gianni(string*, bool);
   void make_test_and_train(double, mt19937_64);

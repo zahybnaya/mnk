@@ -58,7 +58,7 @@ double calc_best_diff(std::vector<zet> &zets, int player, bool nonlinearity){
 	if (zets.size()>2)
 		assert((player==BLACK)?zets[1].val>=zets[2].val:zets[1].val<=zets[2].val);
 	if(nonlinearity){
-		return abs(sigmoid(zets[0].val) - sigmoid(zets[1].val));
+		return sigmoid(abs(zets[0].val) - sigmoid(zets[1].val));
 	}
 	return abs(zets[0].val - zets[1].val);
 }

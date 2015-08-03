@@ -16,6 +16,17 @@ void data_struct::add(board b, zet m, int t=0, int p=0){
   Nboards++;
 }
 
+void data_struct::show_content(){
+	for(int i=0;i<Nboards;i++){
+		std::cout<<uint64tobinstring(allboards[i].pieces[BLACK])<<"\t"
+			<<uint64tobinstring(allboards[i].pieces[WHITE])<<"\t"
+			<<uint64totile(allmoves[i].zet_id)<<"\t"
+			<<((allmoves[i].player==BLACK)?"BLACK":"WHITE")<<std::endl;
+	}
+}
+
+
+
 void data_struct::print(bool pause=false){
   for(unsigned int i=0;i<Nboards;i++){
     allboards[i].write(allmoves[i]);
@@ -222,11 +233,6 @@ void data_struct::add_board(std::string black_pieces, std::string white_pieces, 
 	b.pieces[BLACK]=binstringtouint64(black_pieces);
 	b.pieces[WHITE]=binstringtouint64(white_pieces);
 	zet z = make_zet(move_id,color);
-	if (b.contains(z.zet_id,z.player)){
-		cout<<black_pieces<<","<<white_pieces<<" move:"<<move_id<<" contains:"<< b.contains(z.zet_id,z.player)<<" is_postmove " <<is_postmove<<" color:"<<color<<std::endl;
-		cout<<b;
-		cout<<std::endl;
-	}
 	assert((!is_postmove && !b.contains(z.zet_id,z.player)) || (is_postmove && b.contains(z.zet_id,z.player)));
 	if (is_postmove)
 		b.remove_piece(z);
@@ -276,7 +282,7 @@ bool is_board_full(std::string black_pieces, std::string white_pieces){
 
 
 bool is_playing_position(std::string description){
-	return (description == "playing" || description == "AFC" || description == "win");
+	return (description == "playing" || description == "AFC" || description == "win" || description == "draw");
 }
 
 
@@ -289,6 +295,8 @@ void data_struct::load(std::string line){
 		std::vector<std::string> tokens = split(line,',');
 		if (!is_playing_position(tokens[DESC_IX]) ||  is_ai(tokens[PLAYER_ID_IX]) || 
 				is_board_full(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX])){
+			std::cout << "Discarding:[ " <<line<<"] Reason<"<< !is_playing_position(tokens[DESC_IX]) <<","<< is_ai(tokens[PLAYER_ID_IX])<<","<<is_board_full(tokens[BOARD_BLACK_IX], tokens[BOARD_WHITE_IX])<<"> description:"<<tokens[DESC_IX]<<std::endl;
+			FILE_LOG(logDEBUG) << "Discarding:[ " <<line<<"]"<<std::endl;
 			return;
 		}
 		add_player(tokens[PLAYER_ID_IX]);
@@ -320,9 +328,11 @@ string data_struct::get_times_file(std::string data_file){
  * load a file
  * */
 void data_struct::load_file(std::string filename){
+	int total_lines=0;
 	std::ifstream input(filename,std::ios::in);
 	std::string line;
 	while (std::getline(input,line)){
+		total_lines++;
 		load(line);
 	}
 	Nplayers = count_distinct_players();
@@ -335,6 +345,9 @@ void data_struct::load_file(std::string filename){
 		f.close();
 		times_file= false;
 	}  
+	std::cout<< "Loading from "<< filename << "  completed with: "<< Nboards <<" boards. Distinct players:" << Nplayers <<" total lines:"<< total_lines<< std::endl;
+	FILE_LOG(logDEBUG) << "Loading from "<< filename << "  completed with: "<< Nboards <<" boards. Distinct players:" << Nplayers <<" total lines:"<< total_lines<< std::endl;
+	//show_content();
 }
 
 
@@ -433,7 +446,9 @@ vector<unsigned int> data_struct::select_boards(int player){
 	  }
   }
   if (boards.size() == 0 ){
-	  throw std::runtime_error("No boards found!");
+	  std::stringstream msg; 
+	  msg<<"No boards found! player:"<<player<<std::endl;
+	  throw std::runtime_error(msg.str());
   }
   return boards;
 }

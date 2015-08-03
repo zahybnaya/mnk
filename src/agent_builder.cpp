@@ -3,6 +3,7 @@
 #include "uctagent.h"
 #include "myopicagent.h"
 #include "bfsagent.h"
+#include "dummy_agent.h"
 #include "mindifftreeagent.h"
 
 template<typename T> Agent* create_agent() {  return new T; }
@@ -31,6 +32,7 @@ void Agent_builder::register_constructors(){
 	agent_constructors["MYOPIC"] = &create_agent<MyopicAgent>;
 	agent_constructors["BFS"] = &create_agent<BFSAgent>;
 	agent_constructors["MIN_DIFF_BFS"] = &create_agent<MinDiffTreeAgent>;
+	agent_constructors["DUMMY"] = &create_agent<DummyAgent>;
 }
 
 Agent* Agent_builder::create_instance(std::string type){
