@@ -1,13 +1,13 @@
 #ifndef RANDOMPLAYOUT_H
 #define RANDOMPLAYOUT_H
-#include "board.h"
+#include "playoutpolicy.h"
 #include <random>
 
 /**
  * Performs a random playout to a final state 
  * and then retrieves {-1.0,1} based on the state of the fianal board
  * */
-class RandomPlayout
+class RandomPlayout : public PlayoutPolicy
 {
 public:
 	RandomPlayout();

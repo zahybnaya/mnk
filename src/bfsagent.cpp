@@ -108,7 +108,6 @@ void BFSAgent::back_propagatate(double new_val, std::vector<Node*> nodes){
 		Node* n = *i;
 		double old_val = (n->val/n->visits);
 		FILE_LOG(logDEBUG) << "before back-propagating :"<< n->val <<"/" <<n->visits<<"="<<(n->val/n->visits)<< std::endl ;
-		double oldval = n->val/n->visits;
 		n->visits++;
 		if (n->visits==1){
 			n->val=new_val*n->visits;

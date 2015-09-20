@@ -162,7 +162,7 @@ void worker_thread_super(superheuristic s,data_struct* dat,todolist* board_list)
 double compute_loglik_agent_threads(Agent_params ap , data_struct* dat,todolist* board_list){
 	thread t[NTHREADS];
 	for(int i=0;i<NTHREADS;i++){
-		t[i]=thread(compute_loglik_task_output,ap,dat,board_list);
+		t[i]=thread(compute_loglik_task,ap,dat,board_list);
 	}
 	for(int i=0;i<NTHREADS;i++)
 		t[i].join();

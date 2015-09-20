@@ -2,11 +2,12 @@
 #include "treeagent.h"
 #include "randomplayout.h"
 #include "heuristic.h"
+#include "playoutpolicy.h"
 
 class UCTAgent: public TreeAgent{ 
 public:
 	UCTAgent();
-	~UCTAgent(){};
+	~UCTAgent();
 	/**
 	 * Calculates the uct value of the node
 	 * */
@@ -23,6 +24,10 @@ public:
 	 **/
 	void mark_solved(Node* n);
 	void init();
+
+	void pre_solution();
+	void post_solution();
+
 private:
 	int get_policy_code();
 	double get_triangle_weight();
@@ -36,7 +41,7 @@ private:
 	int get_virtual_rollouts();
 	/* uct funtions */
 	virtual double get_exploration_constant(); 
-	RandomPlayout policy;
+	PlayoutPolicy* policy;
 	bool is_negamax();
 	int get_num_of_evals();
 	heuristic h;

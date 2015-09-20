@@ -5,11 +5,18 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <math.h>
 #include "log.h"
 
 typedef uint64_t uint64;
 typedef std::map<std::string,std::string> properties;
 bool is_debug(int argc, const char* argv[]);
+double sigmoid(double x);
+
+inline double sigmoid(double x){
+	return 1/(1+exp(-x));
+}
+
 
 inline void set_debug(int argc, const char* argv[]){
 	if (is_debug(argc, argv)){
@@ -41,7 +48,6 @@ struct Source {
 	std::string agent_description_file;
 };
 
-enum DISTRIBUTION {GEOMETRIC=0,BERNOULLI=1};
 
 
 inline std::vector<std::string> split(const std::string &s, char delim) {

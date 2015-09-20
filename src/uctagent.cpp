@@ -4,12 +4,23 @@
 #include <algorithm>
 #include "randomplayout.h"
 #include "geometricrandom.h"
+#include "myopicpolicyplayout.h"
 
 /**
  * Constructor 
  * */
 UCTAgent::UCTAgent(){
+	policy = NULL;
 }
+
+/**
+ * Destructor 
+ * */
+UCTAgent::~UCTAgent(){
+	delete(policy);
+	policy = NULL;
+}
+
 
 /**
  * Naming of agent
@@ -42,18 +53,20 @@ void UCTAgent::init(){
 	h.weight[16]=get_triangle_weight();
 	h.update();
 
-	switch(get_policy_code()){
-		case 0:
-			policy = RandomPlayout();
-			break;
-		case 1:
-			policy = GeometricRandomPlayout(h);
-			break;
-		default:
-			throw std::runtime_error("no policy");
-	}
-
-
+	if (policy == NULL)
+		switch(get_policy_code()){
+			case 0:
+				policy = new RandomPlayout();
+				break;
+			case 1:
+				policy = new GeometricRandomPlayout(h);
+				break;
+			case 2:
+				policy = new MyopicPolicyPlayout(h);
+				break;
+			default:
+				throw std::runtime_error("no policy");
+		}
 	FILE_LOG(logDEBUG) << "Init an agent with the following properties- " <<" K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
 
 }
@@ -66,7 +79,7 @@ double UCTAgent::evaulate(Node* lastNode,Node* /* parent*/, uint64 ){
 	int num_of_evals =  get_num_of_evals();
 	double r =0;
 	for (int i = 0; i < num_of_evals; i++) {
-		r += policy.eval(lastNode->m_board);
+		r += policy->eval(lastNode->m_board);
 	}
 	double rval = r/num_of_evals;
 	FILE_LOG(logDEBUG)<<"evaluating last node as "<<rval<<" with "<<num_of_evals<<" evaluations"<<std::endl; 
@@ -160,6 +173,24 @@ double UCTAgent::expand(Node* n){
 	}
 	return ret;
 }
+
+/**
+ * Removes features from h for entire tree 
+ * 
+ * */
+void UCTAgent::pre_solution(){
+	TreeAgent::pre_solution();
+	h.self=get_playing_color();
+	h.remove_features();
+}
+
+/**
+ * restore features after each solution
+ * */
+void UCTAgent::post_solution(){
+	h.restore_features();
+}
+
 
 /**
  * Number of evaluations of the policy

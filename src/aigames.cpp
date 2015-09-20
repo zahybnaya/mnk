@@ -136,8 +136,6 @@ int main(int argc, const char *argv[])
 {
 
 	set_debug(argc, argv);
-	//FILELog::ReportingLevel() = FILELog::FromString("ERROR");
-	//FILELog::ReportingLevel() = FILELog::FromString("DEBUG");
 	FILE_LOG(logDEBUG) << "Initializing aigames"<<std::endl; 
 	Source s = prepeare_source(argc,argv);
 	data_struct dat; 

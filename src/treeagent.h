@@ -7,6 +7,9 @@ typedef std::map<uint64,Node*> child_map;
 
 double average_diff(std::vector<zet> &zets, int player);
 double calc_best_diff(std::vector<zet> &zets, int player, bool nonlinearity=false);
+std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c);
+
+
 /**
  *  Tree node 
  * */
@@ -29,7 +32,7 @@ struct Node {
 inline
 std::ostream& operator<<(std::ostream& o, Node& n)
 {
-	o<<"SOLVED:"<<n.solved<<" B{"<<n.m_board.pieces[BLACK]<<"}W{"<<n.m_board.pieces[WHITE]<<"}"<<std::endl;
+	o<<"Node=solved:"<<n.solved<<" B{"<<n.m_board.pieces[BLACK]<<"}W{"<<n.m_board.pieces[WHITE]<<"}"<<std::endl;
 	return o;
 }
 /**
@@ -49,12 +52,6 @@ inline void print_tree(Node* root){
 	print_node(root,0);
 
 }
-
-/**
- * 
- * */
-std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c);
-
 /**
  *  An agent that builds a tree to 
  *  solve a board

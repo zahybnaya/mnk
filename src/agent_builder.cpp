@@ -2,6 +2,7 @@
 #include <cassert>
 #include "uctagent.h"
 #include "myopicagent.h"
+#include "fixeddepthtreeagent.h"
 #include "bfsagent.h"
 #include "dummy_agent.h"
 #include "mindifftreeagent.h"
@@ -33,6 +34,7 @@ void Agent_builder::register_constructors(){
 	agent_constructors["BFS"] = &create_agent<BFSAgent>;
 	agent_constructors["MIN_DIFF_BFS"] = &create_agent<MinDiffTreeAgent>;
 	agent_constructors["DUMMY"] = &create_agent<DummyAgent>;
+	agent_constructors["FIXED"] = &create_agent<FixedDepthTreeAgent>;
 }
 
 Agent* Agent_builder::create_instance(std::string type){

@@ -13,6 +13,6 @@ class MinDiffTreeAgent: public BFSAgent {
 		std::bernoulli_distribution abrupt_stop;
 		double get_stop_threshold();
 		double get_abrupt_stop_rate();
-		double last_ratio;
+		//double last_ratio;
 		int persistent_ratio_times;
 };

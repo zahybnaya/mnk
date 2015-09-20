@@ -12,24 +12,25 @@
 #
 #####
 CCFLAGS=-g -std=c++11 -pthread  -Wall -O3 
+#-DNDEBUG
 #LDFLAGS=-pg
 LDFLAGS=
 
 load-modules:
 	module load gcc/4.9.2
 
-states: aigames.cpp randomplayout.h randomplayout.cpp heuristic.cpp heuristic.h agent_builder.h features.cpp agent.h agent.cpp uctagent.cpp uctagent.h states.cpp agent_builder.h agent_builder.cpp treeagent.h treeagent.cpp myopicagent.h myopicagent.cpp bfsagent.cpp bfsagent.h data_struct.h data_struct.cpp mindifftreeagent.cpp mindifftreeagent.h 
-	g++ $(CCFLAGS) aigames.cpp agent.cpp uctagent.cpp randomplayout.cpp features.cpp  heuristic.cpp myopicagent.cpp bfsagent.cpp treeagent.cpp bfs.cpp agent_builder.cpp states.cpp data_struct.cpp mindifftreeagent.cpp -ostates 
+states: aigames.cpp randomplayout.h randomplayout.cpp heuristic.cpp heuristic.h agent_builder.h features.cpp agent.h agent.cpp uctagent.cpp uctagent.h states.cpp agent_builder.h agent_builder.cpp treeagent.h treeagent.cpp myopicagent.h myopicagent.cpp bfsagent.cpp bfsagent.h data_struct.h data_struct.cpp mindifftreeagent.cpp mindifftreeagent.h fixeddepthtreeagent.h fixeddepthtreeagent.cpp heuristicagent.h heuristicagent.cpp
+	g++ $(CCFLAGS) aigames.cpp agent.cpp uctagent.cpp randomplayout.cpp features.cpp  heuristic.cpp myopicagent.cpp bfsagent.cpp treeagent.cpp bfs.cpp agent_builder.cpp states.cpp data_struct.cpp mindifftreeagent.cpp fixeddepthtreeagent.cpp heuristicagent.cpp dummy_agent.cpp geometricrandom.cpp -ostates 
 
 tournament: tournament.cpp heuristic.cpp randomplayout.h randomplayout.cpp heuristic.h features.cpp agent_builder.h agent.h agent.cpp uctagent.cpp uctagent.h states.cpp agent_builder.h agent_builder.cpp treeagent.h treeagent.cpp myopicagent.h myopicagent.cpp bfsagent.cpp bfsagent.h
-	g++ $(CCFLAGS)  tournament.cpp features.cpp randomplayout.cpp agent.cpp uctagent.cpp heuristic.cpp myopicagent.cpp bfsagent.cpp treeagent.cpp bfs.cpp randomplayout.cpp agent_builder.cpp states.cpp -otournament
+	g++ $(CCFLAGS)  tournament.cpp features.cpp agent.cpp uctagent.cpp heuristic.cpp myopicagent.cpp bfsagent.cpp treeagent.cpp bfs.cpp randomplayout.cpp agent_builder.cpp states.cpp mindifftreeagent.cpp geometricrandom.cpp data_struct.cpp dummy_agent.cpp -otournament
 
 generate_times: generate_times.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
 	g++ $(CCFLAGS) generate_times.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ogenerate_times
 
 
-loglik: dotexporter.cpp dotexporter.h loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp mindifftreeagent.h 
-	g++ $(CCFLAGS) -pg dotexporter.cpp loglik.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp -ologlik $(LDFLAGS)
+loglik: dotexporter.cpp dotexporter.h loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp heuristicagent.cpp heuristicagent.h treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp mindifftreeagent.h geometricrandom.cpp geometricrandom.h playoutpolicy.h myopicpolicyplayout.h myopicpolicyplayout.cpp
+	g++ $(CCFLAGS) dotexporter.cpp loglik.cpp heuristicagent.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp geometricrandom.cpp dummy_agent.cpp fixeddepthtreeagent.cpp myopicpolicyplayout.cpp -ologlik  $(LDFLAGS)
 
 mexfunction: mexfunction.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
 	g++ $(CCFLAGS) mexfunction.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -omexfunction
