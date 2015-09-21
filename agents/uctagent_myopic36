@@ -1,0 +1,4 @@
+policy_code=2
+exploration_constant=1
+num_of_evals=1
+virtual_rollouts=0
