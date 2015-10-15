@@ -1,5 +1,6 @@
 #include "fixeddepthtreeagent.h"
 #include <assert.h>
+#include <algorithm>
 #include "dotexporter.h"
 
 inline double value_for_new_node1(Node* parent, zet z){

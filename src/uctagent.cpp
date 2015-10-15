@@ -50,6 +50,10 @@ void UCTAgent::init(){
 	h.opp_scale   = get_opp_scale();
 	for(int i=0;i<6;i++)
 		h.weight[i]=get_weight(i);
+	/***
+	 * Simplified model
+	 * */
+	h.weight[4]=h.weight[3];
 	h.weight[16]=get_triangle_weight();
 	h.update();
 
