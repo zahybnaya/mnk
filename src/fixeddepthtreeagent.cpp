@@ -5,7 +5,7 @@
 
 inline double value_for_new_node1(Node* parent, zet z){
 	double r = (parent->val/parent->visits)+(((parent->player==BLACK)?1:-1)*z.val);
-	//std::cout<<"Value for new node: parent value:"<<parent->val/parent->visits<<" z.val:"<<z.val<<" z.id:"<<z.zet_id<<" total:"<<r<<std::endl;
+	std::cout<<"Value for new node: parent value:"<<parent->val/parent->visits<<" z.val:"<<z.val<<" z.id:"<<z.zet_id<<" total:"<<r<<std::endl;
 	return r;
 }
 
@@ -64,13 +64,23 @@ std::vector<zet> get_move_estimates(Node* n){
 
 
 
-std::vector<zet> FixedDepthTreeAgent::solve(board& b, bool /*player*/){
+std::vector<zet> FixedDepthTreeAgent::solve(board& b, bool player){
 	Node* n = new Node(b,b.active_player()); 
 	n->val=h.evaluate(n->m_board);
 	n->visits=1;
 	expand_rec(n,0);
-	//todot(n,std::cout);
-	return get_move_estimates(n);
+	std::vector<zet> z = get_move_estimates(n);
+	std::vector<zet> moves = h.get_moves(b,player,false); 
+	for (std::vector<zet>::const_iterator i = z.begin(), j=moves.begin(); i != z.end(); ++i, ++j) {
+		std::cout<<"i:"<<i->zet_id <<" = "<< i->val<<std::endl;
+		std::cout<<"j:"<<j->zet_id <<" = "<< j->val<<std::endl;
+		//std::cout<<i->zet_id <<" !!!! "<<j->zet_id<<std::endl;
+		//assert(i->zet_id == j->zet_id);
+	}
+
+	std::cout<<"***"<<std::endl;
+	return z;
+
 }
 
 
@@ -81,7 +91,10 @@ void FixedDepthTreeAgent::expand_rec(Node* n, int depth){
 	h.get_moves(n->m_board,n->player,false,zets);
 	for (unsigned int i=0;i<zets.size();++i){
 		zet z = zets[i]; 
-		expand_rec(connect(z.zet_id,n,value_for_new_node1(n,z),1), depth+1);
+		std::cout<<"z.val:"<<z.zet_id <<" = "<< z.val<<std::endl;
+		//std::cout<<"z.all:"<<z.zet_id <<" = "<< value_for_new_node1(n,z)<<std::endl;
+		//expand_rec(connect(z.zet_id,n,value_for_new_node1(n,z),1), depth+1);
+		expand_rec(connect(z.zet_id,n,z.val,1), depth+1);
 	}
 	Node* argmax = std::max_element(n->children.begin(),n->children.end(),better_for_black)->second;
 	n->val=argmax->val;

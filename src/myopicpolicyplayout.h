@@ -12,12 +12,15 @@
 
 class MyopicPolicyPlayout : public PlayoutPolicy {
 	public:
+		MyopicPolicyPlayout(heuristic &h, std::mt19937_64 &generator, double policy_lapse_rate );
+		~MyopicPolicyPlayout();
 		virtual double eval(board b);
-		MyopicPolicyPlayout(heuristic &h):h(h){};
 	private:
 		double state_value(board& b);
 		zet select_next_move(board& b);
 		heuristic &h;
+		std::mt19937_64 &generator;
+		std::bernoulli_distribution *lapse; 
 };
 
 

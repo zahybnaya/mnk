@@ -29,6 +29,8 @@ public:
 	void post_solution();
 
 private:
+
+	double get_policy_lapse_rate(); 
 	int get_policy_code();
 	double get_triangle_weight();
 	double get_weight(int i);
