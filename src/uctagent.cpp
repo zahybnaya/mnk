@@ -62,7 +62,7 @@ void UCTAgent::init(){
 				policy = new GeometricRandomPlayout(h);
 				break;
 			case 2:
-				policy = new MyopicPolicyPlayout(h);
+				policy = new MyopicPolicyPlayout(h,get_generator(),get_policy_lapse_rate());
 				break;
 			default:
 				throw std::runtime_error("no policy");
@@ -232,7 +232,9 @@ double UCTAgent::get_triangle_weight(){
 int UCTAgent::get_virtual_rollouts(){
 	return get_int_property("virtual_rollouts");
 }
-
+double UCTAgent::get_policy_lapse_rate() {
+	return get_double_property("policy_lapse_rate");
+}
 double UCTAgent::get_weight(int i){
 	std::string t="weights_"+std::to_string(i);
 	return get_double_property(t);
