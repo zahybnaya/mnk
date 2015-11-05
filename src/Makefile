@@ -29,10 +29,10 @@ generate_times: generate_times.cpp Gomoku.cpp board_list.h agent_builder.cpp age
 	g++ $(CCFLAGS) generate_times.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ogenerate_times
 
 
-loglik: dotexporter.cpp dotexporter.h loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp heuristicagent.cpp heuristicagent.h treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp mindifftreeagent.h geometricrandom.cpp geometricrandom.h playoutpolicy.h myopicpolicyplayout.h myopicpolicyplayout.cpp
-	g++ $(CCFLAGS) dotexporter.cpp loglik.cpp heuristicagent.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp geometricrandom.cpp dummy_agent.cpp fixeddepthtreeagent.cpp myopicpolicyplayout.cpp -ologlik  $(LDFLAGS)
+loglik: dotexporter.cpp dotexporter.h loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp heuristicagent.cpp heuristicagent.h treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp mindifftreeagent.h geometricrandom.cpp geometricrandom.h playoutpolicy.h myopicpolicyplayout.h myopicpolicyplayout.cpp defaultagent.cpp defaultagent.h
+	g++ $(CCFLAGS) dotexporter.cpp loglik.cpp heuristicagent.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp geometricrandom.cpp dummy_agent.cpp fixeddepthtreeagent.cpp myopicpolicyplayout.cpp defaultagent.cpp -ologlik  $(LDFLAGS)
 
-mexfunction: mexfunction.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
+mexfunction: mexfunction.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp defaultagent.cpp defaultagent.h
 	g++ $(CCFLAGS) mexfunction.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -omexfunction
 
 mexsim:
@@ -41,6 +41,5 @@ mexsim:
 
 
 modelfitting:
-	echo "mex  -f /Applications/MATLAB.app/bin/mexopts.sh -v -output Gomoku_model CXXFLAGS=\"\\\$$CXXFLAGS -Wall -Wextra -std=c++11 -O3   -fexpensive-optimizations\" heuristic.cpp mexfunction.cpp  bfs.cpp  features.cpp agent.cpp agent_builder.cpp myopicagent.cpp uctagent.cpp treeagent.cpp randomplayout.cpp data_struct.cpp bfsagent.cpp mindifftreeagent.cpp ; exit" | /Applications/MATLAB.app/bin/matlab -check_malloc -nodisplay
+	echo "mex  -f  $$MATLAB_ROOT/bin/mexopts.sh -v -output Gomoku_model CXXFLAGS=\"\\\$$CXXFLAGS -Wall -Wextra -std=c++11 -O3   -fexpensive-optimizations\" heuristic.cpp mexfunction.cpp  bfs.cpp  features.cpp agent.cpp agent_builder.cpp myopicagent.cpp uctagent.cpp treeagent.cpp randomplayout.cpp data_struct.cpp bfsagent.cpp mindifftreeagent.cpp geometricrandom.cpp dummy_agent.cpp fixeddepthtreeagent.cpp myopicpolicyplayout.cpp defaultagent.cpp heuristicagent.cpp ; exit" | $$MATLAB_ROOT/bin/matlab -check_malloc -nodisplay
 
-                                                                                                                                                                                                                                                                     
