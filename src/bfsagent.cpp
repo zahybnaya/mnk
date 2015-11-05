@@ -39,6 +39,12 @@ std::string print_children(Node* n){
 }
 
 
+unsigned int BFSAgent::get_actual_branching_factor(vector<zet>& zets){
+	unsigned int k = int(get_K0()) + branching_factor(get_generator());
+	FILE_LOG(logDEBUG) << "selected branching factor of "<<k<<std::endl;
+	return k<zets.size()?k:zets.size();
+}
+
 
 /**
  * 
@@ -205,29 +211,28 @@ double value_for_new_node(Node* parent, zet z){
 }
 
 /**
- * 
+ *  Expanding a node
  * */
 double BFSAgent::expand(Node* n){
 	if (n->visits==0/*root*/) {
                 n->val=h.evaluate(n->m_board);
                 n->visits=1;
         }
-	unsigned int k = int(get_K0()) + branching_factor(get_generator());
 	FILE_LOG(logDEBUG) << "Expending Node "<<*n<<std::endl;
-	FILE_LOG(logDEBUG) << "selected branching factor of "<<k<<std::endl;
 	std::vector<zet> zets;
 	h.get_moves(n->m_board,n->player,false,zets);
 	double ret_val=0;
-	unsigned int actual_branching_factor = k<zets.size()?k:zets.size();
+	unsigned int actual_branching_factor=get_actual_branching_factor(zets);
 	assert(actual_branching_factor<=zets.size());
 	for (unsigned int i=0;i<actual_branching_factor;++i){
-		zet z = zets[i]; 
+		zet z = zets[i];
 		if (i==0){ret_val=value_for_new_node(n,z);}
 		connect(z.zet_id,n,value_for_new_node(n,z),1);
 	}
 	FILE_LOG(logDEBUG) << " expansion returned the value "<<ret_val<<std::endl;
 	return ret_val;
 }
+
 
 
 ///**

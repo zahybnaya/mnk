@@ -61,11 +61,6 @@ class TreeAgent: public Agent {
 public:
 	TreeAgent():last_move_searched(-1){};
 	~TreeAgent(){};
-
-	/**
-	 * Iterations for the tree
-	 * */
-	int get_iterations();
 	virtual void pre_solution();
 	virtual void post_solution(){}
 
@@ -74,6 +69,12 @@ public:
 	 * */
 	std::vector<zet> solve(board& b,bool player);
 protected:
+
+	/**
+	 * A stop criteria for building the tree
+	 * */
+	virtual bool is_stop(Node*);
+
 	/**
 	 * The gamma parameter for the iteration dist
 	 * */
@@ -112,7 +113,7 @@ protected:
 	/**
 	 * Constructs a tree starting from the root
 	 * */
-	virtual int build_tree(Node* n,int iterations);
+	virtual int build_tree(Node* n);
 
 	/**
 	 *  Perform a single iteration starting from n
@@ -128,8 +129,6 @@ protected:
 	 * Expand a node in the tree
 	 * */
 	virtual double expand(Node* parent) = 0;
-
-
 	/**
 	 * Propagate the new_val through out the nodes variation
 	 **/
@@ -142,6 +141,9 @@ protected:
 	 *  marks that the playing agent has won from this node
 	 * */
 	virtual void mark_forced_win_loss(Node* n);
+
+
+	inline int get_iter_num() const {return iter_num;}
 
 private:
 	void print_time_prediction_metrics(board& b, Node* n, std::vector<zet> &zets);
@@ -169,6 +171,8 @@ private:
 	int num_switches;
 	int consecutive; 
 	int max_consecutive;
+	int max_iterations;
+	int iter_num;
 
 	void count_switches(const std::vector<Node*> &nodes);
 	uint64 get_first_move_id(const std::vector<Node*> &nodes);
