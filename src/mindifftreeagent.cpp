@@ -1,14 +1,7 @@
 #include <assert.h>
 #include "mindifftreeagent.h"
 
-int MinDiffTreeAgent::build_tree(Node* n,int /*iterations*/){
-	int iterNum = 0;
-       	while (!is_stop(n, iterNum, n->player)){
-		iterate(n);
-		iterNum++;
-	}
-	return 0;
-}
+
 double MinDiffTreeAgent::get_stop_threshold(){
 	return get_double_property("stop_threshold");
 }
@@ -37,18 +30,14 @@ double MinDiffTreeAgent::get_stop_decrease_rate(){
 	return get_double_property("stop_decrease_rate");
 }
 
-bool MinDiffTreeAgent::is_stop(Node* n , int iteration , int player) {
+bool MinDiffTreeAgent::is_stop(Node* n) {
 	if (n->forced_win || n->forced_loss || n->solved)
 	       	return true;
 	std::vector<zet> zets = move_estimates(n);
 	if (zets.size()<2) return false;
-	double min_diff= calc_best_diff(zets,  player,true);
-	//std::cout<<min_diff<<std::endl;
+	double min_diff= calc_best_diff(zets, n->player /* in case of problems, start with the player*/,true);
+	int iteration = get_iter_num();
 	bool cond= (min_diff > get_stop_threshold() * 1/pow(iteration,get_stop_decrease_rate()));
-	if(cond){
-	       	FILE_LOG(logDEBUG)<< " completed " << iteration <<" iterations" <<std::endl;
-		std::cout<< " completed " << iteration <<" iterations" <<std::endl;
-	}
 	return cond;
 }
 

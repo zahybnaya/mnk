@@ -30,12 +30,12 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 	this->playing_color=player;
 	double gamma = get_iter_gamma();
 	std::geometric_distribution<int> iter_dist(gamma);
-	int num_iterations= iter_dist(get_generator())+1;
-	assert(num_iterations>0);
-	FILE_LOG(logDEBUG) << " Number of iterations  "<< num_iterations<< std::endl;
+	this->max_iterations= iter_dist(get_generator())+1;
+	assert(this->max_iterations>0);
+	FILE_LOG(logDEBUG) << " Number of iterations  "<< max_iterations<< std::endl;
 	Node* n = create_initial_state(b);
 	FILE_LOG(logDEBUG) << " Root node  "<< n<< std::endl;
-	build_tree(n,num_iterations);	
+	build_tree(n);	
 	std::vector<zet> ret= move_estimates(n);
 	//print_time_prediction_metrics(b,n,ret);
 	delete_tree(n);
@@ -117,7 +117,17 @@ void TreeAgent::pre_solution(){
 	this->num_switches = 0;
 	this->max_consecutive = 0;
 	this->consecutive = 0;
+	this->iter_num = 0;
 }
+
+
+bool TreeAgent::is_stop(Node* n){
+  return (this->iter_num>this->max_iterations);
+}
+
+
+
+
 
 /**
  * Creates a new node to represent node and adds it as a child to parent
@@ -156,12 +166,12 @@ Node* TreeAgent::create_initial_state(board b){
 /**
  * Iteratively build a tree
  **/
-int TreeAgent::build_tree(Node* n,int iterations){ 
-	int iterNum=0;
-	while (iterNum <= iterations){
-		FILE_LOG(logDEBUG) << " Starting iteration "<< iterNum<< std::endl;
+int TreeAgent::build_tree(Node* n){ 
+	this->iter_num=0;
+	while (!is_stop(n)){
+		FILE_LOG(logDEBUG) << " Starting iteration "<< this->iter_num<< std::endl;
 		iterate(n);
-		iterNum++;
+		this->iter_num++;
 	}
 	return 0;
 }
@@ -360,14 +370,6 @@ uint64 TreeAgent::select_random_unknown_move(Node* n){
 	return moves[rand() % moves.size()].zet_id;
 }
 
-
-
-/**
- * How many iterations 
- **/
-int TreeAgent::get_iterations(){
-	return get_int_property("iterations");
-}
 
 /**
  * Get the parameter for how many iterations

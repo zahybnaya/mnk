@@ -5,6 +5,7 @@
 #include "fixeddepthtreeagent.h"
 #include "bfsagent.h"
 #include "dummy_agent.h"
+#include "defaultagent.h"
 #include "mindifftreeagent.h"
 
 template<typename T> Agent* create_agent() {  return new T; }
@@ -35,6 +36,7 @@ void Agent_builder::register_constructors(){
 	agent_constructors["MIN_DIFF_BFS"] = &create_agent<MinDiffTreeAgent>;
 	agent_constructors["DUMMY"] = &create_agent<DummyAgent>;
 	agent_constructors["FIXED"] = &create_agent<FixedDepthTreeAgent>;
+	agent_constructors["DEFAULT"] = &create_agent<DefaultAgent>;
 }
 
 Agent* Agent_builder::create_instance(std::string type){
