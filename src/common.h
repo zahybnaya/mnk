@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 #include <map>
-#include <string>
+#include <string.h>
 #include <vector>
 #include <fstream>
 #include <iostream>
