@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "DefaultAgent.h"
+#include "defaultagent.h"
 
 /**
  * Assumes ordered zets
