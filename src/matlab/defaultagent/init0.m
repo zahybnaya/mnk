@@ -9,11 +9,11 @@
 % x0(i,l(i)) is the ith coordinate of the initial point
 
 % self-defined initialization list
-L = 3*ones(15,1);
-l = 2*ones(15,1);
+L = 3*ones(9,1);
+l = 2*ones(9,1);
 load x0.mat -mat
-stop_threshold = [0 4 10]
-prune_threshold = [0 4 10]
-x0=x0(3:15,:)
+stop_threshold = [0.1 4 10]
+prune_threshold = [0.1 3 10]
+x0=x0([3:5 9:12 14],:)
 x0 = [x0;stop_threshold; prune_threshold ]
 

@@ -1,0 +1,20 @@
+# A DEFAULT implementation 
+## This is how to define a parameter fitting. ?<INDEX>{U(v),V(v),step(v)}
+implementation=DEFAULT
+K0=0
+gamma=0.05
+delta=0.2
+lapse_rate=0.01
+vert_scale=1
+diag_scale=1
+opp_scale=1
+weights_0=0.6
+weights_1=0.8
+weights_2=0.4
+weights_3=3
+weights_4=0
+weights_5=6
+triangle_weight=0
+stop_threshold=3.5
+prune_threshold=2
+
