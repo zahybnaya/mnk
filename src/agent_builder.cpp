@@ -41,7 +41,7 @@ void Agent_builder::register_constructors(){
 
 Agent* Agent_builder::create_instance(std::string type){
 	if (agent_constructors.find(type)==agent_constructors.end()){
-		FILE_LOG(logERROR)<< " Cannot create agent of type "<<type<< std::endl;
+		FILE_LOG(logERROR)<< " Cannot create agent of type ["<<type<<"]"<< std::endl;
 		exit(-1);
 	}
 	Agent *a=agent_constructors[type]();
