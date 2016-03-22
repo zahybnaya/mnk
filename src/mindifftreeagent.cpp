@@ -61,10 +61,10 @@ bool MinDiffTreeAgent::is_stop(Node* n) {
 //		this->persistent_ratio_times = 0;
 //	} 
 //	this->last_ratio = ratio;
-//	FILE_LOG(logDEBUG)<<" Min/Avg Ratio:"<<ratio <<" iteration:" <<iteration<<std::endl;
+//	//FILE_LOG(logDEBUG)<<" Min/Avg Ratio:"<<ratio <<" iteration:" <<iteration<<std::endl;
 //	bool cond= (ratio > get_stop_threshold() * 1/pow(iteration,get_stop_decrease_rate()));
 //	if(cond){
-//	       	FILE_LOG(logDEBUG)<< " completed " << iteration <<" iterations" <<std::endl;
+//	       	//FILE_LOG(logDEBUG)<< " completed " << iteration <<" iterations" <<std::endl;
 //	}
 //	return cond;
 //}

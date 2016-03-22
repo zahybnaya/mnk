@@ -21,12 +21,12 @@ inline std::string assigned_val(std::string val, double* paramptr){
  * Suggestion: ?<index>{lower,upper}
  * */
 inline void concrete(Agent_params& ap,double* paramptr){
-	FILE_LOG(logDEBUG) << "starting concrete " << std::endl;
+	//FILE_LOG(logDEBUG) << "starting concrete " << std::endl;
 	for (properties::iterator i = ap.m_properties.begin(); i != ap.m_properties.end(); ++i) {
 		if(is_concrete_param(i->second)){
-			FILE_LOG(logDEBUG) << "need to concrete: ["<<i->first << "] with value:" << i->second<< std::endl; 
+			//FILE_LOG(logDEBUG) << "need to concrete: ["<<i->first << "] with value:" << i->second<< std::endl; 
 			ap.m_properties[i->first]=assigned_val(i->second,paramptr);
-			FILE_LOG(logDEBUG) << " concrete-assgined ("<< ap.m_properties[i->first]<<")"<< std::endl;
+			//FILE_LOG(logDEBUG) << " concrete-assgined ("<< ap.m_properties[i->first]<<")"<< std::endl;
 	       	}
 
 	}
@@ -35,12 +35,12 @@ inline void concrete(Agent_params& ap,double* paramptr){
 
 
 void mexFunction(std::string agent_file, std::string data_file, double* paramptr, int player){
-	FILE_LOG(logDEBUG) << " Starting mexFunction" << std::endl;
+	//FILE_LOG(logDEBUG) << " Starting mexFunction" << std::endl;
 	data_struct dat;
        	dat = load_data(dat,data_file); //TODO: Filter by subject (here it's player)
 	std::string times_file=dat.get_times_file(data_file);
 	Agent_params ap = read_agent_params(agent_file);
-	FILE_LOG(logDEBUG) << " Starting concrete process for "<<agent_file << std::endl;
+	//FILE_LOG(logDEBUG) << " Starting concrete process for "<<agent_file << std::endl;
 	concrete(ap,paramptr);
 	for (properties::iterator i = ap.m_properties.begin(); i != ap.m_properties.end(); ++i) {
 		assert(!is_concrete_param(i->second));
