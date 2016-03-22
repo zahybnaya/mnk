@@ -9,8 +9,8 @@
 % x0(i,l(i)) is the ith coordinate of the initial point
 
 % self-defined initialization list
-L = 3*ones(9,1);
-l = 2*ones(9,1);
+L = 3*ones(10,1);
+l = 2*ones(10,1);
 load x0.mat -mat
 stop_threshold = [0.1 4 10]
 prune_threshold = [0.1 3 10]

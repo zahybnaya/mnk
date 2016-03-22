@@ -85,7 +85,7 @@ end;
 
 % 
 % define amount of output printed
-prt = 2;	% print level 
+prt = 0;	% print level 
 		% prt = 0: no output
 		% prt = 1: # sweep, minimal nonempty level, # f-calls,
 		%          best point and function value

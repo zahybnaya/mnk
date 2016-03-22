@@ -7,6 +7,7 @@
 #include "dummy_agent.h"
 #include "defaultagent.h"
 #include "mindifftreeagent.h"
+#include "consistentmoveagent.h"
 
 template<typename T> Agent* create_agent() {  return new T; }
 
@@ -37,6 +38,7 @@ void Agent_builder::register_constructors(){
 	agent_constructors["DUMMY"] = &create_agent<DummyAgent>;
 	agent_constructors["FIXED"] = &create_agent<FixedDepthTreeAgent>;
 	agent_constructors["DEFAULT"] = &create_agent<DefaultAgent>;
+	agent_constructors["CONST_MOVE"] = &create_agent<ConsistentMoveAgent>;
 }
 
 Agent* Agent_builder::create_instance(std::string type){

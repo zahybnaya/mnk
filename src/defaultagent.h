@@ -1,3 +1,5 @@
+#ifndef DEFAULTAGENT_H
+#define DEFAULTAGENT_H
 #include "bfsagent.h"
 
 
@@ -23,12 +25,11 @@ class DefaultAgent: public BFSAgent {
 		 * When exceeding the number of
 		 * iterations or threshould
 		 * **/
-		bool is_stop(Node* n);
+		virtual bool is_stop(Node* n);
 		/***
 		 * Prunning according to distance from threshold.
 		 * */
 		unsigned int get_actual_branching_factor(std::vector<zet>& zets);
-
 
 		std::string get_name() const {return "DEFAULT";}
 	private:
@@ -39,3 +40,5 @@ class DefaultAgent: public BFSAgent {
 		double get_stop_threshold();
 		double get_prune_threshold();
 };
+
+#endif /* end of include guard: DEFAULTAGENT_H */

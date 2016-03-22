@@ -10,7 +10,7 @@
 
 
 States get_states(Source s) {
-	FILE_LOG(logDEBUG)  << "getting states from source file" << std::endl;
+	//FILE_LOG(logDEBUG)  << "getting states from source file" << std::endl;
 	States states;
 	states.read(s.state_file.c_str());
 	return states;
@@ -36,7 +36,7 @@ void print_agent(bool color,std::ostream& o,Agent* a, board b, zet m, int player
 void execute_agent_for_time_predictions(Agent* a, int player_num, data_struct &dat )
 {
 	std::vector<unsigned int> boards= dat.select_boards(player_num);
-	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
+	//FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
 	//std::cout<<uint64tobinstring(b.pieces[BLACK])<<","<<uint64tobinstring(b.pieces[WHITE])<<","<< a->playing_color <<","<<best_diff<<","<<entropy<<","<<this->num_switches<<","<<count_evals << ","<< best_val <<","<< normalized_best_diff <<","<< num_consecutive<<","<< num_nodes << ","<<num_pieces <<","<< num_patterns  << std::endl; 
 	std::cout<<"black,white,player,best_diff,entropy,tree_switch,count_evals,max_val,normalized_best_diff,num_consecutive,num_nodes,num_pieces, num_patterns "<<std::endl;
 	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();++it){
@@ -58,7 +58,7 @@ void execute_agent_for_time_predictions(Agent* a, int player_num, data_struct &d
 void execute_agent_diffs(Agent* a, int player_num, data_struct &dat )
 {
 	std::vector<unsigned int> boards= dat.select_boards(player_num);
-	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
+	//FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
 	std::cout<<"black,white,player,best_diff,entropy,tree_switch,count_evals,max_val"<<std::endl;
 	for (std::vector<unsigned int>::const_iterator it = boards.begin(); it!=boards.end();++it){
 		board b = dat.allboards[*it];
@@ -79,7 +79,7 @@ void execute_agent_diffs(Agent* a, int player_num, data_struct &dat )
 void execute_agent(Agent* a, int player_num, data_struct &dat )
 {
 	std::vector<unsigned int> boards= dat.select_boards(player_num);
-	FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
+	//FILE_LOG(logDEBUG) << " executing agent "<<a->get_name()<<"..." << std::endl;
 	print_header(std::cout);
 	for (std::vector<unsigned int>::const_iterator it = boards.begin();  it!=boards.end();++it){
 		board b = dat.allboards[*it];
@@ -122,7 +122,7 @@ Source prepeare_source(int argc, const char* argv[]){
 		missing_values();
 		exit(-1);
 	}
-	FILE_LOG(logDEBUG) << "state_file:"<<state_file << " agent_file:"<<agent_file << std::endl;
+	//FILE_LOG(logDEBUG) << "state_file:"<<state_file << " agent_file:"<<agent_file << std::endl;
 	Source s(state_file, agent_file);
 	return s;
 }
@@ -136,7 +136,7 @@ int main(int argc, const char *argv[])
 {
 
 	set_debug(argc, argv);
-	FILE_LOG(logDEBUG) << "Initializing aigames"<<std::endl; 
+	//FILE_LOG(logDEBUG) << "Initializing aigames"<<std::endl; 
 	Source s = prepeare_source(argc,argv);
 	data_struct dat; 
         dat.load_file(s.state_file);
