@@ -77,7 +77,14 @@ int Agent::get_int_property(std::string prop) {
 	if(m_properties.find(prop)==m_properties.end()){
 		throw AgentParamsException(prop);
 	}
-	return std::stoi(m_properties[prop]);
+	int a;
+	try{
+		a = std::stoi(m_properties[prop]);
+	} catch (std::invalid_argument e){
+		FILE_LOG(logERROR)<<" Wrong value for property  "<< prop <<":" << m_properties[prop]<<std::endl;
+		throw e;
+	}
+	return a;
 }
 
 /**

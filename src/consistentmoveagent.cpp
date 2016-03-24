@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "consistentmoveagent.h"
 
 void ConsistentMoveAgent::pre_solution(){
