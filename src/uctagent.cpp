@@ -41,9 +41,15 @@ int UCTAgent::get_policy_code(){
 }
 
 void UCTAgent::init(){
+
+	FILE_LOG(logDEBUG) << " Init UCTAgent. Init agent first "<<std::endl;
 	Agent::init();
-	branching_factor=std::bernoulli_distribution(fmod(get_K0(),1.0));
+	double bd = fmod(get_K0(),1.0);
+	FILE_LOG(logDEBUG) << " Setting branching_factor with ~Bernouly("<<bd<<")"<<std::endl;
+	branching_factor=std::bernoulli_distribution(bd);
+	FILE_LOG(logDEBUG) << " Getting gamma "<<std::endl;
 	h.gamma  = get_gamma();
+	FILE_LOG(logDEBUG) << " Getting delta "<<std::endl;
 	h.delta   = get_delta();
 	h.vert_scale  = get_vert_scale();
 	h.diag_scale  = get_diag_scale();
@@ -55,22 +61,31 @@ void UCTAgent::init(){
 	 * */
 	h.weight[4]=h.weight[3];
 	h.weight[16]=get_triangle_weight();
+	FILE_LOG(logDEBUG) << " Updateing the heuristic "<<std::endl;
 	h.update();
+	FILE_LOG(logDEBUG) << " Done Updateing the heuristic "<<std::endl;
+	if (policy == NULL){
 
-	if (policy == NULL)
-		switch(get_policy_code()){
+		FILE_LOG(logDEBUG) << " Getting policy code "<<std::endl;
+		int policy_code =get_policy_code(); 
+		FILE_LOG(logDEBUG) << " Selecting policy "<<policy_code<<std::endl;
+		switch(policy_code){
 			case 0:
 				policy = new RandomPlayout();
+				FILE_LOG(logDEBUG) << " Assigned Random policy for uct "<<std::endl;
 				break;
 			case 1:
 				policy = new GeometricRandomPlayout(h);
+				FILE_LOG(logDEBUG) << " Assigned GeoRandom policy for uct "<<std::endl;
 				break;
 			case 2:
 				policy = new MyopicPolicyPlayout(h,get_generator(),get_policy_lapse_rate());
+				FILE_LOG(logDEBUG) << " Assigned Myopic policy for uct "<<std::endl;
 				break;
 			default:
 				throw std::runtime_error("no policy");
 		}
+	}
 	FILE_LOG(logDEBUG) << "Init an agent with the following properties- " <<" K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
 
 }

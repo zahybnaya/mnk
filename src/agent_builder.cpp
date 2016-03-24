@@ -19,10 +19,13 @@ Agent_builder::Agent_builder(){
 }
 
 Agent* Agent_builder::build(Agent_params p){
+	FILE_LOG(logDEBUG) << " Agent_builder::build "<<std::endl;
 	Agent* agent= create_instance(p.implementation);
 	assert(agent);
+	FILE_LOG(logDEBUG) << " Instance created "<<std::endl;
 	agent->set_properties(p.m_properties);
 	agent->set_agent_file(p.agent_file);
+	FILE_LOG(logDEBUG) << " Agent init "<<std::endl;
 	agent->init();
 	return agent;
 }
@@ -42,6 +45,8 @@ void Agent_builder::register_constructors(){
 }
 
 Agent* Agent_builder::create_instance(std::string type){
+
+	FILE_LOG(logDEBUG) << " Creating instance of agent from type "<<type<<std::endl;
 	if (agent_constructors.find(type)==agent_constructors.end()){
 		FILE_LOG(logERROR)<< " Cannot create agent of type ["<<type<<"]"<< std::endl;
 		exit(-1);

@@ -74,7 +74,10 @@ zet Agent::play(board& b,bool player){
  * Reads an int property from the table
  * */
 int Agent::get_int_property(std::string prop) {
+
+	FILE_LOG(logDEBUG)<<" Getting int property "<<prop <<std::endl;
 	if(m_properties.find(prop)==m_properties.end()){
+		FILE_LOG(logERROR)<<" Getting int property failed "<<prop <<std::endl;
 		throw AgentParamsException(prop);
 	}
 	int a;

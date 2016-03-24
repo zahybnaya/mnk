@@ -96,6 +96,7 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 	Agent_builder b;
 	FILE_LOG(logDEBUG) << "Building agent accodring to "<<ap.agent_file<<std::endl;
 	Agent* agent = b.build(ap);
+	FILE_LOG(logDEBUG) << " Starting Agent play "<<ap.agent_file<<std::endl;
 	while(board_list->get_next(i,success)){
 		iteration++;
 		board_list_mutex.unlock();
@@ -103,6 +104,7 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 		m=agent->play(dat->allboards[i],dat->allmoves[i].player);
 		success=(m.zet_id==dat->allmoves[i].zet_id);
 		agent->post_solution();
+		FILE_LOG(logDEBUG) << " Plaing Iteration "<< iteration <<" success:"<<success<<std::endl;
 		board_list_mutex.lock();
 	}
 	delete agent;
@@ -438,6 +440,7 @@ Source prepeare_source(int argc, const char* argv[]){
 }
 
 data_struct& load_data(data_struct& dat,std::string filename){
+	FILE_LOG(logDEBUG) << "Starting loading from data file: "<< filename << std::endl;
 	dat.load_file(filename);
 	FILE_LOG(logDEBUG) <<dat<< std::endl;
 	return dat;

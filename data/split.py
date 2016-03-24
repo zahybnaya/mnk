@@ -6,15 +6,20 @@
 
 
 from sys import argv
-from random import shuffle
+from random import shuffle,sample
 import csv
 
 try:
-	data_file = argv[1]
-	split_percentage = argv[2]
+    split_folds = argv[3]
 except:
-	print ("usage: <data_file> <split_percentage>")
-	exit
+    split_folds = None
+try:
+    data_file = argv[1]
+    split_percentage = argv[2]
+except:
+    print ("usage: <data_file> <split_percentage> <split_folds>")
+    print ("split_percentage is ignored if split_folds exist")
+    exit
 
 
 def read_dict(data_file):
@@ -35,11 +40,11 @@ def read_dict(data_file):
 
 def write_data(outputfile,data):
     with open(outputfile, 'w') as csvfile:
-	fieldnames =  ['','subject','color','gi','mi','status','bp','wp','response','rt']
-	writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-	writer.writerow(dict( (_,_) for _ in fieldnames))
-	for d in data:
-		writer.writerow(d)
+        fieldnames =  ['','subject','color','gi','mi','status','bp','wp','response','rt']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writerow(dict( (_,_) for _ in fieldnames))
+        for d in data:
+            writer.writerow(d)
 
 
 data=read_dict(data_file)
@@ -47,14 +52,32 @@ subjects=set([d['subject'] for d in data if not d['subject'].endswith('.01') ])
 print "Subjects: "+ str(len(subjects))
 
 for s in subjects:
-	subject_data=[d for d in data if d['subject']==s]
-	train_n = int(len(subject_data) * float(split_percentage))
-	shuffle(subject_data)
-	print(" length is: {0} and train_n:{1} ".format(len(subject_data),train_n))
-	train_data = subject_data[:train_n]
-	test_data = subject_data[train_n:]
-	write_data(data_file+"SUB"+s+"train.csv",train_data)
-	write_data(data_file+"SUB"+s+"test.csv",test_data)
+    subject_data=[d for d in data if d['subject']==s]
+    train_n = int(len(subject_data) * float(split_percentage))
+    shuffle(subject_data)
+    if split_folds is not None:
+        folds=[]
+        fold_size = len(subject_data)/int(split_folds)
+        print "Splitting for Subject: {0} with {1} records".format(s,len(subject_data))
+        for i in range(int(split_folds)):
+            if i == (int(split_folds)-1):
+                fold = subject_data[i*fold_size:]
+            else:
+                fold = subject_data[i*fold_size:i*fold_size+fold_size]
+            print " Fold{0} :from {1} to {2}".format(i,i*fold_size,i*fold_size+fold_size)
+            folds.append(fold)
+        assert(sum(len(j) for j in folds) == len(subject_data))
+        fi=0
+        for f in folds:
+            write_data(data_file+"SUB"+s+"fold"+str(fi)+".csv",f)
+            fi+=1
+    else:
+        print(" There are {0} folds with {1} fold_size each".format(len(folds),len(folds[0])))
+        print(" length is: {0} and train_n:{1} ".format(len(subject_data),train_n))
+        train_data = subject_data[:train_n]
+        test_data = subject_data[train_n:]
+        write_data(data_file+"SUB"+s+"train.csv",train_data)
+        write_data(data_file+"SUB"+s+"test.csv",test_data)
 
 
 
