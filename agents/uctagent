@@ -1,7 +1,7 @@
 implementation=UCT
 exploration_constant=?0{0,1,0.1}
-num_of_evals=?1{1,1000,10}
-virtual_rollouts=?2{0,100,10}
+virtual_rollouts=?1{0,100,10}
+num_of_evals=1
 K0=4
 gamma=0.01
 delta=0.2
@@ -17,5 +17,5 @@ weights_4=2.5
 weights_5=10.0
 triangle_weight=1.2
 policy_code=0
-delta=0.20654
 policy_lapse_rate=0
+
