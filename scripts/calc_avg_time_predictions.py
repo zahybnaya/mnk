@@ -1,9 +1,8 @@
-
 #!/bin/python 
+# Seems like a way to average rts data
 
 from sys import argv
 from numpy import std
-
 
 def get_rts(rt_values_file):
     rts = {}

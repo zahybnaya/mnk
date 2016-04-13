@@ -1,0 +1,17 @@
+implementation=DEFAULT
+K0=0
+vert_scale=1
+diag_scale=1
+opp_scale=1
+weights_4=0
+triangle_weight=0
+gamma=	   1.4362116e-02
+delta=	   2.0000000e-01
+lapse_rate=	   2.0000000e-02
+weights_0=	   8.0000000e-01
+weights_1=	   1.0000000e+00
+weights_2=	   5.0000000e-01
+weights_3=	   5.0000000e+00
+weights_5=	   2.0000000e+02
+stop_threshold=	   4.0000000e+00
+prune_threshold=	   3.0000000e+00
