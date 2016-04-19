@@ -1,0 +1,34 @@
+#!/bin/bash
+#PBS -N fit_uct_xv
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=20:00:00
+#PBS -l mem=6GB
+#PBS -t 0-39
+#PBS -M zb9@nyu.edu
+#PBS -m abe
+BASE_DIR=$HOME/mnk
+SRCDIR=$BASE_DIR/src
+player=${PBS_ARRAYID}
+direc=$SCRATCH/Gomoku
+agent=uctagent
+data=model_input.csv
+agent_file=$BASE_DIR/agents/$agent
+fold_files=`find $BASE_DIR/data/ -name ${data}SUB${player}fold*`
+number=0
+module purge
+module load matlab/2014a gcc/4.9.2
+for test_fold in ${fold_files}
+	do 
+	data_file=$BASE_DIR/data/${data}SUB${player}_train_fold_${number}.csv
+	echo ",subject,color,gi,mi,status,bp,wp,response,rt" > ${data_file}
+	find $BASE_DIR/data/ -name ${data}SUB${player}fold*  | grep -v $test_fold | xargs cat | grep '^[0-9]' >> ${data_file}
+	result_path=$direc/${agent}_${data}_subject${player}_fold_${number}
+	mkdir -p ${result_path}/Output
+	cd ${result_path}
+	rm Output/out*
+	export MATLABPATH=$SRCDIR:$SRCDIR/matlab
+	export LD_PRELOAD=$GCC_LIB/libstdc++.so
+	echo "Gomoku_optim_mcs($player,'$agent_file', '$data_file'); exit;" | matlab -nodisplay
+	echo "Done"
+	number=$((number+1))
+	done
