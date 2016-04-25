@@ -97,6 +97,7 @@ double calc_entropy(Node *n){
 	return entropy;
 }
 
+
 void TreeAgent::print_time_prediction_metrics(board& b, Node* n,std::vector<zet> &zets ){
 	double best_diff = calc_best_diff(zets,this->playing_color);
 	double normalized_best_diff = calc_normalized_best_diff(zets,this->playing_color);

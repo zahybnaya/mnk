@@ -2,7 +2,7 @@
 #include "defaultagent.h"
 
 /**
- * Assumes ordered zets
+ * Assumes ordered zets. Ignore that on the root node.
  * */
 unsigned int DefaultAgent::get_actual_branching_factor(std::vector<zet>& zets){
   double prune_threshold = get_prune_threshold();
