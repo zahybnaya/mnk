@@ -8,6 +8,7 @@ class UCTAgent: public TreeAgent{
 public:
 	UCTAgent();
 	~UCTAgent();
+
 	/**
 	 * Calculates the uct value of the node
 	 * */
@@ -24,12 +25,12 @@ public:
 	 **/
 	void mark_solved(Node* n);
 	void init();
-
 	void pre_solution();
-	void post_solution();
 
 private:
 
+	double get_prune_threshold();
+	unsigned int get_actual_branching_factor(std::vector<zet>& zets);
 	double get_policy_lapse_rate(); 
 	int get_policy_code();
 	double get_triangle_weight();

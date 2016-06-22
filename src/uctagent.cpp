@@ -13,6 +13,7 @@ UCTAgent::UCTAgent(){
 	policy = NULL;
 }
 
+
 /**
  * Destructor 
  * */
@@ -39,11 +40,26 @@ bool UCTAgent::is_negamax(){
 int UCTAgent::get_policy_code(){
 	return get_int_property("policy_code");
 }
+/**
+ * Assumes ordered zets. Ignore that on the root node.
+ * */
+unsigned int UCTAgent::get_actual_branching_factor(std::vector<zet>& zets){
+  double prune_threshold = get_prune_threshold();
+  double best_value = zets.front().val; 
+  size_t i=1;
+  double oldval=0;
+  while ( i < zets.size() && (std::abs(best_value - zets.at(i).val) < prune_threshold)){
+      assert(i==1 || oldval > zets.at(i).val);
+      oldval = zets.at(i).val;
+      i++;
+  }
+  return i;
+}
+
 
 void UCTAgent::init(){
-
-	FILE_LOG(logDEBUG) << " Init UCTAgent. Init agent first "<<std::endl;
-	Agent::init();
+	FILE_LOG(logDEBUG) << " Init UCTAgent. Init Treeagent first "<<std::endl;
+	TreeAgent::init();
 	double bd = fmod(get_K0(),1.0);
 	FILE_LOG(logDEBUG) << " Setting branching_factor with ~Bernouly("<<bd<<")"<<std::endl;
 	branching_factor=std::bernoulli_distribution(bd);
@@ -65,7 +81,6 @@ void UCTAgent::init(){
 	h.update();
 	FILE_LOG(logDEBUG) << " Done Updateing the heuristic "<<std::endl;
 	if (policy == NULL){
-
 		FILE_LOG(logDEBUG) << " Getting policy code "<<std::endl;
 		int policy_code =get_policy_code(); 
 		FILE_LOG(logDEBUG) << " Selecting policy "<<policy_code<<std::endl;
@@ -167,12 +182,12 @@ double UCTAgent::expand(Node* n){
                 n->val=h.evaluate(n->m_board);
                 n->visits=1;
         }
-	unsigned int k = int(get_K0()) + branching_factor(get_generator());
 	double ret;
 	std::vector<zet> zets;
 	h.self=get_playing_color();
 	h.get_moves(n->m_board,n->player,false,zets);
-	unsigned int actual_branching_factor = k<zets.size()?k:zets.size();
+	//unsigned int actual_branching_factor = k<zets.size()?k:zets.size();
+	unsigned int actual_branching_factor = get_actual_branching_factor(zets); 
 	Node* new_node = NULL;
 	for (unsigned int i=0;i<actual_branching_factor;++i){
 		zet z = zets[i]; 
@@ -200,14 +215,6 @@ double UCTAgent::expand(Node* n){
 void UCTAgent::pre_solution(){
 	TreeAgent::pre_solution();
 	h.self=get_playing_color();
-	h.remove_features();
-}
-
-/**
- * restore features after each solution
- * */
-void UCTAgent::post_solution(){
-	h.restore_features();
 }
 
 
@@ -259,5 +266,8 @@ double UCTAgent::get_weight(int i){
 	return get_double_property(t);
 }
 
+double UCTAgent::get_prune_threshold(){
+	return get_double_property("prune_threshold");
+}
 
 

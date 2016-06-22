@@ -25,6 +25,7 @@ class BFSAgent: public TreeAgent{
 		double get_vert_scale();
 		double get_diag_scale();
 		double get_opp_scale();
+		double get_act_scale();
 		bool is_negamax(){return false;};
 		void pre_solution();
 		void post_solution();

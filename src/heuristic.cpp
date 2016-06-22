@@ -138,10 +138,13 @@ void heuristic::update_weights(){
 }
 
 void heuristic::scale_lines(){
-  for(int i=1;i<=5;i++){
-    weight[i+5]=weight[i]*vert_scale;
-    weight[i+10]=weight[i]*diag_scale;
+  for(int i=1;i<=4;i++){
+    weight[i+4]=weight[i]*vert_scale;
+    weight[i+8]=weight[i]*diag_scale;
   }
+  for(int i=1;i<=12;i++)
+    weight[i+12]=weight[i]*act_scale;
+
 }
 
 void heuristic::eliminate_noise(){

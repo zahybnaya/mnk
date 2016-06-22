@@ -3,10 +3,11 @@
 #include "board.h"
 #include "dotexporter.h"
 #include <assert.h>
+#include <cmath>
 #include <random>
 #include <algorithm>
 
-const double FORCED_WIN_VALUE = 100;
+const double FORCED_WIN_VALUE = 100000;
 /**
  * Shuffles a vector from children map
  * */
@@ -48,6 +49,7 @@ double max_val(std::vector<zet> &zets, int player){
 }
 
 double calc_best_diff(std::vector<zet> &zets, int player, bool nonlinearity){
+	if (zets.size()<2){ return std::numeric_limits<double>::quiet_NaN(); }
 	std::sort(zets.begin(), zets.end(),[player](const zet& z1, const zet& z2){ return (player==BLACK)? (z1.val > z2.val):(z2.val > z1.val);  });
 	assert((player==BLACK)?zets[0].val>=zets[1].val:zets[0].val<=zets[1].val);
 	if (zets.size()>2)
@@ -75,6 +77,7 @@ double average_diff(std::vector<zet> &zets, int player){
 }
 
 double calc_normalized_best_diff(std::vector<zet> &zets, int player){
+	if (zets.size()<2){ return std::numeric_limits<double>::quiet_NaN(); }
 	std::sort(zets.begin(), zets.end(),[player](const zet& z1, const zet& z2){ return (player==BLACK)? (z1.val > z2.val):(z2.val > z1.val);  });
 	assert((player==BLACK)?zets[0].val>=zets[1].val:zets[0].val<=zets[1].val);
 	if (zets.size()>2)
@@ -113,7 +116,31 @@ void TreeAgent::print_time_prediction_metrics(board& b, Node* n,std::vector<zet>
 
 }
 
+void TreeAgent::print_time_prediction_metrics_inprocess(Node* n, double value_delta){
+	std::vector<zet> zets= move_estimates(n);
+	int iternumber = this->iter_num; 
+	double best_diff = calc_best_diff(zets,this->playing_color);
+	double normalized_best_diff = calc_normalized_best_diff(zets,this->playing_color);
+	double best_val = max_val(zets,this->playing_color);
+	double entropy =  calc_entropy(n);
+	double count_evals =0;
+	int num_consecutive=this->max_consecutive;
+	double num_patterns=0;
+	int num_nodes = n->visits;
+	std::string bboard=uint64tobinstring(n->m_board.pieces[BLACK]);
+	std::string wboard=uint64tobinstring(n->m_board.pieces[WHITE]);
+	size_t num_pieces = std::count(bboard.begin(),bboard.end(),'1') + std::count(wboard.begin(),wboard.end(),'1');
+	double node_value = value_delta;
+	//black,white,player,best_diff,entropy,node_value,tree_switch,count_evals,best_val,normalized_best_diff,num_consecutive,num_nodes,num_pieces,num_patterns,iter_number
+	std::cout<<bboard<<","<<wboard<<","<< this->playing_color <<","<<best_diff<<","<<entropy<<","<<node_value<<","<<this->num_switches<<","<<count_evals << ","<< best_val <<","<< normalized_best_diff <<","<< num_consecutive<<","<< num_nodes << ","<<num_pieces <<","<< num_patterns <<","<<iternumber << std::endl; 
+
+}
+
+
+
+
 void TreeAgent::pre_solution(){
+	HeuristicsAgent::pre_solution();
 	this->last_move_searched = -1;
 	this->num_switches = 0;
 	this->max_consecutive = 0;
@@ -169,10 +196,15 @@ Node* TreeAgent::create_initial_state(board b){
  **/
 int TreeAgent::build_tree(Node* n){ 
 	this->iter_num=0;
+	double delta=0;
+	double oldval = (n->val/n->visits);
 	while (!is_stop(n)){
 		FILE_LOG(logDEBUG) << " Starting iteration "<< this->iter_num<< std::endl;
 		iterate(n);
 		this->iter_num++;
+		delta= abs((n->val/n->visits)-oldval); 
+		oldval = (n->val/n->visits);
+		//print_time_prediction_metrics_inprocess(n,delta);
 	}
 	return 0;
 }

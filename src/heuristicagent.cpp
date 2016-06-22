@@ -31,6 +31,10 @@ double HeuristicsAgent::get_opp_scale() {
 	return get_double_property("opp_scale");
 }
 
+double HeuristicsAgent::get_act_scale() {
+	return get_double_property("act_scale");
+}
+
 double HeuristicsAgent::get_triangle_weight(){
 	return get_double_property("triangle_weight");
 }
@@ -48,9 +52,10 @@ void HeuristicsAgent::init(){
 	h.vert_scale   = get_vert_scale();
 	h.diag_scale   = get_diag_scale();
 	h.opp_scale   = get_opp_scale();
-	for(int i=0;i<6;i++)
+	h.act_scale   = get_act_scale();
+	for(int i=0;i<5;i++)
 		h.weight[i]=get_weight(i);
-	h.weight[16]=get_triangle_weight();
+	h.weight[25]=get_triangle_weight();
 	h.update();
 	FILE_LOG(logDEBUG) << "Init an agent with the following properties- "  << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
 

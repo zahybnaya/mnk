@@ -25,7 +25,7 @@ class DefaultAgent: public BFSAgent {
 		 * When exceeding the number of
 		 * iterations or threshould
 		 * **/
-		virtual bool is_stop(Node* n);
+		//virtual bool is_stop(Node* n);
 		/***
 		 * Prunning according to distance from threshold.
 		 * */

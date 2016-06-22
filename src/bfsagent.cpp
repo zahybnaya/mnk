@@ -16,9 +16,10 @@ void BFSAgent::init(){
 	h.vert_scale   = get_vert_scale();
 	h.diag_scale   = get_diag_scale();
 	h.opp_scale   = get_opp_scale();
-	for(int i=0;i<6;i++)
+	h.act_scale   = get_act_scale();
+	for(int i=0;i<5;i++)
 		h.weight[i]=get_weight(i);
-	h.weight[16]=get_triangle_weight();
+	h.weight[25]=get_triangle_weight();
 	h.update();
 }
 
@@ -267,6 +268,11 @@ double BFSAgent::get_delta() {
 double BFSAgent::get_vert_scale() {
 	return get_double_property("vert_scale");
 }
+
+double BFSAgent::get_act_scale() {
+	return get_double_property("act_scale");
+}
+
 double BFSAgent::get_diag_scale() {
 	return get_double_property("diag_scale");
 }

@@ -2,6 +2,7 @@
 #define TREEAGENT_H
 
 #include "agent.h"
+#include "heuristicagent.h"
 typedef struct Node Node;
 typedef std::map<uint64,Node*> child_map;
 
@@ -56,14 +57,12 @@ inline void print_tree(Node* root){
  *  An agent that builds a tree to 
  *  solve a board
  * */
-class TreeAgent: public Agent {
+class TreeAgent: public HeuristicsAgent {
 
 public:
 	TreeAgent():last_move_searched(-1){};
 	~TreeAgent(){};
 	virtual void pre_solution();
-	virtual void post_solution(){}
-
 	/**
 	 *  returns a vector of estimated moves 
 	 * */
@@ -146,6 +145,10 @@ protected:
 	inline int get_iter_num() const {return iter_num;}
 
 private:
+	/**
+	 * prints stats in process
+	 * */
+	void print_time_prediction_metrics_inprocess(Node* n, double delta);
 	void print_time_prediction_metrics(board& b, Node* n, std::vector<zet> &zets);
 	/**
 	 * Select a path starting from the root of the tree that 

@@ -29,12 +29,12 @@ struct pattern{
 
 class heuristic{
   public:
-    static const unsigned int Nweights=17;
+    static const unsigned int Nweights=26;
     double weight[Nweights];
     unsigned int Nfeatures;
     double D0,K0;
     double gamma,delta,lapse_rate;
-    double vert_scale,diag_scale,opp_scale;
+    double vert_scale,diag_scale,opp_scale,act_scale;
     bool self;
     int depth;
     unsigned int K;

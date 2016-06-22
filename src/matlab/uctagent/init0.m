@@ -9,9 +9,9 @@
 % x0(i,l(i)) is the ith coordinate of the initial point
 
 % self-defined initialization list
-L = 3*ones(2,1);
-l = 2*ones(2,1);
-exploration_constant=[0.0100 0.5000 2.00]
-virtual_rollouts=[0 1 10]
-x0=[exploration_constant; virtual_rollouts]
+L = 3*ones(11,1);
+l = 2*ones(11,1);
+load x0.mat -mat
+exploration_constant=[0.0100 0.5000 9.00]
+x0=[x0;exploration_constant]
 
