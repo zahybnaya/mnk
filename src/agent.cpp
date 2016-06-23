@@ -94,6 +94,7 @@ int Agent::get_int_property(std::string prop) {
  * Reads a double from the table
  * */
 double Agent::get_double_property(std::string prop) {
+
 	if(m_properties.find(prop)==m_properties.end()){
 		throw AgentParamsException(prop);
 	}

@@ -67,16 +67,19 @@ void UCTAgent::init(){
 	h.gamma  = get_gamma();
 	FILE_LOG(logDEBUG) << " Getting delta "<<std::endl;
 	h.delta   = get_delta();
+	FILE_LOG(logDEBUG) << " Getting vert_scale "<<std::endl;
 	h.vert_scale  = get_vert_scale();
+	FILE_LOG(logDEBUG) << " Getting diag_scale "<<std::endl;
 	h.diag_scale  = get_diag_scale();
+	FILE_LOG(logDEBUG) << " Getting opp_scale "<<std::endl;
 	h.opp_scale   = get_opp_scale();
-	for(int i=0;i<6;i++)
+	FILE_LOG(logDEBUG) << " Getting weights "<<std::endl;
+	for(int i=0;i<5;i++)
 		h.weight[i]=get_weight(i);
 	/***
 	 * Simplified model
 	 * */
-	h.weight[4]=h.weight[3];
-	h.weight[16]=get_triangle_weight();
+	h.weight[25]=get_triangle_weight();
 	FILE_LOG(logDEBUG) << " Updateing the heuristic "<<std::endl;
 	h.update();
 	FILE_LOG(logDEBUG) << " Done Updateing the heuristic "<<std::endl;
@@ -101,7 +104,7 @@ void UCTAgent::init(){
 				throw std::runtime_error("no policy");
 		}
 	}
-	FILE_LOG(logDEBUG) << "Init an agent with the following properties- " <<" K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
+	FILE_LOG(logDEBUG) << "Init complete of an agent with the following properties- " <<" K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
 
 }
 
