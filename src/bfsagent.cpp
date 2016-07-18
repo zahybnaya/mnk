@@ -9,18 +9,8 @@
  * Initializaion of the heuristic properties
  * */
 void BFSAgent::init(){
-	Agent::init();
+	HeuristicsAgent::init();
 	branching_factor=std::bernoulli_distribution(fmod(get_K0(),1.0));
-	h.gamma  = get_gamma();
-	h.delta   = get_delta();
-	h.vert_scale   = get_vert_scale();
-	h.diag_scale   = get_diag_scale();
-	h.opp_scale   = get_opp_scale();
-	h.act_scale   = get_act_scale();
-	for(int i=0;i<5;i++)
-		h.weight[i]=get_weight(i);
-	h.weight[25]=get_triangle_weight();
-	h.update();
 }
 
 std::string print_children(Node* n){
@@ -176,17 +166,6 @@ Node* BFSAgent::select_next_node(Node* n) {
 	std::pair<uint64,Node*> argmax =
 		*std::max_element(v.begin(),v.end(),better_for_black);
 	Node* ret = tie_break(v, (argmax.second->val/argmax.second->visits));
-//	if(abs((argmax.second->val/argmax.second->visits)-(n->val/n->visits))>0.001){
-//		FILE_LOG(logERROR)<<"all_children:"<< print_children(n)<<std::endl;
-//		FILE_LOG(logERROR)<<"filtered:"<< print_v(v)<<std::endl;
-//		FILE_LOG(logERROR)<< " Selected "<< argmax.second->val/argmax.second->visits<<" from node with"<< (n->val/n->visits) << std::endl;
-//	}
-//	assert(abs((argmax.second->val/argmax.second->visits)-(n->val/n->visits))<0.001);
-
-	//FILE_LOG(logDEBUG)<<"all_children:"<< print_children(n)<<std::endl;
-	//FILE_LOG(logDEBUG)<<"filtered:"<< print_v(v)<<std::endl;
-	//FILE_LOG(logDEBUG)<<"*selecting node{"<< (ret->val/ret->visits) << " forced_win:" <<ret->forced_win << " forced_loss:" <<ret->forced_loss << " solved:" << ret->solved<<"}";
-	//return argmax.second;
 	return ret;
 }
 
@@ -258,34 +237,5 @@ double BFSAgent::expand(Node* n){
 //
 double BFSAgent::get_K0() {
 	return get_double_property("K0");
-}
-double BFSAgent::get_gamma() {
-	return get_double_property("gamma");
-}
-double BFSAgent::get_delta() {
-	return get_double_property("delta");
-}
-double BFSAgent::get_vert_scale() {
-	return get_double_property("vert_scale");
-}
-
-double BFSAgent::get_act_scale() {
-	return get_double_property("act_scale");
-}
-
-double BFSAgent::get_diag_scale() {
-	return get_double_property("diag_scale");
-}
-double BFSAgent::get_opp_scale() {
-	return get_double_property("opp_scale");
-}
-
-double BFSAgent::get_triangle_weight(){
-	return get_double_property("triangle_weight");
-}
-
-double BFSAgent::get_weight(int i){
-	std::string t="weights_"+std::to_string(i);
-	return get_double_property(t);
 }
 

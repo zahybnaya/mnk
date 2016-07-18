@@ -17,4 +17,5 @@ weights_5=6
 triangle_weight=0
 stop_threshold=3.5
 prune_threshold=2
+act_scale=1
 

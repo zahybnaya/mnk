@@ -218,34 +218,6 @@ double compute_loglik_agent(Agent_params ap , data_struct& dat, bool talk, int s
 	return res;
 }
 
-/**
- * stub for finding the values
- * */
-double compute_loglik_agent_stub(Agent_params ap , data_struct& /*dat*/, bool /*talk*/, int /*subject*/,
-		int /*data_type*/, char* /*times_file*/, char* /*output_file*/){
-	Agent_builder b;
-	BFSAgent* a = (BFSAgent*)b.build(ap);
-	double ret=0.0;
-	ret+=abs(a->get_K0() -1);
-	ret+=abs(a->get_gamma()-2);
-	ret+=abs(a->get_delta()-3);
-	ret+=abs(a->get_lapse_rate()-4);
-	ret+=abs(a->get_vert_scale()-5);
-	ret+=abs(a->get_diag_scale()-6);
-	ret+=abs(a->get_opp_scale()-7);
-	ret+=abs(a->get_weight(0)-8);
-	ret+=abs(a->get_weight(1)-9);
-	ret+=abs(a->get_weight(2)-10);
-	ret+=abs(a->get_weight(3)-11);
-	ret+=abs(a->get_weight(4)-12);
-	ret+=abs(a->get_weight(5)-13);
-	ret+=abs(a->get_weight(6)-14);
-	ret+=abs(a->get_triangle_weight()-15);
-	std::cout<<"K0:"<<a->get_K0()<<"Gamma:"<<a->get_gamma()<<"Delta:"<<a->get_delta()<<"laps:"<<a->get_lapse_rate()<<"vert:"<<a->get_vert_scale()<<"diag:"<<a->get_diag_scale()<<"opp:"<<a->get_opp_scale()<<"w0:"<<a->get_weight(0)<<"w1:"<<a->get_weight(1)<<"w2:"<<a->get_weight(2)<<"w3:"<<a->get_weight(3)<<"w4:"<<a->get_weight(4)<<"w5:"<<a->get_weight(5)<<"w6:"<<a->get_weight(6)<<"triangle:"<<a->get_triangle_weight()<<std::endl;
-	return ret;
-}
-
-
 double compute_loglik(heuristic& h, data_struct& dat, bool talk, int subject,
 		int data_type, char* times_file, char* output_file){
 	todolist* board_list;
