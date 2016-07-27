@@ -21,7 +21,6 @@ class Agent {
 	public:
 		Agent(){}
 		virtual ~Agent(){}
-		
 		/**
 		 * initializtion after properties are set, etc.
 		 * */
