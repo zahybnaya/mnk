@@ -6,11 +6,6 @@
 #include "common.h"
 #include "bfsagent.h"
 #include <limits>
-#define WHITE_WINS_GAME -1
-#define BLACK_WINS_GAME 1
-#define GAME_DRAWN 0
-#define UNDETERMINED 2
-
 #include <map>
 #include <algorithm>
 #include <ctime>
@@ -18,6 +13,11 @@
 #include <string>
 #include <thread>
 #include <mutex>
+
+#define WHITE_WINS_GAME -1
+#define BLACK_WINS_GAME 1
+#define GAME_DRAWN 0
+#define UNDETERMINED 2
 
 std::mutex board_list_mutex;
 
@@ -82,6 +82,29 @@ void compute_loglik_task_output(Agent_params ap,data_struct* dat,todolist* board
 	delete agent;
 	board_list_mutex.unlock();
 }
+
+/**
+ * The execution of a new loglik
+ * */
+void compute_model_dist(Agent_params ap,data_struct* dat, int times){
+	Agent_builder b;
+	FILE_LOG(logDEBUG) << "Building agent accodring to "<<ap.agent_file<<std::endl;
+	Agent* agent = b.build(ap);
+	FILE_LOG(logDEBUG) << " Starting Computing dist for Agent "<<ap.agent_file<<std::endl;
+	zet m;
+	for(size_t i = 0 ; i < dat->allboards.size() ; ++i){
+		for (int t = 0 ; t<times; t++){
+			agent->pre_solution();
+			m=agent->play(dat->allboards[i],dat->allmoves[i].player);
+			agent->post_solution();
+			std::cout<<i<<","<<m.zet_id<<std::endl;
+		}
+	}
+	delete agent;
+	board_list_mutex.unlock();
+}
+
+
 
 
 /**

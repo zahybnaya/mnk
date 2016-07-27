@@ -11,7 +11,7 @@
 # model-fitting: calculates model parameters
 #
 #####
-CCFLAGS=-g -std=c++11 -pthread  -Wall -O3 
+CCFLAGS=-g -std=c++11 -pthread  -Wall 
 #-DNDEBUG
 #LDFLAGS=-pg
 LDFLAGS=
@@ -27,6 +27,10 @@ tournament: tournament.cpp heuristic.cpp randomplayout.h randomplayout.cpp heuri
 
 generate_times: generate_times.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp 
 	g++ $(CCFLAGS) generate_times.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp -ogenerate_times
+
+model_dist: model_dist.cpp dotexporter.cpp dotexporter.h Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp heuristicagent.cpp heuristicagent.h treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp mindifftreeagent.h geometricrandom.cpp geometricrandom.h playoutpolicy.h myopicpolicyplayout.h myopicpolicyplayout.cpp defaultagent.cpp defaultagent.h consistentmoveagent.h consistentmoveagent.cpp
+	g++ $(CCFLAGS) dotexporter.cpp model_dist.cpp heuristicagent.cpp agent_builder.cpp agent.cpp uctagent.cpp treeagent.cpp features.cpp bfs.cpp data_struct.cpp  heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp geometricrandom.cpp dummy_agent.cpp fixeddepthtreeagent.cpp myopicpolicyplayout.cpp defaultagent.cpp consistentmoveagent.cpp -omodel_dist  $(LDFLAGS)
+
 
 
 loglik: dotexporter.cpp dotexporter.h loglik.cpp Gomoku.cpp board_list.h agent_builder.cpp agent.cpp uctagent.cpp heuristicagent.cpp heuristicagent.h treeagent.cpp features.cpp bfs.cpp data_struct.h data_struct.cpp heuristic.cpp  randomplayout.cpp myopicagent.cpp bfsagent.cpp mindifftreeagent.cpp mindifftreeagent.h geometricrandom.cpp geometricrandom.h playoutpolicy.h myopicpolicyplayout.h myopicpolicyplayout.cpp defaultagent.cpp defaultagent.h consistentmoveagent.h consistentmoveagent.cpp
