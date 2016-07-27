@@ -116,12 +116,12 @@ prt = 0;	% print level
 % find the best values, and to use these on the others. 
 %
 n = length(u);		% problem dimension
-%smax = n+5;%5*n+10;		% number of levels used
-smax = 5*n+10;		% number of levels used
-%nf = 4000;%50*n^2; 		% limit on number of f-calls
-nf = 50*n^2; 		% limit on number of f-calls
-%stop(1) = n;%3*n;		% = m, integer defining stopping test
-stop(1) = 3*n;		% = m, integer defining stopping test
+smax = n+5;%5*n+10;		% number of levels used
+%smax = 5*n+10;		% number of levels used
+nf = 4000;%50*n^2; 		% limit on number of f-calls
+%nf = 50*n^2; 		% limit on number of f-calls
+stop(1) = n;%3*n;		% = m, integer defining stopping test
+%stop(1) = 3*n;		% = m, integer defining stopping test
 stop(2) = -inf;		% = freach, function value to reach
 			% if m>0, run until m sweeps without progress
 			% if m=0, run until fbest<=freach
