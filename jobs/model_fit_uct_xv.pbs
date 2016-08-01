@@ -1,9 +1,9 @@
 #!/bin/bash
 #PBS -N fit_uct_xv
 #PBS -l nodes=1:ppn=20
-#PBS -l walltime=20:00:00
+#PBS -l walltime=24:00:00
 #PBS -l mem=6GB
-#PBS -t 0-39
+#PBS -t 2,3,14,15,20,33,34,35
 #PBS -M zb9@nyu.edu
 #PBS -m abe
 BASE_DIR=$HOME/mnk
@@ -19,10 +19,14 @@ module purge
 module load matlab/2014a gcc/4.9.2
 for test_fold in ${fold_files}
 	do 
+	result_path=$direc/${agent}_${data}_subject${player}_fold_${number}
+	if [ -f "${result_path}/mcsresult.mat" ]  ; then 
+	number=$((number+1))
+	continue
+	fi
 	data_file=$BASE_DIR/data/${data}SUB${player}_train_fold_${number}.csv
 	echo ",subject,color,gi,mi,status,bp,wp,response,rt" > ${data_file}
 	find $BASE_DIR/data/ -name ${data}SUB${player}fold*  | grep -v $test_fold | xargs cat | grep '^[0-9]' >> ${data_file}
-	result_path=$direc/${agent}_${data}_subject${player}_fold_${number}
 	mkdir -p ${result_path}/Output
 	cd ${result_path}
 	rm Output/out*

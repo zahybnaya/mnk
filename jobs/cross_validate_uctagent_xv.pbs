@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -N cv_uct 
-#PBS -l nodes=1:ppn=1
+#PBS -l nodes=1:ppn=20
 #PBS -l walltime=45:30:00
 #PBS -l mem=1GB 
 #PBS -t 0-39
@@ -16,23 +16,23 @@ player=${PBS_ARRAYID}
 agent=uctagent
 data=model_input.csv
 agent_file=$BASE_DIR/agents/$agent
-test_data_file=$BASE_DIR/data/${data}SUB${player}test.csv
-train_data_file=$BASE_DIR/data/${data}SUB${player}train.csv
 result_path=$direc/${agent}_${data}_subject$player
 fold_files=`find $BASE_DIR/data/ -name ${data}SUB${player}fold*`
-number=0
 module purge
 module load matlab/2014a gcc/4.9.2
-for test_fold in ${fold_files}
+for number in {0..4}
 	do 
-	test_data_file=${test_fold}
+	test_data_file=$BASE_DIR/data/${data}SUB${player}fold${number}.csv
 	train_data_file=$BASE_DIR/data/${data}SUB${player}_train_fold_${number}.csv
 	result_path=$direc/${agent}_${data}_subject${player}_fold_${number}
 	cd ${result_path}
+#	if [ -f "${result_path}/test_results${player}.dat" ]  ; then 
+#		echo "Skipping ${result_path}"
+#		continue
+#	fi
 	export MATLABPATH=$SRCDIR:$SRCDIR/matlab
 	export LD_PRELOAD=$GCC_LIB/libstdc++.so
 	echo "cross_validate($player,'$agent_file','$train_data_file','$test_data_file'); exit;" | matlab -nodisplay
 	echo "Done"
-	number=$((number+1))
 	done
 

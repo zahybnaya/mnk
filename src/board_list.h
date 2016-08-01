@@ -8,12 +8,12 @@
 #include <fstream>
 
 #ifndef _WIN64
-//#define NTHREADS 8
+#define NTHREADS 8
 #else
-//#define NTHREADS 20
+#define NTHREADS 20
 #endif
 
-#define NTHREADS 1
+//#define NTHREADS 1
 
 struct task{
   int i;

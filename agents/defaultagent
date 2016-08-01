@@ -17,4 +17,5 @@ weights_5=?7{-2.0, 2.0, 1}
 triangle_weight=0
 stop_threshold=?8{0.1,0.5,10.0}
 prune_threshold=?9{0.1,0.5,10.0}
+act_scale=?10{0.1,0.5,10}
 

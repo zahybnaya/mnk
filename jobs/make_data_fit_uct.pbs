@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -N makedata
+#PBS -l nodes=1:ppn=2
+#PBS -l walltime=00:20:00
+#PBS -l mem=1GB
+#PBS -t 0-39
+#PBS -M zb9@nyu.edu
+#PBS -m abe
+BASE_DIR=$HOME/mnk
+SRCDIR=$BASE_DIR/src
+player=${PBS_ARRAYID}
+direc=$SCRATCH/Gomoku
+agent=uctagent
+data=model_input.csv
+agent_file=$BASE_DIR/agents/$agent
+for number in {0..4} 
+	do 
+	test_fold=$BASE_DIR/data/${data}SUB${player}fold${number} 
+	data_file=$BASE_DIR/data/${data}SUB${player}_train_fold_${number}.csv
+	echo ",subject,color,gi,mi,status,bp,wp,response,rt" > ${data_file}
+	find $BASE_DIR/data/ -name ${data}SUB${player}fold*  | grep -v $test_fold | xargs cat | grep '^[0-9]' >> ${data_file}
+	done

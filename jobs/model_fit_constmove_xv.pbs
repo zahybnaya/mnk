@@ -19,10 +19,16 @@ module purge
 module load matlab/2014a gcc/4.9.2
 for test_fold in ${fold_files}
 	do 
+	result_path=$direc/${agent}_${data}_subject${player}_fold_${number}
+	#check if fold exists and skip?
+	if [ -f ${result_path}/mcsresult.mat ]; 
+	then   
+		number=$((number+1))
+		continue
+	fi
 	data_file=$BASE_DIR/data/${data}SUB${player}_train_fold_${number}.csv
 	echo ",subject,color,gi,mi,status,bp,wp,response,rt" > ${data_file}
 	find $BASE_DIR/data/ -name ${data}SUB${player}fold*  | grep -v $test_fold | xargs cat | grep '^[0-9]' >> ${data_file}
-	result_path=$direc/${agent}_${data}_subject${player}_fold_${number}
 	mkdir -p ${result_path}/Output
 	cd ${result_path}
 	rm Output/out*
