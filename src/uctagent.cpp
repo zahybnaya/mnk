@@ -63,26 +63,6 @@ void UCTAgent::init(){
 	double bd = fmod(get_K0(),1.0);
 	FILE_LOG(logDEBUG) << " Setting branching_factor with ~Bernouly("<<bd<<")"<<std::endl;
 	branching_factor=std::bernoulli_distribution(bd);
-	FILE_LOG(logDEBUG) << " Getting gamma "<<std::endl;
-	h.gamma  = get_gamma();
-	FILE_LOG(logDEBUG) << " Getting delta "<<std::endl;
-	h.delta   = get_delta();
-	FILE_LOG(logDEBUG) << " Getting vert_scale "<<std::endl;
-	h.vert_scale  = get_vert_scale();
-	FILE_LOG(logDEBUG) << " Getting diag_scale "<<std::endl;
-	h.diag_scale  = get_diag_scale();
-	FILE_LOG(logDEBUG) << " Getting opp_scale "<<std::endl;
-	h.opp_scale   = get_opp_scale();
-	FILE_LOG(logDEBUG) << " Getting weights "<<std::endl;
-	for(int i=0;i<5;i++)
-		h.weight[i]=get_weight(i);
-	/***
-	 * Simplified model
-	 * */
-	h.weight[25]=get_triangle_weight();
-	FILE_LOG(logDEBUG) << " Updateing the heuristic "<<std::endl;
-	h.update();
-	FILE_LOG(logDEBUG) << " Done Updateing the heuristic "<<std::endl;
 	if (policy == NULL){
 		FILE_LOG(logDEBUG) << " Getting policy code "<<std::endl;
 		int policy_code =get_policy_code(); 
@@ -104,8 +84,6 @@ void UCTAgent::init(){
 				throw std::runtime_error("no policy");
 		}
 	}
-	FILE_LOG(logDEBUG) << "Init complete of an agent with the following properties- " <<" K0:"<< get_K0() <<" h.gamma:"<< get_gamma() << " h.delta:" <<  get_delta() << " h.vert_scale:"<<   get_vert_scale() << " h.diag_scale:"<< get_diag_scale() <<" h.opp_scale: " << get_opp_scale() << " h.weight[0]:"<<get_weight(0) << " lapse_rate" << get_lapse_rate() << std::endl;
-
 }
 
 
@@ -241,34 +219,12 @@ double UCTAgent::get_K0() {
 double UCTAgent::get_gamma() {
 	return get_double_property("gamma");
 }
-double UCTAgent::get_delta() {
-	return get_double_property("delta");
-}
-double UCTAgent::get_vert_scale() {
-	return get_double_property("vert_scale");
-}
-double UCTAgent::get_diag_scale() {
-	return get_double_property("diag_scale");
-}
-double UCTAgent::get_opp_scale() {
-	return get_double_property("opp_scale");
-}
-
-double UCTAgent::get_triangle_weight(){
-	return get_double_property("triangle_weight");
-}
-
 int UCTAgent::get_virtual_rollouts(){
 	return get_int_property("virtual_rollouts");
 }
 double UCTAgent::get_policy_lapse_rate() {
 	return get_double_property("policy_lapse_rate");
 }
-double UCTAgent::get_weight(int i){
-	std::string t="weights_"+std::to_string(i);
-	return get_double_property(t);
-}
-
 double UCTAgent::get_prune_threshold(){
 	return get_double_property("prune_threshold");
 }

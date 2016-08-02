@@ -28,26 +28,18 @@ public:
 	void pre_solution();
 
 private:
-
+	double get_gamma(); 
+	double get_K0(); 
 	double get_prune_threshold();
 	unsigned int get_actual_branching_factor(std::vector<zet>& zets);
+	/* uct funtions */
 	double get_policy_lapse_rate(); 
 	int get_policy_code();
-	double get_triangle_weight();
-	double get_weight(int i);
-	double get_K0();
-	double get_gamma(); 
-	double get_delta();
-	double get_vert_scale();
-	double get_diag_scale();
-	double get_opp_scale();
 	int get_virtual_rollouts();
-	/* uct funtions */
 	virtual double get_exploration_constant(); 
 	PlayoutPolicy* policy;
 	bool is_negamax();
 	int get_num_of_evals();
-	heuristic h;
 	bernoulli_distribution branching_factor;
 };
 #define UCTAGENT_H
