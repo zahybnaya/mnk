@@ -1,0 +1,26 @@
+#!/bin/bash
+#PBS -N create_dist
+#PBS -l nodes=40:ppn=1
+#PBS -l walltime=10:00:00
+#PBS -l mem=1GB
+#PBS -t 0-39
+#PBS -M zb9@nyu.edu
+#PBS -m abe
+BASE_DIR=$HOME/mnk
+SRCDIR=$BASE_DIR/src
+player=${PBS_ARRAYID}
+direc=$SCRATCH/Gomoku
+agent=uctagent
+data=model_input.csv
+module purge
+module load matlab/2014a gcc/4.9.2
+#./model_dist -a ../agents/uctagent_subject0fold0 -d ../data/model_input.csvSUB0_train_fold_0.csv -N 10
+N=1000
+for number in {0..5} ; do 
+	agent_file=$BASE_DIR/agents/${agent}_subject${player}fold${number}
+	data_file=$BASE_DIR/data/${data}SUB${player}_train_fold_${number}.csv
+	cd ${SRCDIR}
+	./model_dist -a ${agent_file} -d ${data_file} -N 1000 > ${direc}/dist_data/uct_${player}_${number}.csv
+	number=$((number+1))
+	done
+
