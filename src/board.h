@@ -411,6 +411,20 @@ inline vector<zet> enumerate_moves(board& b, bool player){
   return candidate;
 }
 
+/**
+ * Returns a list of possible moves without a value
+ */
+inline vector<uint64> enumerate_moves_uint64(board& b){
+  vector<uint64> candidate;
+  for(uint64 m=1;m!=boardend;m<<=1){
+	if(b.isempty(m)){
+		candidate.push_back(m);
+	}
+  }
+  return candidate;
+}
+
+
 
 inline std::ostream& operator<<(std::ostream& o, board& b){
     uint64 temp = 1,m=0;

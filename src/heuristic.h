@@ -65,6 +65,7 @@ class heuristic{
     void write_to_header(char*);
     vector<zet> get_pruned_moves(board&, bool);
     vector<zet> enumerate_moves(board& b, bool player);
+    vector<uint64> enumerate_moves_uint64(board& b);
     double value(board& b,bool player);
     vector<zet> get_moves(board&, bool, bool);
     void get_moves(board& b, bool player, bool nosort, std::vector<zet> &candidate);

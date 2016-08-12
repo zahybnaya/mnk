@@ -54,18 +54,13 @@ zet Agent::play(board& b,bool player){
 	}
 	assert(!s.empty());
 	zet r;
-	std::random_shuffle(s.begin(),s.end());
-	for (std::vector<zet>::const_iterator i = s.begin(); i != s.end(); ++i) {
-		//std::cout<<i->zet_id<<" "<<i->val<<std::endl;
-		FILE_LOG(logDEBUG)<<"    "<<i->zet_id<<" with value:"<<i->val<<std::endl;
-	}
+	//std::random_shuffle(s.begin(),s.end());
 	if (player == BLACK || is_negamax()){
 		r=*std::max_element(s.begin(),s.end(),[](const zet& z1, const zet& z2 ){ return z1.val < z2.val;});
 	} else{
 		r=*std::min_element(s.begin(),s.end(),[](const zet& z1, const zet& z2 ){ return z1.val < z2.val;});
 	}
 	FILE_LOG(logDEBUG)<<((player==BLACK)?"BLACK":"WHITE")<<" playes move "<<r.zet_id<<" with value:"<<r.val <<std::endl;
-	//std::cout<<r.zet_id<<std::endl;
 	return r;
 }
 

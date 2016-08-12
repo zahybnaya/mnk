@@ -287,6 +287,20 @@ vector<zet> heuristic::enumerate_moves(board& b, bool player){
   return candidate;
 }
 
+/**
+ * Returns a list of possible moves without a value
+ */
+vector<uint64> heuristic::enumerate_moves_uint64(board& b){
+  vector<uint64> candidate;
+  for(uint64 m=1;m!=boardend;m<<=1){
+	if(b.isempty(m)){
+		candidate.push_back(m);
+	}
+  }
+  return candidate;
+}
+
+
 
 double heuristic::evaluate(board b){
   bool player=b.active_player();

@@ -32,7 +32,7 @@ double RandomPlayout::state_value(board& b){
 }
 
 zet RandomPlayout::select_random_move(board& b){
-	vector<zet> moves = enumerate_moves(b, b.active_player());
-	return moves[rng() % moves.size()];
+	vector<uint64> moves = enumerate_moves_uint64(b);
+	return zet(moves[rng() % moves.size()],0,b.active_player());
 }
 

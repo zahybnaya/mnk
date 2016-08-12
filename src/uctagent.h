@@ -40,7 +40,7 @@ private:
 	PlayoutPolicy* policy;
 	bool is_negamax();
 	int get_num_of_evals();
-	bernoulli_distribution branching_factor;
+	//bernoulli_distribution branching_factor;
 };
 #define UCTAGENT_H
 

@@ -60,9 +60,8 @@ unsigned int UCTAgent::get_actual_branching_factor(std::vector<zet>& zets){
 void UCTAgent::init(){
 	FILE_LOG(logDEBUG) << " Init UCTAgent. Init Treeagent first "<<std::endl;
 	TreeAgent::init();
-	double bd = fmod(get_K0(),1.0);
-	FILE_LOG(logDEBUG) << " Setting branching_factor with ~Bernouly("<<bd<<")"<<std::endl;
-	branching_factor=std::bernoulli_distribution(bd);
+	//double bd = fmod(get_K0(),1.0);
+	//branching_factor=std::bernoulli_distribution(bd);
 	if (policy == NULL){
 		FILE_LOG(logDEBUG) << " Getting policy code "<<std::endl;
 		int policy_code =get_policy_code(); 
@@ -91,7 +90,7 @@ void UCTAgent::init(){
  * UCT uses a given policy to evaluate new states.
  * */
 double UCTAgent::evaulate(Node* lastNode,Node* /* parent*/, uint64 ){
-	int num_of_evals =  get_num_of_evals();
+	int num_of_evals = std::max(get_num_of_evals(),1);
 	double r =0;
 	for (int i = 0; i < num_of_evals; i++) {
 		r += policy->eval(lastNode->m_board);
