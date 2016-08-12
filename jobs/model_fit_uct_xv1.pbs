@@ -1,0 +1,30 @@
+#!/bin/bash
+#PBS -N fit_uct_xv_fld1
+#PBS -l nodes=1:ppn=20
+#PBS -l walltime=34:00:00
+#PBS -l mem=6GB
+#PBS -t 0-39
+#PBS -M zb9@nyu.edu
+#PBS -m abe
+BASE_DIR=$HOME/mnk
+SRCDIR=$BASE_DIR/src
+player=${PBS_ARRAYID}
+direc=$SCRATCH/Gomoku
+agent=uctagent
+data=model_input.csv
+agent_file=$BASE_DIR/agents/$agent
+number=1
+module purge
+module load matlab/2014a gcc/4.9.2
+result_path=$direc/${agent}_${data}_subject${player}_fold_${number}
+if [ -f "${result_path}/mcsresult.mat" ]  ; then 
+	exit
+fi
+data_file=$BASE_DIR/data/${data}SUB${player}_train_fold_${number}.csv
+mkdir -p ${result_path}/Output
+cd ${result_path}
+rm Output/out*
+export MATLABPATH=$SRCDIR:$SRCDIR/matlab
+export LD_PRELOAD=$GCC_LIB/libstdc++.so
+echo "Gomoku_optim_mcs($player,'$agent_file', '$data_file'); exit;" | matlab -nodisplay
+echo "Done"
