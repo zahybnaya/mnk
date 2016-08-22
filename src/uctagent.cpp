@@ -5,6 +5,7 @@
 #include "randomplayout.h"
 #include "geometricrandom.h"
 #include "myopicpolicyplayout.h"
+#include "pseudorandomplayout.h"
 
 /**
  * Constructor 
@@ -79,6 +80,11 @@ void UCTAgent::init(){
 				policy = new MyopicPolicyPlayout(h,get_generator(),get_policy_lapse_rate());
 				FILE_LOG(logDEBUG) << " Assigned Myopic policy for uct "<<std::endl;
 				break;
+			case 3:
+				policy = new PseudoRandomPlayout();
+				FILE_LOG(logDEBUG) << " Assigned PseudoRandomPlayout policy for uct "<<std::endl;
+				break;
+
 			default:
 				throw std::runtime_error("no policy");
 		}

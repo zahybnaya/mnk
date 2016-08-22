@@ -15,3 +15,4 @@ weights_3=	   5.0000000e+00
 weights_5=	   1.5000000e+01
 stop_threshold=	   1.0000000e+01
 prune_threshold=	   3.0000000e+00
+act_scale=1

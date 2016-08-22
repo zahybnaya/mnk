@@ -396,7 +396,7 @@ struct board{
     return pieces[WHITE]<b.pieces[WHITE];
   }
   uint64 pieces[2];
-};
+}; //END OF BOARD STRUCT
 
 /**
  * Returns a list of possible moves without a value
@@ -453,7 +453,57 @@ inline std::ostream& operator<<(std::ostream& o, board& b){
     return o;
 }
 
+typedef std::pair<uint64,uint64> match_t;
+class Motif {
+	public:
+		Motif(){};
+		Motif(std::vector<match_t> matches):matches(matches){};
+		inline void add(uint64 match,uint64 freespots){
+			matches.push_back(match_t(match,freespots));
+		}
+		inline void add(uint64 match){
+			uint64 freespots = 0;
+			matches.push_back(match_t(match,freespots));
+		}
 
+		int exists(board &b,int player);
+		std::vector<match_t> getMatches(board &b,int player);
+	private:
+		std::vector<match_t> matches;
+
+};
+
+inline int Motif::exists(board &b, int player){
+	int ret=0;
+	int opp = (player==WHITE?BLACK:WHITE);
+	for(std::vector<match_t>::iterator i = matches.begin() ; i != matches.end(); ++i){
+		if(i->second==0){
+			int toadd=((b.pieces[player] & (i->first))==(i->first)) ?1:0;  	
+			if(toadd){
+				ret += 	toadd;
+			}
+		}else{
+			ret += (((b.pieces[player] & (i->first))==(i->first)) && (i->second & (~b.pieces[opp])))?1:0;  	
+		} 
+	}
+	return ret;
+}
+
+
+
+inline std::vector<match_t> Motif::getMatches(board &b,int player){
+	int opp = (player==WHITE?BLACK:WHITE);
+	std::vector<match_t> ret;
+	for(std::vector<match_t>::iterator i = matches.begin() ; i != matches.end(); ++i){
+		if(i->second==0){
+			if((b.pieces[player] & (i->first))==(i->first))
+				ret.push_back(*i);
+		}else{
+			if (((b.pieces[player] & (i->first))==(i->first)) && (i->second & (~b.pieces[opp])))
+				ret.push_back(*i);
+		} 
+	}
+	return ret;
+}
 
 #endif // BOARD_H_INCLUDED
-
