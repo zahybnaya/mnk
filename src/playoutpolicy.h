@@ -10,5 +10,4 @@ class PlayoutPolicy {
 
 };
 
-
 #endif /* end of include guard: PLAYOUTPOLICY_H */

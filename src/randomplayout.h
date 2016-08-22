@@ -13,10 +13,9 @@ public:
 	RandomPlayout();
 	~RandomPlayout(){};
 	virtual double eval(board b);
-
+	virtual zet select_random_move(board& b);
 protected:
 	double state_value(board& b);
-	zet select_random_move(board& b);
 	mt19937_64 rng;
 };
 
