@@ -8,6 +8,8 @@
 #include "defaultagent.h"
 #include "mindifftreeagent.h"
 #include "consistentmoveagent.h"
+#include "pseudorandomagent.h"
+#include "randomagent.h"
 
 template<typename T> Agent* create_agent() {  return new T; }
 
@@ -41,6 +43,8 @@ void Agent_builder::register_constructors(){
 	agent_constructors["DUMMY"] = &create_agent<DummyAgent>;
 	agent_constructors["FIXED"] = &create_agent<FixedDepthTreeAgent>;
 	agent_constructors["DEFAULT"] = &create_agent<DefaultAgent>;
+	agent_constructors["PSEUDO_RAND"] = &create_agent<PseudoRandomAgent>;
+	agent_constructors["RAND"] = &create_agent<RandomAgent>;
 	agent_constructors["CONST_MOVE"] = &create_agent<ConsistentMoveAgent>;
 }
 
@@ -54,6 +58,4 @@ Agent* Agent_builder::create_instance(std::string type){
 	Agent *a=agent_constructors[type]();
 	return a;
 }
-
-
 

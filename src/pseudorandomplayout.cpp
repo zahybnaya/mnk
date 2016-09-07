@@ -1,6 +1,7 @@
 #include "heuristic.h"
 #include "pseudorandomplayout.h"
 #include <random>
+#include <map>
 #include "board.h"
 #include "log.h"
 
@@ -19,17 +20,154 @@ zet PseudoRandomPlayout::select_random_move(board& b){
 		return zet(matches[0].second,0,b.active_player());
 	}
 
-	//std::vector<match_t> blocks = winNextMove.getMatches(b,(b.active_player()==BLACK)?WHITE:BLACK);
+	std::vector<match_t> blocks = winNextMove.getMatches(b,(b.active_player()==BLACK)?WHITE:BLACK);
 	//if can block
-//	if(blocks.size()>0){
-//		return zet(blocks[0].second,0,b.active_player());
-//	}
+	if(blocks.size()>0){
+		return zet(blocks[0].second,0,b.active_player());
+	}
 
-	vector<uint64> moves = enumerate_moves_uint64(b);
-	return zet(moves[rng() % moves.size()],0,b.active_player());
+	std::vector<uint64> moves = enumerate_moves_uint64(b);
+	std::vector<double> probs; 
+	for (std::vector<uint64>::iterator it = moves.begin(); it != moves.end(); ++it){
+		probs.push_back(probPerMove(b,*it));
+	}
+	std::discrete_distribution<int> dist(probs.begin(), probs.end());
+	int move_ind= dist(rng);
+	return zet(moves[move_ind],0,b.active_player());
+	//return zet(moves[rng() % moves.size()],0,b.active_player());
 }
 
+/**
+ * Start with the full-blown and then optimize like that: 
+ * 1/1+abs(t) instead of exp
+ * weights instead of exponantials. 
+ * */
+double PseudoRandomPlayout::probPerMove(board& b,uint64 m){
+	//params
+	double b0=1, b1=1, b2=10;
+	double accum = b0 + b1*distanceFromCenter(m) + b2*proximity(b,m);
+	return 1/(1+exp(accum));
+
+}
+
+int PseudoRandomPlayout::distanceFromCenter(uint64 m){
+	return distancesFromCenter[m];
+}
+
+
+
+/***
+ * Distances: 
+ *
+ * std::map<uint64,std::pair<int,int>> uint64torc;
+ * uint64 candidate_move;
+ *
+ * for(piece in board):
+ * 	cx,cy = candidate move
+ * 	px, py = piece 
+ * 	d= min(abs(cx-px), abs(xy-py)) + max(abs(cx-px), abs(xy-py)) - min(abs(cx-px), abs(xy-py))
+ * 	e.g., 
+ * 	d=max(abs(cx-px), abs(xy-py)) 
+ *
+ */
+
+inline int PseudoRandomPlayout::proximity(uint64 m1,uint64 m2){
+	COORD coord1 = getCoord[m1];
+	COORD coord2 = getCoord[m2];
+	return  max(abs(coord1.row-coord2.row),abs(coord1.col-coord2.col));
+}
+
+int PseudoRandomPlayout::proximity(board &b, uint64 m){
+	int d=0;
+	for (uint64 p : enumerate_pieces_uint64(b)){
+		d+=proximity(p,m);
+	}
+	return d;
+}
+
+
+
+
+
 PseudoRandomPlayout::PseudoRandomPlayout(){
+
+
+	getCoord[1ULL]= {0,0};
+	getCoord[2ULL]= {0,1};
+	getCoord[4ULL]= {0,2};
+	getCoord[8ULL]= {0,3};
+	getCoord[16ULL]= {0,4};
+	getCoord[32ULL]= {0,5};
+	getCoord[64ULL]= {0,6};
+	getCoord[128ULL]= {0,7};
+	getCoord[256ULL]= {0,8};
+	getCoord[512ULL]= {1,0};
+	getCoord[1024ULL]= {1,1};
+	getCoord[2048ULL]= {1,2};
+	getCoord[4096ULL]= {1,3};
+	getCoord[8192ULL]= {1,4};
+	getCoord[16384ULL]= {1,5};
+	getCoord[32768ULL]= {1,6};
+	getCoord[65536ULL]= {1,7};
+	getCoord[131072ULL]= {1,8};
+	getCoord[262144ULL]= {2,0};
+	getCoord[524288ULL]= {2,1};
+	getCoord[1048576ULL]= {2,2};
+	getCoord[2097152ULL]= {2,3};
+	getCoord[4194304ULL]= {2,4};
+	getCoord[8388608ULL]= {2,5};
+	getCoord[16777216ULL]= {2,6};
+	getCoord[33554432ULL]= {2,7};
+	getCoord[67108864ULL]= {2,8};
+	getCoord[134217728ULL]= {3,0};
+	getCoord[268435456ULL]= {3,1};
+	getCoord[536870912ULL]= {3,2};
+	getCoord[1073741824ULL]= {3,3};
+	getCoord[2147483648ULL]= {3,4};
+	getCoord[4294967296ULL]= {3,5};
+	getCoord[8589934592ULL]= {3,6};
+	getCoord[17179869184ULL]= {3,7};
+	getCoord[34359738368ULL]= {3,8};
+
+
+
+	/* 0,0 */distancesFromCenter[1]=5;
+	/* 0,1 */distancesFromCenter[2]=4;
+	/* 0,2 */distancesFromCenter[4]=3;
+	/* 0,3 */distancesFromCenter[8]=2;
+	/* 0,4 */distancesFromCenter[16]=1;
+	/* 0,5 */distancesFromCenter[32]=2;
+	/* 0,6 */distancesFromCenter[64]=3;
+	/* 0,7 */distancesFromCenter[128]=4;
+	/* 0,8 */distancesFromCenter[256]=5;
+	/* 1,0 */distancesFromCenter[512]=4;
+	/* 1,1 */distancesFromCenter[1024]=3;
+	/* 1,2 */distancesFromCenter[2048]=2;
+	/* 1,3 */distancesFromCenter[4096]=1;
+	/* 1,4 */distancesFromCenter[8192]=0;
+	/* 1,5 */distancesFromCenter[16384]=1;
+	/* 1,6 */distancesFromCenter[32768]=2;
+	/* 1,7 */distancesFromCenter[65536]=3;
+	/* 1,8 */distancesFromCenter[131072]=4;
+	/* 2,0 */distancesFromCenter[262144]=4;
+	/* 2,1 */distancesFromCenter[524288]=3;
+	/* 2,2 */distancesFromCenter[1048576]=2;
+	/* 2,3 */distancesFromCenter[2097152]=1;
+	/* 2,4 */distancesFromCenter[4194304]=0;
+	/* 2,5 */distancesFromCenter[8388608]=1;
+	/* 2,6 */distancesFromCenter[16777216]=2;
+	/* 2,7 */distancesFromCenter[33554432]=3;
+	/* 2,8 */distancesFromCenter[67108864]=4;
+	/* 3,0 */distancesFromCenter[134217728]=5;
+	/* 3,1 */distancesFromCenter[268435456]=4;
+	/* 3,2 */distancesFromCenter[536870912]=3;
+	/* 3,3 */distancesFromCenter[1073741824]=2;
+	/* 3,4 */distancesFromCenter[2147483648]=1;
+	/* 3,5 */distancesFromCenter[4294967296]=2;
+	/* 3,6 */distancesFromCenter[8589934592]=3;
+	/* 3,7 */distancesFromCenter[17179869184]=4;
+	/* 3,8 */distancesFromCenter[34359738368]=5;
+
 	winNextMove.add(binstringtouint64("011100000000000000000000000000000000"),binstringtouint64("100000000000000000000000000000000000"));
 	winNextMove.add(binstringtouint64("101100000000000000000000000000000000"),binstringtouint64("010000000000000000000000000000000000"));
 	winNextMove.add(binstringtouint64("110100000000000000000000000000000000"),binstringtouint64("001000000000000000000000000000000000"));
@@ -211,10 +349,60 @@ PseudoRandomPlayout::PseudoRandomPlayout(){
 	winNextMove.add(binstringtouint64("000100000001000000000000000100000000"),binstringtouint64("000000000000000000010000000000000000"));
 	winNextMove.add(binstringtouint64("000100000001000000010000000000000000"),binstringtouint64("000000000000000000000000000100000000"));
 }
+
+//
+//void test_proximty(){
+//	PseudoRandomPlayout p;
+//	board b;
+//	b.pieces[WHITE] = binstringtouint64("011111111111111111111111111111111111");
+//	uint64 candidate = binstringtouint64("100000000000000000000000000000000000");
+//	std::cout<<b;
+//	/*
+//	+---------+
+//	|WWWWWWWWW|
+//	|WWWWWWWWW|
+//	|WWWWWWWWW|
+//	|WWWWWWWW |
+//	+---------+
+//	*/
+//	int distance = (1+2+3)+(1+2+3)+(2+2+3)+(3+3+3)+(4+4+4)+(5+5+5)+(6+6+6) + (7+7+7) + (8+8+8) + (1+2+3+4+5+6+7+8);
+//	std::cout<<distance<<":"<<p.proximity(b,candidate)<<std::endl;
+//
+//}
+//
+//void test_proximty1(){
+//	PseudoRandomPlayout p;
+//	board b;
+//	b.pieces[WHITE] =  binstringtouint64("000000000000000000000000000000000001");
+//	uint64 candidate = binstringtouint64("100000000000000000000000000000000000");
+//	b.pieces[BLACK] =candidate;
+//	std::cout<<b;
+//	/*
+//	+---------+
+//	|W        |
+//	|         |
+//	|         |
+//	|        X|
+//	+---------+
+//	*/
+//	int distance = 8;
+//	std::cout<<"0,0="<<rctouint64(0,0)<<std::endl;
+//	std::cout<<"8,3="<<rctouint64(3,8)<<std::endl;
+//	std::cout<<"WHITE="<<b.pieces[WHITE]<<std::endl;
+//	std::cout<<"candidate="<<candidate<<std::endl;
+//	std::cout<<distance<<":"<<p.proximity(b,candidate)<<std::endl;
+//}
+//
+//
+//
+//
+
 /*
 int main(int argc, const char *argv[])
 {
+
 	PseudoRandomPlayout p;
+
 	board bt;
 	for (int i=0;i<10000;i++){
 		bt.pieces[WHITE]=0;
@@ -256,3 +444,4 @@ int main(int argc, const char *argv[])
 	return 0;
 }
 */
+

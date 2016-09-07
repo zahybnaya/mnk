@@ -29,9 +29,8 @@ public:
 
 private:
 	double get_gamma(); 
-	double get_K0(); 
 	double get_prune_threshold();
-	unsigned int get_actual_branching_factor(std::vector<zet>& zets);
+	unsigned int get_actual_branching_factor(std::vector<zet>& zets,bool is_root);
 	/* uct funtions */
 	double get_policy_lapse_rate(); 
 	int get_policy_code();

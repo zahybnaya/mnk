@@ -3,6 +3,7 @@
 #include <random>
 #include "board.h"
 #include "log.h"
+#include <cassert>
 
 RandomPlayout::RandomPlayout(){
 	rng = std::mt19937_64();
@@ -28,6 +29,7 @@ double RandomPlayout::state_value(board& b){
 	if (b.white_has_won()){
 		return 0.0;
 	}
+	assert(b.is_full());
 	return 0.5;
 }
 

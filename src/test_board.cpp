@@ -240,12 +240,89 @@ void print_all_threats(){
 	bt.pieces[WHITE]=binstringtouint64("000100000001000000000000000100000000"); bt.pieces[BLACK]=binstringtouint64("000000000000000000010000000000000000");std::cout<<bt;
 	bt.pieces[WHITE]=binstringtouint64("000100000001000000010000000000000000"); bt.pieces[BLACK]=binstringtouint64("000000000000000000000000000100000000");std::cout<<bt;
 
+}
 
+
+void test_distance_from_center(){
+
+	int LENGTH=4; 
+	int WIDTH=9;
+
+	int center_l = LENGTH/2;
+	int center_w = WIDTH/2;
+
+	for (int l =0;l<LENGTH; ++l)
+		for (int w=0; w<WIDTH; ++w){
+			int d  = min(abs(l-center_l),abs(l-(center_l-1)))+abs(w-center_w);
+			uint64 i = rctouint64(l,w);
+			board bt; 
+			//std::cout<<l<<","<<w<<"="<<d<<std::endl;
+			std::cout<<"/* "<<l<<","<<w<<" */";
+			std::cout<<"distancesFromCenter["<<i<<"]="<<d<<";"<<std::endl;
+			bt=bt+zet(i,0,WHITE);
+			//std::cout<<bt;
+		}
 
 }
 
+void print_tiles(){
+	for (int i =0; i<9;i++)
+		for (int j=0;j<4;j++){
+			std::cout<<i<<","<<j<<"="<<uint64totile(rctouint64(j,i))<<std::endl;
+		}
+}
+
+
+/***
+ * Distances: 
+ *
+ * std::map<uint64,std::pair<int,int>> uint64torc;
+ * uint64 candidate_move;
+ *
+ * for(piece in board):
+ * 	cx,cy = candidate move
+ * 	px, py = piece 
+ * 	d= min(abs(cx-px), abs(xy-py)) + max(abs(cx-px), abs(xy-py)) - min(abs(cx-px), abs(xy-py))
+ *
+ */
+
+
+
+void test_distances(){
+	uint64 t = binstringtouint64("110010110");
+	uint64 m = binstringtouint64("001000000");
+	int m_col=2;
+	uint64 mm=m;
+	int d=0;
+	for (int i = m_col ; i>=0 ; --i){
+		if(mm & t) std::cout<<d<<std::endl;
+		mm <<=1;
+		d+=1;
+	}
+	mm=m;
+	d=0;
+	for (int i = m_col ; i<9 ; ++i){
+		if(mm & t) std::cout<<d<<std::endl;
+		mm >>=1;
+		d+=1;
+	}
+}
+
+
+void print_get_coord(){
+	for (int i=0 ; i<4 ; i++)
+		for(int j=0;j<9; j++)
+			std::cout<<"getCoord["<<rctouint64(i,j)<<"ULL]= {"<<i<<","<<j<<"};"<<std::endl;
+}
+
 int main(int argc, char* argv[]){
-	print_all_threats();
+	//test_proximty();
+	print_get_coord();
+	//test_distances();
+	//test_distance_from_center();
+	//print_all_threats();
+	//test_dist();
+	//print_tiles();
 	return 0;
 
 	board bt; 

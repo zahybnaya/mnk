@@ -120,16 +120,39 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 	FILE_LOG(logDEBUG) << "Building agent accodring to "<<ap.agent_file<<std::endl;
 	Agent* agent = b.build(ap);
 	FILE_LOG(logDEBUG) << " Starting Agent play "<<ap.agent_file<<std::endl;
+#ifdef UCTDEBUG
+	board bt;
+#endif
 	while(board_list->get_next(i,success)){
 		iteration++;
 		board_list_mutex.unlock();
 		agent->pre_solution();
+
+#ifdef UCTDEBUG
+		std::cout<<"Given board:"<<std::endl;
+		std::cout<<dat->allboards[i]<<std::endl;
+#endif
 		m=agent->play(dat->allboards[i],dat->allmoves[i].player);
+
+#ifdef UCTDEBUG
+		bt=(dat->allboards[i])+m;
+		std::cout<<"Model's move:"<<std::endl;
+		std::cout<<bt;
+#endif
 		success=(m.zet_id==dat->allmoves[i].zet_id);
+
+#ifdef UCTDEBUG
+		std::cout<< "Plaing Iteration "<< iteration <<" success:"<<success<< " model move:"<<m.zet_id<<" i="<<i<<" player move:"<<dat->allmoves[i].zet_id<<std::endl;
+		bt=(dat->allboards[i])+(dat->allmoves[i]);
+		std::cout<<"Player move:"<<std::endl;
+		std::cout<<bt;
+#endif
 		agent->post_solution();
 		FILE_LOG(logDEBUG) << " Plaing Iteration "<< iteration <<" success:"<<success<<std::endl;
 		board_list_mutex.lock();
 	}
+
+	std::cout<<"Ltot:"<<board_list->get_Ltot()<<std::endl;
 	delete agent;
 	board_list_mutex.unlock();
 }
