@@ -10,6 +10,7 @@
 #include "consistentmoveagent.h"
 #include "pseudorandomagent.h"
 #include "randomagent.h"
+#include "uctagentvisits.h"
 
 template<typename T> Agent* create_agent() {  return new T; }
 
@@ -37,6 +38,7 @@ Agent* Agent_builder::build(Agent_params p){
  * */
 void Agent_builder::register_constructors(){
 	agent_constructors["UCT"] = &create_agent<UCTAgent>;
+	agent_constructors["UCT_VISITS"] = &create_agent<UCTAgentVisits>;
 	agent_constructors["MYOPIC"] = &create_agent<MyopicAgent>;
 	agent_constructors["BFS"] = &create_agent<BFSAgent>;
 	agent_constructors["MIN_DIFF_BFS"] = &create_agent<MinDiffTreeAgent>;

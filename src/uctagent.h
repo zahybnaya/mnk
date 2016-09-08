@@ -1,4 +1,5 @@
 #ifndef UCTAGENT_H
+#define UCTAGENT_H
 #include "treeagent.h"
 #include "randomplayout.h"
 #include "heuristic.h"
@@ -41,7 +42,6 @@ private:
 	int get_num_of_evals();
 	//bernoulli_distribution branching_factor;
 };
-#define UCTAGENT_H
 
 
 #endif /* end of include guard: UCTAGENT_H */

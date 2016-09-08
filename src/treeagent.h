@@ -144,6 +144,7 @@ protected:
 
 	inline int get_iter_num() const {return iter_num;}
 
+	int max_iterations;
 private:
 	/**
 	 * prints stats in process
@@ -174,9 +175,7 @@ private:
 	int num_switches;
 	int consecutive; 
 	int max_consecutive;
-	int max_iterations;
 	int iter_num;
-
 	void count_switches(const std::vector<Node*> &nodes);
 	uint64 get_first_move_id(const std::vector<Node*> &nodes);
 };

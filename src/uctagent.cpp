@@ -118,7 +118,6 @@ double UCTAgent::uct(Node* n, int ttl_visits) {
 	exploitation=(player_turn==BLACK)?exploitation:-exploitation;
 	double r = get_exploration_constant()*exploration + exploitation; 
 	return r;
-		
 }
 
 struct uct_comparator_t {
