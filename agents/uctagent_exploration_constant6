@@ -21,4 +21,5 @@ weights_5=11.0849
 exploration_constant=0.5
 stop_threshold=4.16134
 weights_4=0
+center_weight=1
 

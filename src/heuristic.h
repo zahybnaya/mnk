@@ -4,6 +4,7 @@
 
 #include "board.h"
 #include <random>
+#include <map>
 #include <vector>
 using namespace std;
 
@@ -31,6 +32,8 @@ class heuristic{
   public:
     static const unsigned int Nweights=26;
     double weight[Nweights];
+    double center_weight;
+    std::map<uint64,double> vtile;
     unsigned int Nfeatures;
     double D0,K0;
     double gamma,delta,lapse_rate;

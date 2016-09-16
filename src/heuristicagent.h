@@ -14,6 +14,7 @@ public:
 	double get_triangle_weight();
 	double get_weight(int i);
 	double get_delta();
+	double get_center_weight();
 	double get_vert_scale();
 	double get_act_scale();
 	double get_diag_scale();

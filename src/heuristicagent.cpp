@@ -18,6 +18,11 @@ void HeuristicsAgent::post_solution(){
 }
 
 
+double HeuristicsAgent::get_center_weight() {
+	return get_double_property("center_weight");
+}
+
+
 double HeuristicsAgent::get_delta() {
 	return get_double_property("delta");
 }
@@ -53,6 +58,7 @@ void HeuristicsAgent::init(){
 	h.diag_scale   = get_diag_scale();
 	h.opp_scale   = get_opp_scale();
 	h.act_scale   = get_act_scale();
+	h.center_weight = get_center_weight();
 	for(int i=0;i<5;i++)
 		h.weight[i]=get_weight(i);
 	h.weight[25]=get_triangle_weight();

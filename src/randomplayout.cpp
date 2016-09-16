@@ -6,7 +6,6 @@
 #include <cassert>
 
 RandomPlayout::RandomPlayout(){
-	rng = std::mt19937_64();
 	rng.seed(time(NULL));
 }
 
