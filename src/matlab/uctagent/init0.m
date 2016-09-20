@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % for a self-defined initialization list, the user should
 % write an m-script file init0.m containing a matrix x0 with n
-% rows and at least 3 columns and two n-vectors l and L 
+% rows and at least 3 columns and two n-vectors l and L
 % the ith column of x0 contains the initialization list
 % values for the ith coordinate, their number is L(i), and
 % x0(i,l(i)) is the ith coordinate of the initial point
@@ -24,5 +24,4 @@ weight4=[0.5 0 2.0]
 exploration_constant=[0.0100 0.5000 9.00]
 center_weight=[0.0100 0.5000 9.00]
 x0=[prune_t; gamma; delta;lapserate;act_scale;weight0;weight1;weight2;weight3;weight4;exploration_constant; center_weight]
-
 
