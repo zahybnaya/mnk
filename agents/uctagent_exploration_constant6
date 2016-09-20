@@ -1,0 +1,25 @@
+# UCT with random and a single exploration constant
+implementation=UCT
+policy_code=0
+policy_lapse_rate=0
+virtual_rollouts=0
+num_of_evals=1
+vert_scale=1
+diag_scale=1
+opp_scale=1
+triangle_weight=0
+prune_threshold=1
+gamma=0.0133515
+delta=0.473063
+lapse_rate=0.0662635
+act_scale=5.05538
+weights_0=0.843727
+weights_1=1.44
+weights_2=0.460673
+weights_3=2.59835
+weights_5=11.0849
+exploration_constant=0.5
+stop_threshold=4.16134
+weights_4=0
+center_weight=1
+

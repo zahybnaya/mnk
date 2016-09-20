@@ -7,11 +7,11 @@
 #include "myopicpolicyplayout.h"
 #include "pseudorandomplayout.h"
 
+//#define UCTDEBUG
 /**
  * Constructor 
  * */
-UCTAgent::UCTAgent(){
-	policy = NULL;
+UCTAgent::UCTAgent():policy(NULL){
 }
 
 
@@ -44,16 +44,22 @@ int UCTAgent::get_policy_code(){
 /**
  * Assumes ordered zets. Ignore that on the root node.
  * */
-unsigned int UCTAgent::get_actual_branching_factor(std::vector<zet>& zets){
+unsigned int UCTAgent::get_actual_branching_factor(std::vector<zet>& zets,bool is_root){
   double prune_threshold = get_prune_threshold();
   double best_value = zets.front().val; 
+#ifdef UCTDEBUG
+  std::cout<<"Expansion: best value:" << best_value << std::endl;
+#endif
   size_t i=1;
   double oldval=0;
-  while ( i < zets.size() && (std::abs(best_value - zets.at(i).val) < prune_threshold)){
+  while (i < zets.size() && (std::abs(best_value - zets.at(i).val) < prune_threshold)){
       assert(i==1 || oldval > zets.at(i).val);
       oldval = zets.at(i).val;
       i++;
   }
+#ifdef UCTDEBUG
+  std::cout<<"Expansion: Adding "<< i<<" children with value " << zets.at(i-1).val << std::endl;
+#endif
   return i;
 }
 
@@ -61,8 +67,6 @@ unsigned int UCTAgent::get_actual_branching_factor(std::vector<zet>& zets){
 void UCTAgent::init(){
 	FILE_LOG(logDEBUG) << " Init UCTAgent. Init Treeagent first "<<std::endl;
 	TreeAgent::init();
-	//double bd = fmod(get_K0(),1.0);
-	//branching_factor=std::bernoulli_distribution(bd);
 	if (policy == NULL){
 		FILE_LOG(logDEBUG) << " Getting policy code "<<std::endl;
 		int policy_code =get_policy_code(); 
@@ -84,7 +88,6 @@ void UCTAgent::init(){
 				policy = new PseudoRandomPlayout();
 				FILE_LOG(logDEBUG) << " Assigned PseudoRandomPlayout policy for uct "<<std::endl;
 				break;
-
 			default:
 				throw std::runtime_error("no policy");
 		}
@@ -102,7 +105,6 @@ double UCTAgent::evaulate(Node* lastNode,Node* /* parent*/, uint64 ){
 		r += policy->eval(lastNode->m_board);
 	}
 	double rval = r/num_of_evals;
-	FILE_LOG(logDEBUG)<<"evaluating last node as "<<rval<<" with "<<num_of_evals<<" evaluations"<<std::endl; 
 	return rval;
 }
 
@@ -113,12 +115,9 @@ double UCTAgent::uct(Node* n, int ttl_visits) {
 	double exploration =  sqrt(log(ttl_visits)/n->visits);
 	double exploitation = n->val/n->visits;
 	bool player_turn = !n->player;
-	if ( is_negamax())
-		exploitation=(player_turn==BLACK )?exploitation:-exploitation;
+	exploitation=(player_turn==BLACK)?exploitation:-exploitation;
 	double r = get_exploration_constant()*exploration + exploitation; 
-	FILE_LOG(logDEBUG)<<"UCT of Node"<<n<<" "<<r<<std::endl; 
 	return r;
-		
 }
 
 struct uct_comparator_t {
@@ -129,6 +128,15 @@ struct uct_comparator_t {
 	int ttl_visits;
 	UCTAgent* a;
 }; 
+
+void dbg_uct_vals(std::vector<pair<uint64,Node*>> v,UCTAgent* a,int ttl_visits){
+	for (auto i:v){
+		Node* n =i.second; 
+		double exploration =  sqrt(log(ttl_visits)/n->visits);
+		double exploitation = n->val/n->visits;
+		std::cout<<"SELCTION:Node:"<<n<<" Visits:"<<n->visits <<" TTL_VISITS:"<<ttl_visits<<" Exploration:"<<exploration<<" Exploitation"<<exploitation<<" UCT:"<<a->uct(n,ttl_visits)<<" "<<std::endl;
+	}
+}
 
 /**
  * Returns either a new child node 
@@ -142,8 +150,13 @@ Node* UCTAgent::select_next_node(Node* n){
 	}
 	std::vector<pair<uint64,Node*>> v= get_shuffled_vector(n->children);
 	assert(v.size()>0);
+	return v[(get_generator())() % v.size()].second;
 	std::pair<uint64,Node*> argmax =
 	       	*std::max_element(v.begin(),v.end(),uct_comparator_t(this,n->visits));
+#ifdef UCTDEBUG
+	dbg_uct_vals(v,this,n->visits);
+	std::cout<<"SELECTION: ***Returning selection as:"<<argmax.second<<std::endl;
+#endif
 	return argmax.second;
 }
 
@@ -164,7 +177,9 @@ double value_for_new_node_uct(Node* parent, zet z){
  * UCT expand
  * */
 double UCTAgent::expand(Node* n){
+	bool is_root=false;
 	if (n->visits==0/*root*/) {
+		is_root=true;
                 n->val=h.evaluate(n->m_board);
                 n->visits=1;
         }
@@ -172,8 +187,7 @@ double UCTAgent::expand(Node* n){
 	std::vector<zet> zets;
 	h.self=get_playing_color();
 	h.get_moves(n->m_board,n->player,false,zets);
-	//unsigned int actual_branching_factor = k<zets.size()?k:zets.size();
-	unsigned int actual_branching_factor = get_actual_branching_factor(zets); 
+	unsigned int actual_branching_factor = get_actual_branching_factor(zets,is_root); 
 	Node* new_node = NULL;
 	for (unsigned int i=0;i<actual_branching_factor;++i){
 		zet z = zets[i]; 
@@ -182,11 +196,14 @@ double UCTAgent::expand(Node* n){
 		double eval = evaulate(new_node, n, move);
 		new_node->val=eval;
 		new_node->visits=1;
-		double zval = value_for_new_node_uct(n,z);
-		double normalized_h_value = (1/(1+exp(-zval)));
-		assert(normalized_h_value>=0 && normalized_h_value<=1);
-		new_node->val+=get_virtual_rollouts()* normalized_h_value;
-		new_node->visits+=get_virtual_rollouts();
+		int vir_rollouts = get_virtual_rollouts();
+		if (vir_rollouts >0){
+			double zval = value_for_new_node_uct(n,z);
+			double normalized_h_value = (1/(1+exp(-zval)));
+			assert(normalized_h_value>=0 && normalized_h_value<=1);
+			new_node->val+=vir_rollouts* normalized_h_value;
+			new_node->visits+=vir_rollouts;
+		}
 		if(i==0){
 			ret = eval;
 		}
@@ -218,9 +235,6 @@ double UCTAgent::get_exploration_constant() {
 	return get_double_property("exploration_constant");
 }
 
-double UCTAgent::get_K0() {
-	return get_double_property("K0");
-}
 double UCTAgent::get_gamma() {
 	return get_double_property("gamma");
 }

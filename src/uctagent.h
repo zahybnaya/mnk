@@ -1,4 +1,5 @@
 #ifndef UCTAGENT_H
+#define UCTAGENT_H
 #include "treeagent.h"
 #include "randomplayout.h"
 #include "heuristic.h"
@@ -29,9 +30,8 @@ public:
 
 private:
 	double get_gamma(); 
-	double get_K0(); 
 	double get_prune_threshold();
-	unsigned int get_actual_branching_factor(std::vector<zet>& zets);
+	unsigned int get_actual_branching_factor(std::vector<zet>& zets,bool is_root);
 	/* uct funtions */
 	double get_policy_lapse_rate(); 
 	int get_policy_code();
@@ -42,7 +42,6 @@ private:
 	int get_num_of_evals();
 	//bernoulli_distribution branching_factor;
 };
-#define UCTAGENT_H
 
 
 #endif /* end of include guard: UCTAGENT_H */

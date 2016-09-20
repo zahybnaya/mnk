@@ -425,6 +425,20 @@ inline vector<uint64> enumerate_moves_uint64(board& b){
 }
 
 
+/**
+ * Returns a list of pieces on the board
+ */
+inline vector<uint64> enumerate_pieces_uint64(board& b){
+  vector<uint64> pieces;
+  for(uint64 m=1;m!=boardend;m<<=1){
+	if(!b.isempty(m)){
+		pieces.push_back(m);
+	}
+  }
+  return pieces;
+}
+
+
 
 inline std::ostream& operator<<(std::ostream& o, board& b){
     uint64 temp = 1,m=0;

@@ -128,7 +128,8 @@ void heuristic::update(){
   noise=normal_distribution<double>(0.0,1.0);
   lapse=bernoulli_distribution(lapse_rate);
   attention=bernoulli_distribution(delta);
-  scale_lines();
+  for(uint64 m=1;m!=boardend;m<<=1)
+    vtile[m]=1.0/sqrt(pow(uint64totile(m)/BOARD_WIDTH-1.5,2) + pow(uint64totile(m)%BOARD_WIDTH-4.0,2));
   update_weights();
 }
 
@@ -403,37 +404,30 @@ vector<zet> heuristic::get_moves(board& b, bool player, bool nosort=false ){
     }
   for(i=1,m=1;m!=boardend;m<<=1){
 	  if(b.isempty(m)){
-		  if(m & center){
-			  candidate.push_back(zet(m,deltaL+c_pass*weight[0]+noise(engine),player));
-		  }
-		  else {
-			  candidate.push_back(zet(m,deltaL+noise(engine),player));
-		  }
-		  lookup[m]=i;
-		  i++;
+		  //candidate.push_back(zet(m,deltaL+c_pass*weight[0]+noise(engine),player));
+
+      candidate.push_back(zet(m,deltaL+center_weight*vtile[m]+noise(engine),player));
+      lookup[m]=i;
+      i++;
 	  }
   }
-  int cs = candidate.size();
   for(i=0;i<Nfeatures;i++)
     if(feature[i].is_active(b)){
       m1=feature[i].missing_pieces(b,player);
       m2=feature[i].missing_pieces(b,!player);
-      if((m1 & m2) && has_one_bit(m1)){
-        candidate[lookup[m1]-1].val+=c_pass*feature[i].weight_pass;
-	assert(lookup[m1]-1<cs);
-      }
+      if((m1 & m2) && has_one_bit(m1))
+        if(lookup[m1])
+          candidate[lookup[m1]-1].val+=c_pass*feature[i].weight_pass;
       if(m1==0 && feature[i].just_active(b))
         for(m=1;m!=boardend;m<<=1)
-          if(b.isempty(m) && feature[i].isempty(m)){
-            candidate[lookup[m]-1].val-=c_pass*feature[i].weight_pass;
-	    assert(lookup[m]-1<cs);
-	  }
+          if(b.isempty(m) && feature[i].isempty(m))
+            if(lookup[m])
+              candidate[lookup[m]-1].val-=c_pass*feature[i].weight_pass;
       if(m2==0 && feature[i].just_active(b))
         for(m=1;m!=boardend;m<<=1)
-          if(b.isempty(m) && feature[i].isempty(m)){
-            candidate[lookup[m]-1].val+=c_act*feature[i].weight_act;
-	    assert(lookup[m]-1<cs);
-	  }
+          if(b.isempty(m) && feature[i].isempty(m))
+            if(lookup[m])
+              candidate[lookup[m]-1].val+=c_act*feature[i].weight_act;
     }
   if(nosort)
     return candidate;

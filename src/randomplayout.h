@@ -16,7 +16,7 @@ public:
 	virtual zet select_random_move(board& b);
 protected:
 	double state_value(board& b);
-	mt19937_64 rng;
+	std::mt19937_64 rng;
 };
 
 

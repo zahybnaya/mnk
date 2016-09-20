@@ -21,6 +21,16 @@ std::vector<pair<uint64,Node*>> get_shuffled_vector(child_map c){
 	return v;
 }
 
+inline void printChildren(Node* n){
+       	std::cout<<"* PRINT_CHILDREN: visits:" << n->visits <<" #children:"<< n->children.size()<<std::endl;
+	for(child_map::iterator i =  n->children.begin(); i != n->children.end(); ++i ){
+		std::cout<<i->second->m_board;
+		std::cout<<"val:"<<i->second->val<<" visits:"<<i->second->visits<<"="<<(i->second->val)/(i->second->visits)<<std::endl;
+
+	}
+
+	std::cout<<"*END OF PRINT*"<<std::endl;
+}
 
 /**
  * Returns a list of possible moves and their estimates. 
@@ -39,6 +49,9 @@ std::vector<zet> TreeAgent::solve(board& b,bool player){
 	build_tree(n);	
 	std::vector<zet> ret= move_estimates(n);
 	//print_time_prediction_metrics(b,n,ret);
+#ifdef UCTDEBUG
+	printChildren(n);
+#endif
 	delete_tree(n);
 	return ret;
 }
