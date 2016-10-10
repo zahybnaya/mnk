@@ -1,7 +1,7 @@
 function cross_validate(player,agent_file,train_data_file, test_data_file)
 		
 	data = {player, agent_file, train_data_file};
-	filename='mcsresult.mat1.mat';
+	filename='mcsresult.mat';
 	if exist(filename,'file')
 		load(filename)
 		L=zeros(nbasket,30);

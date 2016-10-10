@@ -8,9 +8,9 @@
 #include "defaultagent.h"
 #include "mindifftreeagent.h"
 #include "consistentmoveagent.h"
-#include "pseudorandomagent.h"
-#include "randomagent.h"
-#include "uctagentvisits.h"
+//#include "pseudorandomagent.h"
+//#include "randomagent.h"
+//#include "uctagentvisits.h"
 
 template<typename T> Agent* create_agent() {  return new T; }
 
@@ -38,15 +38,15 @@ Agent* Agent_builder::build(Agent_params p){
  * */
 void Agent_builder::register_constructors(){
 	agent_constructors["UCT"] = &create_agent<UCTAgent>;
-	agent_constructors["UCT_VISITS"] = &create_agent<UCTAgentVisits>;
+	//agent_constructors["UCT_VISITS"] = &create_agent<UCTAgentVisits>;
 	agent_constructors["MYOPIC"] = &create_agent<MyopicAgent>;
 	agent_constructors["BFS"] = &create_agent<BFSAgent>;
 	agent_constructors["MIN_DIFF_BFS"] = &create_agent<MinDiffTreeAgent>;
 	agent_constructors["DUMMY"] = &create_agent<DummyAgent>;
 	agent_constructors["FIXED"] = &create_agent<FixedDepthTreeAgent>;
 	agent_constructors["DEFAULT"] = &create_agent<DefaultAgent>;
-	agent_constructors["PSEUDO_RAND"] = &create_agent<PseudoRandomAgent>;
-	agent_constructors["RAND"] = &create_agent<RandomAgent>;
+	//agent_constructors["PSEUDO_RAND"] = &create_agent<PseudoRandomAgent>;
+	//agent_constructors["RAND"] = &create_agent<RandomAgent>;
 	agent_constructors["CONST_MOVE"] = &create_agent<ConsistentMoveAgent>;
 }
 
