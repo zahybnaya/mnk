@@ -39,10 +39,6 @@ zet MyopicPolicyPlayout::select_next_move(board& b){
 		int rn_n = std::uniform_int_distribution<int>(0,s.size()-1)(generator);
 		return s[rn_n];
 	}
-	vector<zet> moves = h.get_moves(b, player,false);
-	if (moves.size() > 1){
-		assert(moves[0].val >= moves[1].val);
-	}
-	return moves[0];
+	return h.get_max_move(b, player);
 }
 

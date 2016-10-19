@@ -9,8 +9,19 @@
 % x0(i,l(i)) is the ith coordinate of the initial point
 
 % self-defined initialization list
-L = 3*ones(10,1);
-l = 2*ones(10,1);
-load x0.mat -mat
-x0=x0([2,3,4,5,9,10,11,12,14,4],:)
+L = 3*ones(12,1);
+l = 2*ones(12,1);
+prune_t=[0.002 5 10]
+gamma=[0.001 0.04 0.1]
+delta=[0.01 0.0009 0.3]
+lapserate=[0.01 0.00002 0.3]
+act_scale=[0.001 0.002 8.0]
+weight0=[0.5 0.0007  2.0]
+weight1=[0.5 0.0009 2.0]
+weight2=[0.5 0.0002 2.0]
+weight3=[0.5 0.005 2.0]
+weight4=[0.5 0 2.0]
+exploration_constant=[0.0100 0.5000 9.00]
+center_weight=[0.0100 0.5000 9.00]
+x0=[prune_t; gamma; delta;lapserate;act_scale;weight0;weight1;weight2;weight3;weight4;exploration_constant; center_weight]
 

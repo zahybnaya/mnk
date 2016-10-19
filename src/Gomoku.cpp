@@ -21,6 +21,7 @@
 
 std::mutex board_list_mutex;
 
+/*
 int playgame(heuristic& h1, heuristic& h2){
 	zet m;
 	board b;
@@ -50,6 +51,7 @@ void round_robin(heuristic* participant,int Nparticipants,ofstream& output,int f
 		output<<endl;
 	}
 }
+*/
 
 /**
  * The execution of a new loglik
@@ -161,6 +163,7 @@ void compute_loglik_task(Agent_params ap,data_struct* dat,todolist* board_list){
 
 
 
+/**
 void worker_thread_notree(heuristic h,data_struct* dat,todolist* board_list){
 	int i=-1;
 	bool success=false;
@@ -190,6 +193,7 @@ void worker_thread(heuristic h,data_struct* dat,todolist* board_list){
 	board_list_mutex.unlock();
 }
 
+
 void worker_thread_super(superheuristic s,data_struct* dat,todolist* board_list){
 	int i=-1;
 	bool success=false;
@@ -203,6 +207,7 @@ void worker_thread_super(superheuristic s,data_struct* dat,todolist* board_list)
 	}
 	board_list_mutex.unlock();
 }
+*/
 
 /**
  * The agent version of this function
@@ -218,6 +223,7 @@ double compute_loglik_agent_threads(Agent_params ap , data_struct* dat,todolist*
 }
 
 
+/*
 double compute_loglik_threads(heuristic& h, data_struct* dat,todolist* board_list){
 	thread t[NTHREADS];
 	for(int i=0;i<NTHREADS;i++){
@@ -236,6 +242,7 @@ double compute_loglik_threads_super(superheuristic& s,data_struct* dat,todolist*
 		t[i].join();
 	return board_list->get_Ltot();
 }
+*/
 
 /**
  * prepeares data and submits to threads 
@@ -264,6 +271,8 @@ double compute_loglik_agent(Agent_params ap , data_struct& dat, bool talk, int s
 	return res;
 }
 
+
+/*
 double compute_loglik(heuristic& h, data_struct& dat, bool talk, int subject,
 		int data_type, char* times_file, char* output_file){
 	todolist* board_list;
@@ -288,6 +297,7 @@ double compute_loglik(heuristic& h, data_struct& dat, bool talk, int subject,
 	return res;
 }
 
+
 double compute_entropy(superheuristic& s,data_struct& dat,char* filename){
 	todolist board_list(dat.Nboards);
 	board_list.set_output(filename);
@@ -303,6 +313,7 @@ double compute_entropy(heuristic& h,data_struct& dat,char* filename){
 		dat.allmoves[i]=h.makemove_bfs(dat.allboards[i],dat.allmoves[i].player);
 	return compute_loglik_threads(h,&dat,&board_list);
 }
+*/
 
 void set_outputname(char* filename){
 	unsigned int i=0;

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <algorithm>
 #include <map>
+#include <unordered_map>
 #include <assert.h>
 #include <iomanip>
 
@@ -379,7 +380,138 @@ void heuristic::get_moves(board& b, bool player, bool nosort, std::vector<zet> &
 	  sort(candidate.begin(),candidate.end(),compare);
 }
 
+typedef std::pair<uint64, double> ZetPair;
+struct CompareSecond
+{
+	    bool operator()(const ZetPair& left, const ZetPair& right) const
+		        {
+				        return left.second < right.second;
+			}
+};
 
+//zet heuristic::get_max_move(board& b, bool player){
+//  unsigned int i;
+//  uint64 m,m1,m2;
+//  std::map<uint64,double> zet_values;
+//  double deltaL=0.0;
+//  double c_act,c_pass;
+//  if(player==self){
+//    c_act=2.0*opp_scale/(1.0+opp_scale);
+//    c_pass=2.0/(1.0+opp_scale);
+//  }
+//  else{
+//    c_act=2.0/(1.0+opp_scale);
+//    c_pass=2.0*opp_scale/(1.0+opp_scale);
+//  }
+//  for(i=0;i<Nfeatures;i++)
+//    if(feature[i].is_active(b)){
+//      if(feature[i].contained(b,player))
+//        deltaL-=c_pass*feature[i].diff_act_pass();
+//      else if(feature[i].contained(b,!player))
+//        deltaL-=c_act*feature[i].diff_act_pass();
+//    }
+//  for(i=1,m=1;m!=boardend;m<<=1){
+//	  if(b.isempty(m)){
+//		  std::cout<<"MAX:Adding "<<deltaL+center_weight*vtile[m]<< "to "<<m<<std::endl;
+//		  zet_values[m]=deltaL+center_weight*vtile[m];
+//	  }
+//  } 
+//  for(i=0;i<Nfeatures;i++)
+//    if(feature[i].is_active(b)){
+//      m1=feature[i].missing_pieces(b,player);
+//      m2=feature[i].missing_pieces(b,!player);
+//      if((m1 & m2) && has_one_bit(m1))
+//        if(zet_values[m1]){
+//          //candidate[lookup[m1]-1].val+=c_pass*feature[i].weight_pass;
+//		std::cout<<"MAX:Adding "<<c_pass*feature[i].weight_pass<< "to "<<m1<<std::endl;
+//          zet_values[m1]+=c_pass*feature[i].weight_pass;
+//	}
+//      if(m1==0 && feature[i].just_active(b))
+//        for(m=1;m!=boardend;m<<=1)
+//          if(b.isempty(m) && feature[i].isempty(m))
+//            if(zet_values[m]){
+//		std::cout<<"MAX:Subtracting "<<c_pass*feature[i].weight_pass<< "to "<<m<<std::endl;
+//		zet_values[m]-=c_pass*feature[i].weight_pass;
+//	    }
+//      if(m2==0 && feature[i].just_active(b))
+//        for(m=1;m!=boardend;m<<=1)
+//          if(b.isempty(m) && feature[i].isempty(m))
+//            if(zet_values[m]){
+//
+//		std::cout<<"MAX:Adding "<<c_act*feature[i].weight_act<< "to "<<m<<std::endl;
+//              zet_values[m]+=c_act*feature[i].weight_act;
+//	    }
+//    }
+//  ZetPair zp = *std::max_element(zet_values.begin(),zet_values.end(),CompareSecond());
+//  zet z(zp.first,zp.second,player);
+//  return z;
+//}
+//
+//
+
+
+zet heuristic::get_max_move(board& b, bool player){
+	std::vector<zet> s=get_moves(b,player,true);
+	return *std::min_element(s.begin(),s.end(),compare);
+}
+
+
+
+//zet heuristic::get_max_move(board& b, bool player){
+//	double best_val=-9999999999L;
+//	double deltaL;
+//	uint64 best_move=-1;
+//	double totalVal=0.0,c_act,c_pass;
+//	if(player==self){
+//		c_act=2.0*opp_scale/(1.0+opp_scale);
+//		c_pass=2.0/(1.0+opp_scale);
+//	}
+//	else{
+//		c_act=2.0/(1.0+opp_scale);
+//		c_pass=2.0*opp_scale/(1.0+opp_scale);
+//	}//TODO: get-rid of the following loop
+//	for(unsigned int i=0;i<Nfeatures;i++){
+//		if(feature[i].is_active(b)){
+//			if(feature[i].contained(b,player))
+//				deltaL-=c_pass*feature[i].diff_act_pass();
+//			else if(feature[i].contained(b,!player))
+//				deltaL-=c_act*feature[i].diff_act_pass();
+//		}
+//	}
+//	for(uint64 m=1;m!=boardend;m<<=1){
+//		if(!b.isempty(m)){
+//			continue;
+//		}
+//		totalVal=deltaL+center_weight*vtile[m];//+noise(engine);
+//		for(unsigned int i=0;i<Nfeatures;i++){
+//			if(!feature[i].is_active(b)){
+//				continue;
+//			}
+//			uint64 m1=feature[i].missing_pieces(b,player);
+//			uint64 m2=feature[i].missing_pieces(b,!player);
+//			if(m1==m){
+//				if ((m2 & m) && has_one_bit(m))
+//					totalVal +=c_pass*feature[i].weight_pass;
+//			}
+//			if(feature[i].just_active(b)){ 
+//				if (feature[i].isempty(m)){
+//					if (m1==0){
+//						totalVal -=c_pass*feature[i].weight_pass;
+//					}
+//					if(m2==0){
+//						totalVal +=c_act*feature[i].weight_act;
+//					}
+//				}
+//			}
+//		}
+//		if(totalVal>best_val){
+//			best_val=totalVal;
+//			best_move=m;
+//		}
+//	}
+//	return zet(best_move,best_val,player);
+//}
+//
 vector<zet> heuristic::get_moves(board& b, bool player, bool nosort=false ){
   vector<zet> candidate;
   unsigned int i;
@@ -404,30 +536,32 @@ vector<zet> heuristic::get_moves(board& b, bool player, bool nosort=false ){
     }
   for(i=1,m=1;m!=boardend;m<<=1){
 	  if(b.isempty(m)){
-		  //candidate.push_back(zet(m,deltaL+c_pass*weight[0]+noise(engine),player));
-
       candidate.push_back(zet(m,deltaL+center_weight*vtile[m]+noise(engine),player));
       lookup[m]=i;
       i++;
 	  }
-  }
+  } //up to this point, there is a lookup with integers and candidate 
   for(i=0;i<Nfeatures;i++)
     if(feature[i].is_active(b)){
       m1=feature[i].missing_pieces(b,player);
       m2=feature[i].missing_pieces(b,!player);
       if((m1 & m2) && has_one_bit(m1))
-        if(lookup[m1])
+        if(lookup[m1]){
           candidate[lookup[m1]-1].val+=c_pass*feature[i].weight_pass;
+	}
       if(m1==0 && feature[i].just_active(b))
         for(m=1;m!=boardend;m<<=1)
           if(b.isempty(m) && feature[i].isempty(m))
-            if(lookup[m])
+            if(lookup[m]){
               candidate[lookup[m]-1].val-=c_pass*feature[i].weight_pass;
+	    }
+
       if(m2==0 && feature[i].just_active(b))
         for(m=1;m!=boardend;m<<=1)
           if(b.isempty(m) && feature[i].isempty(m))
-            if(lookup[m])
+            if(lookup[m]){
               candidate[lookup[m]-1].val+=c_act*feature[i].weight_act;
+	    }
     }
   if(nosort)
     return candidate;
@@ -457,140 +591,140 @@ void heuristic::check_moves(vector<zet> candidates,board b){
   }
 }
 
-zet heuristic::makerandommove(board bstart, bool player){
-  vector<uint64> options;
-  int Noptions;
-  for(uint64 m=1;m!=boardend;m<<=1)
-    if(bstart.isempty(m))
-      options.push_back(m);
-  Noptions=options.size();
-  if(Noptions>0)
-    return zet(options[uniform_int_distribution<int>{0,Noptions-1}(engine)],0.0,player);
-  return zet(0,0.0,player);
-}
-
-zet heuristic::makemove(board bstart,bool player){
-  depth=D_dist(engine)+D0;
-  double alpha[depth+1];
-  double beta[depth+1];
-  vector<board> b;
-  for (int i = 0; i < depth+1; i++) {
-	  board _b;
-	  b.push_back(_b);	
-  }
-  double L[depth+1];
-  unsigned int i[depth+1];
-  vector<vector<zet>> candidate;
-  for (int j = 0; j < depth+1; j++) {
-	  vector<zet> zz;
-	  candidate.push_back(zz);
-  }
-  int level=0;
-  int ibest=-1;
-  bool onreturn=false;
-  zet m;
-  double retval;
-  alpha[0]=-10000.0;
-  beta[0]=10000.0;
-  L[0]=evaluate(bstart);
-  b[0]=bstart;
-  iterations=0;
-  if(lapse(engine))
-    return makerandommove(bstart,player);
-  while(level!=-1){
-    if(onreturn){
-      level--;
-      if(level!=-1){
-        if((player+level)%2==BLACK && retval>alpha[level]){
-          alpha[level]=retval;
-          if(level==0){
-            ibest=i[0];
-            candidate[0][ibest].val=retval;
-          }
-        }
-        if((player+level)%2==WHITE && retval<beta[level]){
-          beta[level]=retval;
-          if(level==0){
-            ibest=i[0];
-            candidate[0][ibest].val=retval;
-          }
-        }
-        i[level]++;
-        onreturn=false;
-      }
-    }
-    else if(b[level].black_has_won())
-      retval=10000.0-level-0.1*noise(engine),onreturn=true;
-    else if(b[level].white_has_won())
-      retval=-10000.0+level+0.1*noise(engine),onreturn=true;
-    else if(b[level].is_full())
-      retval=0.0,onreturn=true;
-    else if(level==depth){
-      retval=L[level];
-      onreturn=true;
-    }
-    else if(candidate[level].empty()){
-      iterations++;
-      candidate[level]=get_pruned_moves(b[level],(player+level)%2);
-      i[level]=0;
-    }
-    else if((player+level)%2==WHITE && (i[level]==candidate[level].size() || beta[level]<=alpha[level] /*|| beta[level]<=-10000.5+level*/))
-      retval=beta[level],onreturn=true;
-    else if((player+level)%2==BLACK && (i[level]==candidate[level].size() || alpha[level]>=beta[level] /*|| alpha[level]>=10000.5-level*/))
-      retval=alpha[level],onreturn=true;
-    else {
-      m=candidate[level][i[level]];
-      if((player+level)%2==BLACK)
-        L[level+1]=L[level]+m.val;
-      else L[level+1]=L[level]-m.val;
-      b[level+1]=b[level]+m;
-      alpha[level+1]=alpha[level];
-      beta[level+1]=beta[level];
-      candidate[level+1].clear();
-      level++;
-    }
-  }
-  if(ibest==-1)
-    return zet(0,0.0,player);
-  return candidate[0][ibest];
-}
-
-double heuristic::loglik(board b,zet m){
-  double L=0.0;
-  int n=1;
-  while(makemove_bfs(b,m.player).zet_id!=m.zet_id){
-    L-=1.0/n;
-    n++;
-  }
-  return L;
-}
-
-zet heuristic::makemove_notree(board b,bool player){
-  vector<zet> candidate;  
-  zet m(0,0.0,player);
-  if(lapse(engine)){
-	  return makerandommove(b,player);
-  }
-  remove_features();
-  candidate=get_moves(b,player);
-  if(candidate.size()>0)
-    m=candidate[0];
-  restore_features();
-  return m;
-}
-
-zet heuristic::makemove_notree_noatt(board b,bool player){
-  vector<zet> candidate=get_moves(b,player);
-  zet m(0,0.0,player);
-  if(lapse(engine))
-    return makerandommove(b,player);
-  if(candidate.size()>0)
-    m=candidate[0];
-  return m;
-}
-
-zet superheuristic::makemove_bfs(board b, bool player){
-  uniform_int_distribution<int> dist(0,N-1);
-  int subject=dist(engine);
-  return h[subject].makemove_bfs(b,player);
-}
+//zet heuristic::makerandommove(board bstart, bool player){
+//  vector<uint64> options;
+//  int Noptions;
+//  for(uint64 m=1;m!=boardend;m<<=1)
+//    if(bstart.isempty(m))
+//      options.push_back(m);
+//  Noptions=options.size();
+//  if(Noptions>0)
+//    return zet(options[uniform_int_distribution<int>{0,Noptions-1}(engine)],0.0,player);
+//  return zet(0,0.0,player);
+//}
+//
+//zet heuristic::makemove(board bstart,bool player){
+//  depth=D_dist(engine)+D0;
+//  double alpha[depth+1];
+//  double beta[depth+1];
+//  vector<board> b;
+//  for (int i = 0; i < depth+1; i++) {
+//	  board _b;
+//	  b.push_back(_b);	
+//  }
+//  double L[depth+1];
+//  unsigned int i[depth+1];
+//  vector<vector<zet>> candidate;
+//  for (int j = 0; j < depth+1; j++) {
+//	  vector<zet> zz;
+//	  candidate.push_back(zz);
+//  }
+//  int level=0;
+//  int ibest=-1;
+//  bool onreturn=false;
+//  zet m;
+//  double retval;
+//  alpha[0]=-10000.0;
+//  beta[0]=10000.0;
+//  L[0]=evaluate(bstart);
+//  b[0]=bstart;
+//  iterations=0;
+//  if(lapse(engine))
+//    return makerandommove(bstart,player);
+//  while(level!=-1){
+//    if(onreturn){
+//      level--;
+//      if(level!=-1){
+//        if((player+level)%2==BLACK && retval>alpha[level]){
+//          alpha[level]=retval;
+//          if(level==0){
+//            ibest=i[0];
+//            candidate[0][ibest].val=retval;
+//          }
+//        }
+//        if((player+level)%2==WHITE && retval<beta[level]){
+//          beta[level]=retval;
+//          if(level==0){
+//            ibest=i[0];
+//            candidate[0][ibest].val=retval;
+//          }
+//        }
+//        i[level]++;
+//        onreturn=false;
+//      }
+//    }
+//    else if(b[level].black_has_won())
+//      retval=10000.0-level-0.1*noise(engine),onreturn=true;
+//    else if(b[level].white_has_won())
+//      retval=-10000.0+level+0.1*noise(engine),onreturn=true;
+//    else if(b[level].is_full())
+//      retval=0.0,onreturn=true;
+//    else if(level==depth){
+//      retval=L[level];
+//      onreturn=true;
+//    }
+//    else if(candidate[level].empty()){
+//      iterations++;
+//      candidate[level]=get_pruned_moves(b[level],(player+level)%2);
+//      i[level]=0;
+//    }
+//    else if((player+level)%2==WHITE && (i[level]==candidate[level].size() || beta[level]<=alpha[level] /*|| beta[level]<=-10000.5+level*/))
+//      retval=beta[level],onreturn=true;
+//    else if((player+level)%2==BLACK && (i[level]==candidate[level].size() || alpha[level]>=beta[level] /*|| alpha[level]>=10000.5-level*/))
+//      retval=alpha[level],onreturn=true;
+//    else {
+//      m=candidate[level][i[level]];
+//      if((player+level)%2==BLACK)
+//        L[level+1]=L[level]+m.val;
+//      else L[level+1]=L[level]-m.val;
+//      b[level+1]=b[level]+m;
+//      alpha[level+1]=alpha[level];
+//      beta[level+1]=beta[level];
+//      candidate[level+1].clear();
+//      level++;
+//    }
+//  }
+//  if(ibest==-1)
+//    return zet(0,0.0,player);
+//  return candidate[0][ibest];
+//}
+//
+//double heuristic::loglik(board b,zet m){
+//  double L=0.0;
+//  int n=1;
+//  while(makemove_bfs(b,m.player).zet_id!=m.zet_id){
+//    L-=1.0/n;
+//    n++;
+//  }
+//  return L;
+//}
+//
+//zet heuristic::makemove_notree(board b,bool player){
+//  vector<zet> candidate;  
+//  zet m(0,0.0,player);
+//  if(lapse(engine)){
+//	  return makerandommove(b,player);
+//  }
+//  remove_features();
+//  candidate=get_moves(b,player);
+//  if(candidate.size()>0)
+//    m=candidate[0];
+//  restore_features();
+//  return m;
+//}
+//
+//zet heuristic::makemove_notree_noatt(board b,bool player){
+//  vector<zet> candidate=get_moves(b,player);
+//  zet m(0,0.0,player);
+//  if(lapse(engine))
+//    return makerandommove(b,player);
+//  if(candidate.size()>0)
+//    m=candidate[0];
+//  return m;
+//}
+//
+//zet superheuristic::makemove_bfs(board b, bool player){
+//  uniform_int_distribution<int> dist(0,N-1);
+//  int subject=dist(engine);
+//  return h[subject].makemove_bfs(b,player);
+//}
