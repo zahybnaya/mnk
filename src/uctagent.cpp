@@ -150,7 +150,7 @@ Node* UCTAgent::select_next_node(Node* n){
 	}
 	std::vector<pair<uint64,Node*>> v= get_shuffled_vector(n->children);
 	assert(v.size()>0);
-	return v[(get_generator())() % v.size()].second;
+	//return v[(get_generator())() % v.size()].second;
 	std::pair<uint64,Node*> argmax =
 	       	*std::max_element(v.begin(),v.end(),uct_comparator_t(this,n->visits));
 #ifdef UCTDEBUG

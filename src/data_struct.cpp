@@ -17,7 +17,7 @@ void data_struct::add(board b, zet m, int t=0, int p=0){
 }
 
 void data_struct::show_content(){
-	for(int i=0;i<Nboards;i++){
+	for(unsigned int i=0;i<Nboards;i++){
 		std::cout<<uint64tobinstring(allboards[i].pieces[BLACK])<<"\t"
 			<<uint64tobinstring(allboards[i].pieces[WHITE])<<"\t"
 			<<uint64totile(allmoves[i].zet_id)<<"\t"

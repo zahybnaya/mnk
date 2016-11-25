@@ -1,5 +1,6 @@
 #include "uctagentvisits.h"
 #include <cassert>
+#include <algorithm>
 /**
  * Returns a list of possible moves and their estimates. 
  */

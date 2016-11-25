@@ -209,14 +209,14 @@ Node* TreeAgent::create_initial_state(board b){
  **/
 int TreeAgent::build_tree(Node* n){ 
 	this->iter_num=0;
-	double delta=0;
-	double oldval = (n->val/n->visits);
+	//double delta=0;
+	//double oldval = (n->val/n->visits);
 	while (!is_stop(n)){
 		FILE_LOG(logDEBUG) << " Starting iteration "<< this->iter_num<< std::endl;
 		iterate(n);
 		this->iter_num++;
-		delta= abs((n->val/n->visits)-oldval); 
-		oldval = (n->val/n->visits);
+		//delta= abs((n->val/n->visits)-oldval); 
+		//oldval = (n->val/n->visits);
 		//print_time_prediction_metrics_inprocess(n,delta);
 	}
 	return 0;
