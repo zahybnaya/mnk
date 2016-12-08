@@ -57,15 +57,25 @@ for s in subjects:
     shuffle(subject_data)
     if split_folds is not None:
         folds=[]
-        fold_size = len(subject_data)/int(split_folds)
+        small_fold_size = len(subject_data)/int(split_folds) #lower size
+        num_large_folders=len(subject_data)%int(split_folds)
+        to_ind=0
         print "Splitting for Subject: {0} with {1} records".format(s,len(subject_data))
         for i in range(int(split_folds)):
-            if i == (int(split_folds)-1):
-                fold = subject_data[i*fold_size:]
+            if i<num_large_folders:
+                fold_size=small_fold_size+1
+                from_ind=to_ind
+                to_ind=from_ind+fold_size
+                print " Fold {0} :from {1} to {2}".format(i,from_ind,to_ind)
+                fold = subject_data[from_ind:to_ind]
+                folds.append(fold)
             else:
-                fold = subject_data[i*fold_size:i*fold_size+fold_size]
-            print " Fold{0} :from {1} to {2}".format(i,i*fold_size,i*fold_size+fold_size)
-            folds.append(fold)
+                fold_size=small_fold_size
+                from_ind=to_ind
+                to_ind=from_ind+fold_size
+                print " Fold {0} :from {1} to {2}".format(i,from_ind,to_ind)
+                fold = subject_data[from_ind:to_ind]
+                folds.append(fold)
         assert(sum(len(j) for j in folds) == len(subject_data))
         fi=0
         for f in folds:
